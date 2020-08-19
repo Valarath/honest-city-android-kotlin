@@ -15,10 +15,11 @@ import cz.city.honest.mobile.model.dto.ExchangePoint
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import cz.city.honest.mobile.model.dto.ExchangeRateValues
 import cz.city.honest.mobile.model.dto.Rate
+import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
 
 
-class ShowSubjectCostFragment : TableRowFragment() {
+class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
 
     private lateinit var subjectDetailViewModel: SubjectDetailViewModel
 
@@ -84,15 +85,15 @@ class ShowSubjectCostFragment : TableRowFragment() {
         TableRow(activity)
             .apply {
                 //this.layoutParams = getTableRowLayoutParams()
-                this.addView(getCell(currency))
-                this.addView(getCell(exchangePointRate.buy))
-                this.addView(getCell(authorityRate.buy))
+                this.addView(TableRowCreator.getCell(currency, activity!!))
+                this.addView(TableRowCreator.getCell(exchangePointRate.buy, activity!!))
+                this.addView(TableRowCreator.getCell(authorityRate.buy, activity!!))
                 this.addView(
-                    getCell(
+                    TableRowCreator.getCell(
                         getPercentageDifferenceFromAuthorityRate(
                             authorityRate,
                             exchangePointRate
-                        )
+                        ), activity!!
                     )
                 )
             }

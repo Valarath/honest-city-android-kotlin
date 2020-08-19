@@ -1,11 +1,7 @@
 package cz.city.honest.application.model.service
 
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
-import cz.city.honest.application.model.dto.ExchangeRateSuggestion
-import cz.city.honest.application.model.dto.State
-import cz.city.honest.application.model.dto.Suggestion
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.Watched
+import cz.city.honest.application.model.dto.*
+import cz.city.honest.mobile.model.dto.*
 import java.time.LocalDate
 
 class SuggestionService {
@@ -13,6 +9,12 @@ class SuggestionService {
     fun getSuggestionsForSubject(id: Long): List<Suggestion> = listOf(
         ClosedExchangePointSuggestion(
             Long.MAX_VALUE, State.IN_PROGRESS, 5, id
+        ),
+        NewExchangePointSuggestion(
+            55,
+            state = State.DECLINED,
+            votes = 6,
+            position = Position(55.0, 77.0)
         ),
         ExchangeRateSuggestion(
             Long.MIN_VALUE,
@@ -22,7 +24,10 @@ class SuggestionService {
             suggestedExchangeRate = ExchangeRate(
                 55,
                 Watched(LocalDate.now(), LocalDate.now()),
-                mutableSetOf()
+                mutableSetOf(
+                    Rate("CZK", ExchangeRateValues(22.0)),
+                    Rate("USD", ExchangeRateValues(22.0))
+                )
             )
         )
     )
