@@ -21,7 +21,12 @@
         <activity
             android:name=".view.detail.SubjectDetailActivity"
             android:label="@string/title_activity_subject_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".view.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.MapActivity" />
+
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
