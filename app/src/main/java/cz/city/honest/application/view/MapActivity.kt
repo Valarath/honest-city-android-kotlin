@@ -47,6 +47,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        supportActionBar!!.hide()
         mapViewModel = ViewModelProvider(this, viewModelFactory).get(MapViewModel::class.java)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager;
         if (ActivityCompat.checkSelfPermission(

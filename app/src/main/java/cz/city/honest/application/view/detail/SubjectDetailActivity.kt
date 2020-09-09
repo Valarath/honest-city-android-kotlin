@@ -18,10 +18,6 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
-        /*val mToolbar: Toolbar = findViewById<View>(R.id.subject_detail_toolbar) as Toolbar
-        setSupportActionBar( mToolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)*/
     }
 
 
