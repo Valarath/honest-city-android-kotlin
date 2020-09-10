@@ -8,11 +8,11 @@
     tools:context=".view.MapActivity">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="right|top"
         android:background="@drawable/circular_button"
         android:padding="10dp"
-        android:paddingRight="10dp"
+        android:paddingRight="100dp"
         android:text="666" />
 </fragment>

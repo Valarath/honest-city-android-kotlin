@@ -14,8 +14,9 @@
     </item>
     <item>
         <shape android:shape="oval">
+            <gradient android:angle="270" />
             <solid android:color="@color/colorWhiteSemiTransparent" />
-            <size android:width="80dp" android:height="80dp" />
+            <!--size android:width="80dp" android:height="80dp" /-->
         </shape>
     </item>
 </selector>
