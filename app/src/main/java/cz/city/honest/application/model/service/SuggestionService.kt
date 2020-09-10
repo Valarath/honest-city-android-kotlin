@@ -2,6 +2,7 @@ package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.dto.*
 import cz.city.honest.mobile.model.dto.*
+import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
 class SuggestionService {
@@ -31,5 +32,7 @@ class SuggestionService {
             )
         )
     )
+
+    fun getSuggestionsForUser(id: Long): Observable<List<Suggestion>> = Observable.just(listOf())
 
 }
