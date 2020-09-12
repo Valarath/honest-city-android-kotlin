@@ -43,4 +43,9 @@ abstract class ViewModelModule {
     @ViewModelKey(SubjectDetailViewModel::class)
     internal abstract fun subjectDetailViewModel(subjectDetailViewModel: SubjectDetailViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserDetailViewModel::class)
+    internal abstract fun userDetailViewModel(userDetailViewModel: UserDetailViewModel): ViewModel
+
 }

@@ -19,13 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".view.user.UserDetailActivity"
+            android:label="@string/title_activity_user_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".view.detail.SubjectDetailActivity"
             android:label="@string/title_activity_subject_detail"
             android:parentActivityName=".view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".view.MapActivity" />
-
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

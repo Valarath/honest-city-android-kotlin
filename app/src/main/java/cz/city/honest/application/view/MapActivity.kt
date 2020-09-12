@@ -2,11 +2,13 @@ package cz.city.honest.application.view
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +22,9 @@ import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsFragment
 import cz.city.honest.application.view.map.MapClickListener
+import cz.city.honest.application.view.user.UserDetailActivity
+import cz.city.honest.application.view.user.ui.main.UserDetailSettingsFragment
+import cz.city.honest.application.view.user.ui.main.UserDetailSuggestionsFragment
 import cz.city.honest.application.viewmodel.MapViewModel
 import cz.city.honest.application.viewmodel.ViewModelModule
 import cz.city.honest.mobile.model.dto.WatchedSubject
@@ -49,7 +54,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         mapFragment.getMapAsync(this)
         supportActionBar!!.hide()
         mapViewModel = ViewModelProvider(this, viewModelFactory).get(MapViewModel::class.java)
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager;
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -85,6 +90,14 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         mapViewModel.watchedSubjects.observe(this, Observer {
             it.values.forEach { it.forEach { showOnMap(it) } }
         })
+        addUserDetailButtonBehavior()
+    }
+
+    private fun addUserDetailButtonBehavior() {
+        val userDetail = findViewById<Button>(R.id.user_detail);
+        userDetail.setOnClickListener {
+            this.startActivity(Intent(this, UserDetailActivity::class.java))
+        }
     }
 
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
@@ -120,12 +133,23 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun subjectDetailActivityActivity(): SubjectDetailActivity
 
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun userDetailActivity(): UserDetailActivity
+
     @ContributesAndroidInjector
     internal abstract fun showSubjectSuggestions(): ShowSubjectSuggestionsFragment
 
     //TODO to fragment module
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun showSubjectCostFragment(): ShowSubjectCostFragment
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun userDetailSettingsFragment(): UserDetailSettingsFragment
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun userDetailSuggestionsFragment(): UserDetailSuggestionsFragment
+
+
 }
 
 @Scope

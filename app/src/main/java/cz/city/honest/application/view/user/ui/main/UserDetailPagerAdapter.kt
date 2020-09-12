@@ -1,4 +1,4 @@
-package cz.city.honest.application.view.detail.ui.main
+package cz.city.honest.application.view.user.ui.main
 
 import android.content.Context
 import android.os.Bundle
@@ -17,7 +17,7 @@ private val TAB_TITLES = arrayOf(
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-class SubjectPagerAdapter(private val context: Context, private val fm: FragmentManager) :
+class UserDetailPagerAdapter(private val context: Context, private val fm: FragmentManager) :
     FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment =
@@ -33,8 +33,8 @@ class SubjectPagerAdapter(private val context: Context, private val fm: Fragment
 
     companion object {
         val POSITION_TO_FRAGMENT_MAP = mapOf<Int, Fragment>(
-            0 to ShowSubjectCostFragment(),
-            1 to ShowSubjectSuggestionsFragment()
+            0 to UserDetailSuggestionsFragment(),
+            1 to UserDetailSettingsFragment()
         )
 
         private const val ARG_SECTION_NUMBER = "section_number"
@@ -50,27 +50,4 @@ class SubjectPagerAdapter(private val context: Context, private val fm: Fragment
 
 
     }
-}
-
-class SubjectTabFragment {
-
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
-
-
-        @JvmStatic
-        fun <T : Fragment> newInstance(sectionNumber: Int, tabFragment: Class<T>): T =
-            tabFragment.newInstance().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
-
-
-    }
-
 }
