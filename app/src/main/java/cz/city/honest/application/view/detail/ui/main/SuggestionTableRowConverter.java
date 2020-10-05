@@ -40,6 +40,17 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
         return tableRow;
     }
 
+    protected TableRow getGenericSuggestionInformationPanel(
+            Context context,
+            SUGGESTION suggestion,
+            Context context2
+    ) {
+        TableRow tableRow = getGenericSuggestionInformationPanel(context, suggestion);
+        tableRow.addView(getVoteCount(context));
+        tableRow.addView(getVoteButton(context));
+        return tableRow;
+    }
+
     private Button getVoteButton(Context context) {
         Button button = new Button(context);
         button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
