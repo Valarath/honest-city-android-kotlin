@@ -9,8 +9,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import cz.city.honest.application.R
 
 private val TAB_TITLES = arrayOf(
-    R.string.tab_text_1,
-    R.string.tab_text_2
+    //R.string.user_detail_settings,
+    R.string.user_detail_suggestions
 )
 
 /**
@@ -33,8 +33,8 @@ class UserDetailPagerAdapter(private val context: Context, private val fm: Fragm
 
     companion object {
         val POSITION_TO_FRAGMENT_MAP = mapOf<Int, Fragment>(
-            0 to UserDetailSuggestionsFragment(),
-            1 to UserDetailSettingsFragment()
+            //0 to UserDetailSettingsFragment(),
+            0 to UserDetailSuggestionsFragment()
         )
 
         private const val ARG_SECTION_NUMBER = "section_number"

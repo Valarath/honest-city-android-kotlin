@@ -12,6 +12,8 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="tab_text_1">Exchange rates</string>
     <string name="tab_text_2">Suggestions</string>
+    <string name="user_detail_settings">Settings</string>
+    <string name="user_detail_suggestions">Your suggestions</string>
     <string name="currency_header">Currency</string>
     <string name="exchange_point_rate_header">Exchange point</string>
     <string name="authority_rate_header">Authority</string>
