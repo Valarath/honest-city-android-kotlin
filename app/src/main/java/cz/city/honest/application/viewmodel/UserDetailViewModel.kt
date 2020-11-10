@@ -19,18 +19,21 @@ class UserDetailViewModel @Inject constructor(
 
     init {
         schedule {
-            getUserData(userService)
+            getUserData()
         }
-        userData.observeForever { getUserSuggestions(it) }
     }
 
     private fun getUserSuggestions(user: User) = suggestionService.getSuggestionsForUser(user.id)
             .subscribe { userSuggestions.postValue(it) }
 
-    private fun getUserData(userService: UserService) =
+    private fun getUserData() =
         userService
             .getUserData()
-            .subscribe { userData.postValue(it) }
+            .subscribe { subscribeUserData(it)}
 
 
+    private fun subscribeUserData(user: User){
+        userData.postValue(user)
+        getUserSuggestions(user)
+    }
 }
