@@ -29,11 +29,13 @@ class UserDetailViewModel @Inject constructor(
     private fun getUserData() =
         userService
             .getUserData()
-            .subscribe { subscribeUserData(it)}
+            .map { subscribeUserData(it) }
+            .subscribe { userData.postValue(it)}
 
 
-    private fun subscribeUserData(user: User){
-        userData.postValue(user)
+    private fun subscribeUserData(user: User):User{
         getUserSuggestions(user)
+        return user
     }
+
 }
