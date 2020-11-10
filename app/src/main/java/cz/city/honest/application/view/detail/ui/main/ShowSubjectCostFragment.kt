@@ -84,7 +84,6 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
     ): TableRow =
         TableRow(activity)
             .apply {
-                //this.layoutParams = getTableRowLayoutParams()
                 this.addView(TableRowCreator.getCell(currency, activity!!))
                 this.addView(TableRowCreator.getCell(exchangePointRate.buy, activity!!))
                 this.addView(TableRowCreator.getCell(authorityRate.buy, activity!!))

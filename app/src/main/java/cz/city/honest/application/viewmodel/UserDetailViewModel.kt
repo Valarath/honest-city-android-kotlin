@@ -1,6 +1,7 @@
 package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.service.SuggestionService
 import cz.city.honest.application.model.service.UserService
@@ -8,8 +9,8 @@ import cz.city.honest.mobile.model.dto.User
 import javax.inject.Inject
 
 class UserDetailViewModel @Inject constructor(
-    userService: UserService,
-    suggestionService: SuggestionService
+    val userService: UserService,
+    val suggestionService: SuggestionService
 ) : ScheduledViewModel() {
 
     val userSuggestions: MutableLiveData<List<Suggestion>> =
@@ -19,16 +20,17 @@ class UserDetailViewModel @Inject constructor(
     init {
         schedule {
             getUserData(userService)
-            getUserSuggestions(suggestionService)
         }
+        userData.observeForever { getUserSuggestions(it) }
     }
 
-    private fun getUserSuggestions(suggestionService: SuggestionService) =
-        suggestionService.getSuggestionsForUser(userData.value!!.id)
+    private fun getUserSuggestions(user: User) = suggestionService.getSuggestionsForUser(user.id)
             .subscribe { userSuggestions.postValue(it) }
 
     private fun getUserData(userService: UserService) =
-        userService.getUserData().subscribe { userData.postValue(it) }
+        userService
+            .getUserData()
+            .subscribe { userData.postValue(it) }
 
 
 }

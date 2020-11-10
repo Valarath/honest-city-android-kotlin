@@ -23,7 +23,6 @@ import cz.city.honest.application.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsFragment
 import cz.city.honest.application.view.map.MapClickListener
 import cz.city.honest.application.view.user.UserDetailActivity
-import cz.city.honest.application.view.user.ui.main.UserDetailSettingsFragment
 import cz.city.honest.application.view.user.ui.main.UserDetailSuggestionsFragment
 import cz.city.honest.application.viewmodel.MapViewModel
 import cz.city.honest.application.viewmodel.ViewModelModule
@@ -142,9 +141,6 @@ abstract class ActivityModule {
     //TODO to fragment module
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun showSubjectCostFragment(): ShowSubjectCostFragment
-
-    @ContributesAndroidInjector(modules = [ViewModelModule::class])
-    internal abstract fun userDetailSettingsFragment(): UserDetailSettingsFragment
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun userDetailSuggestionsFragment(): UserDetailSuggestionsFragment

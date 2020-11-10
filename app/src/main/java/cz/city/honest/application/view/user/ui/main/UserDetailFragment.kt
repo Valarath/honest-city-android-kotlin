@@ -28,8 +28,6 @@ sealed class UserDetailFragment() : DaggerAppCompatDialogFragment() {
     }
 }
 
-class UserDetailSettingsFragment() : UserDetailFragment()
-
 class UserDetailSuggestionsFragment() : UserDetailFragment(){
 
     override fun onCreateView(
@@ -38,9 +36,7 @@ class UserDetailSuggestionsFragment() : UserDetailFragment(){
         savedInstanceState: Bundle?
     ): View? {
         val root = getRoot(inflater, container)
-        userDetailViewModel.userSuggestions.observe(viewLifecycleOwner, Observer {
-        addSuggestions(it, root)
-        })
+        userDetailViewModel.userSuggestions.observe(viewLifecycleOwner, Observer { addSuggestions(it, root) })
         return root
     }
 
