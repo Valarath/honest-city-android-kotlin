@@ -42,7 +42,7 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
         getTableLayout(root).apply {
             suggestions.forEach {
                 addView(
-                    addVoteButton(
+                    decorate(
                         SuggestionTableRowConverter.asTableRow(it, activity),
                         activity!!
                     )
@@ -50,7 +50,7 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
             }
         }
 
-    private fun addVoteButton(view: View, context: Context) =  ViewTypeDecoratorProvider.provide(view.javaClass).decorate(view,context)
+    private fun decorate(view: View, context: Context) =  ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass).decorate(view,context)
 
     private fun getWatchedSubject(): Long =
         (activity!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as WatchedSubject)
@@ -75,16 +75,11 @@ sealed class  ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View>{
             TableRow.LayoutParams.WRAP_CONTENT
         )
 
-    protected open fun getVoteCount(context: Context): TextView =
-        TextView(context)
-            .apply { text="666" }
-
 }
 
 class ShowSubjectSuggestionTableRowDecorator : ShowSubjectSuggestionRowDecorator<TableRow>() {
     override fun decorate(view: TableRow, context: Context) = view.apply {
         addView(getVoteButton(context))
-        addView(getVoteCount(context))
     }
 }
 
@@ -97,7 +92,7 @@ class ShowSubjectSuggestionTableLayoutDecorator : ShowSubjectSuggestionRowDecora
 
     private fun decorateTableRow(it: View, context: Context) {
         if (it is TableRow)
-            ViewTypeDecoratorProvider.provide(it.javaClass).decorate(it, context)
+            ShowSubjectSuggestionRowDecoratorProvider.provide(it.javaClass).decorate(it, context)
     }
 }
 
