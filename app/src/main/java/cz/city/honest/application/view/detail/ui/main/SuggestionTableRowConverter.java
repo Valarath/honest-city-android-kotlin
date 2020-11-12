@@ -35,33 +35,7 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
         TableRow tableRow = new TableRow(context);
         tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getState().name(), 2f, context));
         tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getVotes(), 1f, context));
-        tableRow.addView(getVoteCount(context));
-        tableRow.addView(getVoteButton(context));
         return tableRow;
-    }
-
-    protected TableRow getGenericSuggestionInformationPanel(
-            Context context,
-            SUGGESTION suggestion,
-            Context context2
-    ) {
-        TableRow tableRow = getGenericSuggestionInformationPanel(context, suggestion);
-        tableRow.addView(getVoteCount(context));
-        tableRow.addView(getVoteButton(context));
-        return tableRow;
-    }
-
-    private Button getVoteButton(Context context) {
-        Button button = new Button(context);
-        button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-        button.setText("Vote for");
-        return button;
-    }
-
-    private TextView getVoteCount(Context context) {
-        TextView voteCount = new TextView(context);
-        voteCount.setText("666");
-        return voteCount;
     }
 
     protected abstract View convert(SUGGESTION suggestion, Context context);
