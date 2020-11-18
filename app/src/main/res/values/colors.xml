@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhiteSemiTransparent">#88FFFFFF</color>
+    <color name="suggestionAccepted">#9540DF47</color>
+    <color name="suggestionDeclined">#95DF4040</color>
+    <color name="suggestionInProgress">#95407ADF</color>
 </resources>

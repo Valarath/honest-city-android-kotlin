@@ -7,6 +7,7 @@ import android.widget.TableRow
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.dto.ExchangeRateSuggestion
 import cz.city.honest.application.model.dto.NewExchangePointSuggestion
+import cz.city.honest.application.model.dto.State
 import cz.city.honest.mobile.model.dto.Rate
 
 
@@ -35,15 +36,17 @@ class ExchangeRateSuggestionTableRowConverter :
         suggestion: ExchangeRateSuggestion
     ) = TableLayout(context).apply {
         suggestion.suggestedExchangeRate.rates.forEach {
-            addView(getExchangeRateRow(context, it))
+            addView(getExchangeRateRow(context, it, suggestion.state))
         }
     }
 
     private fun getExchangeRateRow(
         context: Context,
-        it: Rate
+        it: Rate,
+        state: State
     ) =
         TableRow(context).apply {
+            setBackgroundColor(context.getColor(stateColor[state]!!))
             addView(TableRowCreator.getCell(it.rateValues.buy, 1f, context))
             addView(TableRowCreator.getCell(it.currency, 1f, context))
         }

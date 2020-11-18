@@ -11,6 +11,7 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.view.children
 import cz.city.honest.application.R
+import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.service.SuggestionService
 import cz.city.honest.application.view.detail.SubjectDetailActivity
@@ -44,13 +45,15 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
                 addView(
                     decorate(
                         SuggestionTableRowConverter.asTableRow(it, activity),
-                        activity!!
+                        activity!!,
+                        it
                     )
                 )
             }
         }
 
-    private fun decorate(view: View, context: Context) =  ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass).decorate(view,context)
+    private fun decorate(view: View, context: Context, suggestion: Suggestion) =
+        ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass).decorate(view, context,suggestion)
 
     private fun getWatchedSubject(): Long =
         (activity!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as WatchedSubject)
@@ -62,10 +65,10 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
 
 }
 
-sealed class  ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View>{
-    abstract fun decorate(view: VIEW_TYPE, context: Context):VIEW_TYPE
+sealed class ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View> {
+    abstract fun decorate(view: VIEW_TYPE, context: Context, suggestion: Suggestion): VIEW_TYPE
 
-    protected open fun getVoteButton(context: Context): Button = Button(context).apply{
+    protected open fun getVoteButton(context: Context): Button = Button(context).apply {
         layoutParams = getButtonLayoutParams()
         text = resources.getString(R.string.vote_for_suggestion_button)
         setOnClickListener {
@@ -77,39 +80,42 @@ sealed class  ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View>{
         }
     }
 
-    private fun unVoteFor( button: Button) = button.apply {
+    private fun unVoteFor(button: Button) = button.apply {
         text = resources.getString(R.string.vote_for_suggestion_button)
-        button.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+        button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
     }
 
-    private fun voteFor( button: Button) = button.apply {
+    private fun voteFor(button: Button) = button.apply {
         text = null
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark,0,0,0)
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
     }
 
     private fun getButtonLayoutParams() = TableRow.LayoutParams(
-            TableRow.LayoutParams.WRAP_CONTENT,
-            TableRow.LayoutParams.WRAP_CONTENT
-        )
+        TableRow.LayoutParams.WRAP_CONTENT,
+        TableRow.LayoutParams.WRAP_CONTENT
+    )
 
 }
 
 class ShowSubjectSuggestionTableRowDecorator : ShowSubjectSuggestionRowDecorator<TableRow>() {
-    override fun decorate(view: TableRow, context: Context) = view.apply {
-        addView(getVoteButton(context))
+    override fun decorate(view: TableRow, context: Context, suggestion: Suggestion) = view.apply {
+        if (suggestion.state == State.IN_PROGRESS)
+            addView(getVoteButton(context))
     }
 }
 
 class ShowSubjectSuggestionTableLayoutDecorator : ShowSubjectSuggestionRowDecorator<TableLayout>() {
-    override fun decorate(view: TableLayout, context: Context) = view.apply {
-        children.iterator().forEach {
-            decorateTableRow(it, context)
+    override fun decorate(view: TableLayout, context: Context, suggestion: Suggestion) =
+        view.apply {
+            children.iterator().forEach {
+                decorateTableRow(it, context, suggestion)
+            }
         }
-    }
 
-    private fun decorateTableRow(it: View, context: Context) {
+    private fun decorateTableRow(it: View, context: Context, suggestion: Suggestion) {
         if (it is TableRow)
-            ShowSubjectSuggestionRowDecoratorProvider.provide(it.javaClass).decorate(it, context)
+            ShowSubjectSuggestionRowDecoratorProvider.provide(it.javaClass)
+                .decorate(it, context, suggestion)
     }
 }
 
