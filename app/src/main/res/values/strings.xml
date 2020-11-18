@@ -19,5 +19,6 @@
     <string name="authority_rate_header">Authority</string>
     <string name="exchange_point_to_authority_rates_difference">Lost at %</string>
     <string name="title_activity_user_detail">UserDetail</string>
+    <string name="vote_for_suggestion_button">vote</string>
 
 </resources>

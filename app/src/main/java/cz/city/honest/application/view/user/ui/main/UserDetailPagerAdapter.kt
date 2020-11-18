@@ -33,7 +33,6 @@ class UserDetailPagerAdapter(private val context: Context, private val fm: Fragm
 
     companion object {
         val POSITION_TO_FRAGMENT_MAP = mapOf<Int, Fragment>(
-            //0 to UserDetailSettingsFragment(),
             0 to UserDetailSuggestionsFragment()
         )
 

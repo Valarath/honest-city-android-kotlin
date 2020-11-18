@@ -67,7 +67,24 @@ sealed class  ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View>{
 
     protected open fun getVoteButton(context: Context): Button = Button(context).apply{
         layoutParams = getButtonLayoutParams()
-        text = "Vote for"
+        text = resources.getString(R.string.vote_for_suggestion_button)
+        setOnClickListener {
+            val button = (it as Button)
+            if (button.text == resources.getString(R.string.vote_for_suggestion_button))
+                voteFor(button)
+            else
+                unVoteFor(button)
+        }
+    }
+
+    private fun unVoteFor( button: Button) = button.apply {
+        text = resources.getString(R.string.vote_for_suggestion_button)
+        button.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+    }
+
+    private fun voteFor( button: Button) = button.apply {
+        text = null
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark,0,0,0)
     }
 
     private fun getButtonLayoutParams() = TableRow.LayoutParams(
