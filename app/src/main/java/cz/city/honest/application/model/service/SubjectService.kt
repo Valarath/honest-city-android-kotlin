@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 class SubjectService(val subjectRepository: SubjectRepository) {
 
-    fun getSubjects2(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
+    fun getSubjects(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
         Observable.just(mutableMapOf<Class<out WatchedSubject>, List<WatchedSubject>>())
             //.map { addSubjects(it) }
             .map { addFakeSubject(it) }

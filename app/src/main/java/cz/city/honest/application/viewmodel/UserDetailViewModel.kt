@@ -24,7 +24,8 @@ class UserDetailViewModel @Inject constructor(
     }
 
     private fun getUserSuggestions(user: User) = suggestionService.getSuggestionsForUser(user.id)
-            .subscribe { userSuggestions.postValue(it) }
+        .toList()
+        .blockingSubscribe { userSuggestions.postValue(it) }
 
     private fun getUserData() =
         userService

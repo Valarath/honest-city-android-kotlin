@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 class SuggestionService {
 
-    fun getSuggestionsForSubject(id: Long): List<Suggestion> = getMockSuggestions(id)
+    fun getSuggestionsForSubject(id: Long): Observable<Suggestion> = Observable.fromIterable(getMockSuggestions(id))
 
     private fun getMockSuggestions(id: Long): List<Suggestion> {
         return listOf(
@@ -37,6 +37,6 @@ class SuggestionService {
         )
     }
 
-    fun getSuggestionsForUser(id: Long): Observable<List<Suggestion>> = Observable.just(getMockSuggestions(id))
+    fun getSuggestionsForUser(id: Long): Observable<Suggestion> = Observable.fromIterable(getMockSuggestions(id))
 
 }

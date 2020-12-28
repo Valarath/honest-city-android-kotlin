@@ -19,6 +19,7 @@ import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.viewmodel.UserDetailViewModel
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatDialogFragment
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 
@@ -51,7 +52,7 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
         container: ViewGroup?
     ) = inflater.inflate(R.layout.fragment_show_subject_suggestions, container, false)
 
-    private fun addSuggestions(suggestions: List<Suggestion>, root: View) =
+    private fun addSuggestions(suggestions: Observable<Suggestion>, root: View) =
         getTableLayout(root).apply {
             suggestions.forEach {
                 addView(
