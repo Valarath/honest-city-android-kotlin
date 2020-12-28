@@ -1,7 +1,7 @@
 package cz.city.honest.application.model.gateway
 
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
-import cz.city.honest.application.model.server.*
+import cz.city.honest.application.model.gateway.server.*
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey

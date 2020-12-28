@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.server
+package cz.city.honest.application.model.gateway.server
 
 import cz.city.honest.application.model.gateway.VoteGateway
 import cz.city.honest.mobile.model.dto.Vote

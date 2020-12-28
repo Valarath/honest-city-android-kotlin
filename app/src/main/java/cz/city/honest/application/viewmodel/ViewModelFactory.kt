@@ -2,6 +2,7 @@ package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -47,5 +48,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserDetailViewModel::class)
     internal abstract fun userDetailViewModel(userDetailViewModel: UserDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShowSubjectSuggestionsViewModel::class)
+    internal abstract fun showSubjectSuggestionsViewModel(showSubjectSuggestionsViewModel: ShowSubjectSuggestionsViewModel): ViewModel
 
 }

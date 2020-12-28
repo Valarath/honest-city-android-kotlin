@@ -10,11 +10,13 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.view.children
+import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.service.SuggestionService
 import cz.city.honest.application.view.detail.SubjectDetailActivity
+import cz.city.honest.application.viewmodel.UserDetailViewModel
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
@@ -22,15 +24,25 @@ import javax.inject.Inject
 
 class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
 
+
+    protected lateinit var showSubjectSuggestionsViewModel:ShowSubjectSuggestionsViewModel;
+
     @Inject
-    lateinit var suggestionService: SuggestionService;
+    protected lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        showSubjectSuggestionsViewModel =
+            ViewModelProvider(this, viewModelFactory).get(ShowSubjectSuggestionsViewModel::class.java)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val root = getRoot(inflater, container)
-        addSuggestions(suggestionService.getSuggestionsForSubject(getWatchedSubject()), root)
+        addSuggestions(showSubjectSuggestionsViewModel.getSuggestionsForSubject(getWatchedSubject()), root)
         return root
     }
 

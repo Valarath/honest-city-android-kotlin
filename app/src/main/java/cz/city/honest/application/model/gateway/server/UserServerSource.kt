@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.server
+package cz.city.honest.application.model.gateway.server
 
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.UserGateway
