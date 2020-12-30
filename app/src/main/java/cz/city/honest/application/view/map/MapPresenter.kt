@@ -1,4 +1,4 @@
-package cz.city.honest.application.view
+package cz.city.honest.application.view.map
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import cz.city.honest.application.R
+import cz.city.honest.application.view.MapActivity
 import cz.city.honest.mobile.model.dto.ExchangePoint
 import cz.city.honest.mobile.model.dto.HonestyStatus
 import cz.city.honest.mobile.model.dto.Position

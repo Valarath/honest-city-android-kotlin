@@ -2,6 +2,7 @@ package cz.city.honest.application.model.gateway
 
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
 import cz.city.honest.application.model.gateway.server.*
+import cz.city.honest.application.model.property.ConnectionProperties
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey
@@ -11,14 +12,15 @@ import javax.inject.Singleton
 
 
 @Module
-class GatewayModule {
+class GatewayModule (){
 
     //TODO relocate this
     @Provides
     @Singleton
-    fun getRetrofit(): Retrofit = Retrofit.Builder()
+    fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
-        .baseUrl(BASE_URL).build()
+        .baseUrl(connectionProperties.baseUrl)
+        .build()
 
 
     @Provides
@@ -49,10 +51,6 @@ class GatewayModule {
 
     private fun <T> getGateway(retrofit: Retrofit, gateway: Class<T>) = retrofit.create(gateway)
 
-    companion object {
-        //TODO to configuration
-        const val BASE_URL = ""
-    }
 }
 
 abstract class BaseGatewayModule {
