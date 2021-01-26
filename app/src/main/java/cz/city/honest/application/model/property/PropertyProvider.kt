@@ -9,9 +9,11 @@ class PropertyProvider {
             Yaml().loadAs(getResource(propertyType.simpleName.decapitalize()), propertyType)
 
         private fun getResource(fileName: String) = PropertyProvider::class.java
-            .getResource("/${fileName}.properties")
+            .getResource("/${fileName}.yaml")
             .openStream()
     }
 }
 
-data class ConnectionProperties(val baseUrl:String)
+data class ConnectionProperties(var baseUrl:String, var receiveDataAtHours:Int){
+    constructor():this("",0)
+}

@@ -1,6 +1,9 @@
 package cz.city.honest.application.view
 
 import android.Manifest
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,6 +21,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import cz.city.honest.application.R
+import cz.city.honest.application.job.UpdateScheduledJob
+import cz.city.honest.application.model.property.ConnectionProperties
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsFragment
@@ -44,6 +49,9 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var connectionProperties: ConnectionProperties
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -69,9 +77,13 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            val scheduleJobs = scheduleJobs(this)
+            println(scheduleJobs)
             return
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this);
+        val scheduleJobs = scheduleJobs(this)
+        println(scheduleJobs)
     }
 
     /**
@@ -91,6 +103,23 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         })
         addUserDetailButtonBehavior()
     }
+
+    private fun scheduleJobs(context: Context) =
+        context.getSystemService(JobScheduler::class.java)
+            .schedule(getJobInfoUpdateBuilder(context))
+
+
+    private fun getJobInfoUpdateBuilder(context: Context) =
+        JobInfo.Builder(0, getUpdateScheduledJobComponentName(context))
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            //.setPeriodic(connectionProperties.receiveDataAtHours * 60 * 60 * 1000)
+            .setMinimumLatency(1)
+            .setOverrideDeadline(1)
+            .setRequiresCharging(true)
+            .build()
+
+    private fun getUpdateScheduledJobComponentName(context: Context) =
+        ComponentName(context, UpdateScheduledJob::class.java)
 
     private fun addUserDetailButtonBehavior() {
         val userDetail = findViewById<Button>(R.id.user_detail);

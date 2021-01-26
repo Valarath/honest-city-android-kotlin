@@ -1,6 +1,19 @@
 package cz.city.honest.application.model.service
 
-import javax.inject.Singleton
+import io.reactivex.rxjava3.core.Observable
 
-@Singleton
-class UpdateService
+class UpdateService(
+    val updatableServices:List<Updatable>
+){
+
+    fun update(): Observable<Unit> = Observable
+        .fromIterable(updatableServices)
+        .flatMap { it.update() }
+
+}
+
+interface Updatable{
+
+    fun update():Observable<Unit>
+
+}

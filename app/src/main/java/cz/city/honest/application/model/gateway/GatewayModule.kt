@@ -67,12 +67,5 @@ class AuthorityGatewayModule : BaseGatewayModule() {
     fun getAuthorityGateway(retrofit: Retrofit): AuthorityServerSource =
         getGateway(retrofit, AuthorityServerSource::class.java)
 
-/*
-     @Provides()
-     @IntoMap
-     @ClassKey(AuthorityServerSource::class)
-     @Singleton
-     fun getAuthorityGateway(): AuthorityRepository = AuthorityRepository();
-*/
 
 }

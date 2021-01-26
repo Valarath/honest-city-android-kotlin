@@ -22,6 +22,11 @@ class DatabaseOperationProvider(
         createExchangePointTable(database)
         createSuggestionsTables(database)
         createUserVotesTable(database)
+        createSystemDataTable(database)
+    }
+
+    private fun createSystemDataTable(database: SQLiteDatabase){
+        database.execSQL("Create table system_data(id integer primary key AUTOINCREMENT,date_time text)")
     }
 
     private fun createExchangePointTable(database: SQLiteDatabase) {

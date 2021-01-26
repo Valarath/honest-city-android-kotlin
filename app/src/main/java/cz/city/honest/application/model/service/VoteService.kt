@@ -1,6 +1,6 @@
 package cz.city.honest.application.model.service
 
-import javax.inject.Singleton
+import cz.city.honest.application.model.gateway.server.VoteServerSource
+import cz.city.honest.application.model.repository.VoteRepository
 
-@Singleton
-class VoteService
+class VoteService(val voteRepository: VoteRepository, val voteServerSource: VoteServerSource)

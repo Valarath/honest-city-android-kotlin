@@ -1,3 +1,9 @@
 package cz.city.honest.application.model.gateway
 
-interface AuthorityGateway
+import cz.city.honest.application.model.gateway.server.GetCentralAuthorityRateResponse
+import reactor.core.publisher.Mono
+
+interface AuthorityGateway {
+
+
+}

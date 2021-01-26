@@ -8,11 +8,8 @@ import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.SubjectGateway
 import reactor.core.publisher.Mono
 import reactor.util.function.Tuple2
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class SuggestionRepository @Inject constructor(
+class SuggestionRepository(
     val databaseOperationProvider: DatabaseOperationProvider,
     val exchangeRateRepository: ExchangeRateRepository
 ) : SubjectGateway {

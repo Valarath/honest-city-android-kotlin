@@ -4,9 +4,7 @@ import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.SuggestionGateway
 import reactor.core.publisher.Mono
 import retrofit2.http.POST
-import javax.inject.Singleton
 
-@Singleton
 interface SuggestionServerSource : SuggestionGateway {
 
     @POST("/remove")

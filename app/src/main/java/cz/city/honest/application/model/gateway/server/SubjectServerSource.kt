@@ -5,10 +5,8 @@ import cz.city.honest.mobile.model.dto.Position
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import reactor.core.publisher.Mono
 import retrofit2.http.GET
-import javax.inject.Singleton
 
 
-@Singleton
 interface SubjectServerSource : SubjectGateway {
 
     @GET("/subjects-in-area")

@@ -1,12 +1,13 @@
 package cz.city.honest.application.model.service
 
+import cz.city.honest.application.model.gateway.server.SubjectServerSource
 import cz.city.honest.application.model.repository.SubjectRepository
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
 
-class SubjectService(val subjectRepository: SubjectRepository) {
+class SubjectService(val subjectRepository: SubjectRepository, val subjectServerSource: SubjectServerSource): Updatable {
 
     fun getSubjects(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
         Observable.just(mutableMapOf<Class<out WatchedSubject>, List<WatchedSubject>>())
@@ -37,6 +38,10 @@ class SubjectService(val subjectRepository: SubjectRepository) {
             )
         )
         return subjects
+    }
+
+    override fun update(): Observable<Unit> {
+        TODO("Not yet implemented")
     }
 
 }

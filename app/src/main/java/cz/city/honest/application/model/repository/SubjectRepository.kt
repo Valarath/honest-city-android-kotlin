@@ -9,11 +9,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class SubjectRepository @Inject constructor(
+class SubjectRepository(
     val databaseOperationProvider: DatabaseOperationProvider,
     val suggestionRepository: SuggestionRepository,
     val exchangeRateRepository: ExchangeRateRepository

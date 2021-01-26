@@ -53,6 +53,10 @@ class RepositoryModule() {
     fun getVoteRepository(databaseOperationProvider: DatabaseOperationProvider): VoteRepository =
         VoteRepository(databaseOperationProvider)
 
+    @Provides
+    @Singleton
+    fun getExchangeRateRepository(databaseOperationProvider: DatabaseOperationProvider):ExchangeRateRepository = ExchangeRateRepository(databaseOperationProvider)
+
 }
 
 data class DatabaseConfiguration(

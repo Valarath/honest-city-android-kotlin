@@ -4,11 +4,8 @@ import android.database.Cursor
 import cz.city.honest.application.model.gateway.AuthorityGateway
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import reactor.core.publisher.Mono
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AuthorityRepository @Inject constructor(
+class AuthorityRepository  constructor(
     val databaseOperationProvider: DatabaseOperationProvider,
     val exchangeRateRepository: ExchangeRateRepository
 ) : AuthorityGateway {

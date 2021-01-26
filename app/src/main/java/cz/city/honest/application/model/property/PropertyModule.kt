@@ -9,6 +9,6 @@ class PropertyModule {
 
     @Provides
     @Singleton
-    fun getAuthorityGateway():ConnectionProperties = PropertyProvider.get(ConnectionProperties::class.java)
+    fun getConnectionProperties():ConnectionProperties = PropertyProvider.get(ConnectionProperties::class.java)
 
 }

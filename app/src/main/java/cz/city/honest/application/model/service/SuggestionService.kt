@@ -1,11 +1,14 @@
 package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.dto.*
+import cz.city.honest.application.model.gateway.SuggestionGateway
+import cz.city.honest.application.model.gateway.server.SuggestionServerSource
+import cz.city.honest.application.model.repository.SuggestionRepository
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
-class SuggestionService {
+class SuggestionService(val suggestionServerSource: SuggestionServerSource, val suggestionRepository: SuggestionRepository):Updatable {
 
     fun getSuggestionsForSubject(id: Long): Observable<Suggestion> = Observable.fromIterable(getMockSuggestions(id))
 
@@ -38,5 +41,8 @@ class SuggestionService {
     }
 
     fun getSuggestionsForUser(id: Long): Observable<Suggestion> = Observable.fromIterable(getMockSuggestions(id))
+    override fun update(): Observable<Unit> {
+        TODO("Not yet implemented")
+    }
 
 }

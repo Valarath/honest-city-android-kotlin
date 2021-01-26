@@ -4,9 +4,7 @@ import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.UserGateway
 import reactor.core.publisher.Mono
 import retrofit2.http.GET
-import javax.inject.Singleton
 
-@Singleton
 interface UserServerSource : UserGateway {
 
     @GET("/user-suggestions")

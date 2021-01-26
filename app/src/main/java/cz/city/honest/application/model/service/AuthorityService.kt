@@ -1,5 +1,7 @@
 package cz.city.honest.application.model.service
 
+import cz.city.honest.application.model.gateway.server.AuthorityServerSource
+import cz.city.honest.application.model.repository.AuthorityRepository
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import cz.city.honest.mobile.model.dto.ExchangeRateValues
 import cz.city.honest.mobile.model.dto.Rate
@@ -7,7 +9,10 @@ import cz.city.honest.mobile.model.dto.Watched
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
-class AuthorityService : BaseService() {
+class AuthorityService(
+    val authorityRepository: AuthorityRepository,
+    val authorityServerSource: AuthorityServerSource
+) : BaseService(), Updatable {
 
     fun getAuthority(): Observable<ExchangeRate> = Observable.just(getMockExchangeRate())
 
@@ -20,6 +25,10 @@ class AuthorityService : BaseService() {
             Rate("USD", ExchangeRateValues(22.0))
         )
     )
+
+    override fun update(): Observable<Unit> {
+        TODO("Not yet implemented")
+    }
 
 
 }

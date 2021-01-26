@@ -6,11 +6,8 @@ import cz.city.honest.application.model.gateway.AuthorityGateway
 import cz.city.honest.mobile.model.dto.*
 import reactor.core.publisher.Mono
 import java.time.LocalDate
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ExchangeRateRepository @Inject constructor(
+class ExchangeRateRepository (
     val databaseOperationProvider: DatabaseOperationProvider
 ) : AuthorityGateway {
 

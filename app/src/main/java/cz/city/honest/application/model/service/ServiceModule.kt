@@ -1,6 +1,7 @@
 package cz.city.honest.application.model.service
 
-import cz.city.honest.application.model.repository.SubjectRepository
+import cz.city.honest.application.model.gateway.server.*
+import cz.city.honest.application.model.repository.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -10,30 +11,51 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    fun getAuthorityService(): AuthorityService = AuthorityService()
+    fun getAuthorityService(
+        authorityRepository: AuthorityRepository,
+        authorityServerSource: AuthorityServerSource
+    ): AuthorityService = AuthorityService(authorityRepository, authorityServerSource)
 
     @Provides
     @Singleton
-    fun getSubjectService(subjectRepository: SubjectRepository): SubjectService =
-        SubjectService(subjectRepository)
+    fun getSubjectService(
+        subjectRepository: SubjectRepository,
+        subjectServerSource: SubjectServerSource
+    ): SubjectService =
+        SubjectService(subjectRepository, subjectServerSource)
 
     @Provides
     @Singleton
-    fun getSuggestionService(): SuggestionService = SuggestionService()
+    fun getSuggestionService(
+        suggestionServerSource: SuggestionServerSource,
+        suggestionRepository: SuggestionRepository
+    ): SuggestionService = SuggestionService(suggestionServerSource, suggestionRepository)
 
     @Provides
     @Singleton
-    fun getVoteService(): VoteService = VoteService()
+    fun getVoteService(
+        voteRepository: VoteRepository,
+        voteServerSource: VoteServerSource
+    ): VoteService = VoteService(voteRepository, voteServerSource)
 
     @Provides
     @Singleton
-    fun getUserService(): UserService = UserService()
+    fun getUserService(
+        userRepository: UserRepository,
+        userServerSource: UserServerSource
+    ): UserService = UserService(userRepository, userServerSource)
 
     @Provides
     @Singleton
-    fun getSystemService(updateService: UpdateService): SystemService = SystemService(updateService)
+    fun getUpdatableServices(
+        authorityService: AuthorityService,
+        suggestionService: SuggestionService,
+        subjectService: SubjectService,
+        userService: UserService
+    ): List<Updatable> = listOf(authorityService, subjectService, suggestionService, userService)
 
     @Provides
     @Singleton
-    fun getUpdateService(): UpdateService = UpdateService()
+    fun getUpdateService(updatableServices: @JvmSuppressWildcards List<Updatable>): UpdateService =
+        UpdateService(updatableServices)
 }
