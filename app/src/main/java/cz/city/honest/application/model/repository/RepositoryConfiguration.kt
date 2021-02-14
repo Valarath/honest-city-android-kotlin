@@ -1,6 +1,12 @@
 package cz.city.honest.application.model.repository
 
+import ClosedExchangePointSuggestionRepository
 import android.content.Context
+import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.repository.subject.SubjectRepository
+import cz.city.honest.application.model.repository.suggestion.ExchangeRateSuggestionRepository
+import cz.city.honest.application.model.repository.suggestion.NewExchangePointSuggestionRepository
+import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -30,18 +36,43 @@ class RepositoryModule() {
     @Singleton
     fun getSubjectRepository(
         databaseOperationProvider: DatabaseOperationProvider,
-        suggestionRepository: SuggestionRepository,
+        suggestionRepositories:List<SuggestionRepository<out Suggestion>>,
         exchangeRateRepository: ExchangeRateRepository
     ): SubjectRepository =
-        SubjectRepository(databaseOperationProvider, suggestionRepository, exchangeRateRepository)
+        SubjectRepository(databaseOperationProvider, suggestionRepositories, exchangeRateRepository)
 
     @Provides
     @Singleton
-    fun getSuggestionRepository(
+    fun getClosedExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider)
+            : ClosedExchangePointSuggestionRepository =
+        ClosedExchangePointSuggestionRepository(databaseOperationProvider)
+
+    @Provides
+    @Singleton
+    fun getExchangeRateSuggestionRepository(
         databaseOperationProvider: DatabaseOperationProvider,
         exchangeRateRepository: ExchangeRateRepository
-    ): SuggestionRepository =
-        SuggestionRepository(databaseOperationProvider, exchangeRateRepository)
+    ): ExchangeRateSuggestionRepository =
+        ExchangeRateSuggestionRepository(databaseOperationProvider,exchangeRateRepository)
+
+    @Provides
+    @Singleton
+    fun getNewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider)
+            : NewExchangePointSuggestionRepository =
+        NewExchangePointSuggestionRepository(databaseOperationProvider)
+
+
+    @Provides
+    @Singleton
+    fun getSuggestionRepositories(
+        newExchangePointSuggestionRepository: NewExchangePointSuggestionRepository,
+        closedExchangePointSuggestionRepository: ClosedExchangePointSuggestionRepository,
+        exchangeRateSuggestionRepository: ExchangeRateSuggestionRepository
+    ) = listOf(
+        newExchangePointSuggestionRepository,
+        closedExchangePointSuggestionRepository,
+        exchangeRateSuggestionRepository
+    )
 
     @Provides
     @Singleton
@@ -55,7 +86,8 @@ class RepositoryModule() {
 
     @Provides
     @Singleton
-    fun getExchangeRateRepository(databaseOperationProvider: DatabaseOperationProvider):ExchangeRateRepository = ExchangeRateRepository(databaseOperationProvider)
+    fun getExchangeRateRepository(databaseOperationProvider: DatabaseOperationProvider): ExchangeRateRepository =
+        ExchangeRateRepository(databaseOperationProvider)
 
 }
 

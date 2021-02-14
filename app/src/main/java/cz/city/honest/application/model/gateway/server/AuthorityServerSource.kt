@@ -14,5 +14,5 @@ interface AuthorityServerSource : AuthorityGateway {
 
 
 data class GetCentralAuthorityRateResponse(
-    private val exchangeRate: ExchangeRate
+    val exchangeRate: ExchangeRate
 )

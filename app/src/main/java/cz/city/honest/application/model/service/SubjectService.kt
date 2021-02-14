@@ -1,7 +1,7 @@
 package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.gateway.server.SubjectServerSource
-import cz.city.honest.application.model.repository.SubjectRepository
+import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
@@ -41,6 +41,11 @@ class SubjectService(val subjectRepository: SubjectRepository, val subjectServer
     }
 
     override fun update(): Observable<Unit> {
+
+        subjectServerSource.getSubjectsInArea()
+            .map {
+                Observable.concat()
+            }
         TODO("Not yet implemented")
     }
 

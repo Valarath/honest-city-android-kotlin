@@ -27,6 +27,8 @@ class AuthorityService(
     )
 
     override fun update(): Observable<Unit> {
+       /* authorityServerSource.getRate()
+            .map { authorityRepository. }*/
         TODO("Not yet implemented")
     }
 

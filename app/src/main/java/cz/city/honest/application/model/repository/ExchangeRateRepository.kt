@@ -4,18 +4,19 @@ import android.content.ContentValues
 import android.database.Cursor
 import cz.city.honest.application.model.gateway.AuthorityGateway
 import cz.city.honest.mobile.model.dto.*
+import io.reactivex.rxjava3.core.Observable
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 
 class ExchangeRateRepository (
-    val databaseOperationProvider: DatabaseOperationProvider
+    private val databaseOperationProvider: DatabaseOperationProvider
 ) : AuthorityGateway {
 
-    fun getExchangeRates(exchangeRatesId: Long): Mono<ExchangeRate> =
-        Mono.just(
+    fun getExchangeRates(exchangeRatesId: Long): Observable<ExchangeRate> =
+        Observable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, buy, currency from exchange_rate where exchange_rates.id = $exchangeRatesId",
-                null
+                "Select id, buy, currency from exchange_rate where exchange_rates.id = ?",
+                arrayOf(exchangeRatesId.toString())
             )
         )
             .map { toExchangeRate(it) }
@@ -32,8 +33,8 @@ class ExchangeRateRepository (
     fun getExchangePointRates(exchangePointId: Long): Mono<ExchangeRate> =
         Mono.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select exchange_rate.id, buy, currency from exchange_rate join exchange_rates on exchange_rate.exchange_rates_id=exchange_point_has_exchange_rate.exchange_rates_id where exchange_point.id = $exchangePointId",
-                null
+                "Select exchange_rate.id, buy, currency from exchange_rate join exchange_rates on exchange_rate.exchange_rates_id=exchange_point_has_exchange_rate.exchange_rates_id where exchange_point.id = ?",
+                arrayOf(exchangePointId.toString())
             )
         )
             .map { toExchangeRate(it) }
@@ -83,8 +84,8 @@ class ExchangeRateRepository (
         Mono.just(
             databaseOperationProvider.writableDatabase.delete(
                 "exchange_rate",
-                "exchange_rates_id=$exchangeRatesId",
-                null
+                "exchange_rates_id=?",
+                arrayOf(exchangeRatesId.toString())
             )
         )
 
@@ -93,8 +94,8 @@ class ExchangeRateRepository (
         Mono.just(
             databaseOperationProvider.writableDatabase.delete(
                 "exchange_rates",
-                "id=$exchangeRatesId",
-                null
+                "id=?",
+                arrayOf(exchangeRatesId.toString())
             )
         )
 

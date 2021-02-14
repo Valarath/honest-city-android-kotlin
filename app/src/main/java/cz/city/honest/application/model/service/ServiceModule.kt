@@ -1,7 +1,10 @@
 package cz.city.honest.application.model.service
 
+import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.repository.*
+import cz.city.honest.application.model.repository.subject.SubjectRepository
+import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -28,8 +31,8 @@ class ServiceModule {
     @Singleton
     fun getSuggestionService(
         suggestionServerSource: SuggestionServerSource,
-        suggestionRepository: SuggestionRepository
-    ): SuggestionService = SuggestionService(suggestionServerSource, suggestionRepository)
+        suggestionRepositories:List<SuggestionRepository<out Suggestion>>
+    ): SuggestionService = SuggestionService(suggestionServerSource, suggestionRepositories)
 
     @Provides
     @Singleton
@@ -49,10 +52,9 @@ class ServiceModule {
     @Singleton
     fun getUpdatableServices(
         authorityService: AuthorityService,
-        suggestionService: SuggestionService,
         subjectService: SubjectService,
         userService: UserService
-    ): List<Updatable> = listOf(authorityService, subjectService, suggestionService, userService)
+    ): List<Updatable> = listOf(authorityService, subjectService, userService)
 
     @Provides
     @Singleton

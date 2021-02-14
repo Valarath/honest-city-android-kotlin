@@ -77,8 +77,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            val scheduleJobs = scheduleJobs(this)
-            println(scheduleJobs)
+            // scheduleJobs(this)
             return
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this);

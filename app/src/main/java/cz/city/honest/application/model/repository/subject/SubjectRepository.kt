@@ -1,26 +1,31 @@
-package cz.city.honest.application.model.repository
+package cz.city.honest.application.model.repository.subject
 
 import android.content.ContentValues
 import android.database.Cursor
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.SubjectGateway
+import cz.city.honest.application.model.repository.DatabaseOperationProvider
+import cz.city.honest.application.model.repository.ExchangeRateRepository
+import cz.city.honest.application.model.repository.Repository
+import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import cz.city.honest.mobile.model.dto.*
+import io.reactivex.rxjava3.core.Flowable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.util.*
 
-class SubjectRepository(
-    val databaseOperationProvider: DatabaseOperationProvider,
-    val suggestionRepository: SuggestionRepository,
-    val exchangeRateRepository: ExchangeRateRepository
-) : SubjectGateway {
+class SubjectRepository<WATCHED_SUBJECT:WatchedSubject>(
+    databaseOperationProvider: DatabaseOperationProvider,
+    private val suggestionRepositories:List<SuggestionRepository<out Suggestion>>,
+    private val exchangeRateRepository: ExchangeRateRepository
+) : Repository<>(databaseOperationProvider){
 
     private fun subjectPersist(subject: WatchedSubject): Map<Class<out WatchedSubject>, Mono<out WatchedSubject>> =
         mapOf(ExchangePoint::class.java to addExchangePoint(subject as ExchangePoint))
 
     private fun toExchangePoint(cursor: Cursor): Mono<ExchangePoint> =
-        suggestionRepository.getSubjectSuggestions(cursor.getLong(0))
+        suggestionRepositories.getSubjectSuggestions(cursor.getLong(0))
             .flatMap { suggestions ->
                 exchangeRateRepository.getExchangePointRates(cursor.getLong(0))
                     .map { toExchangePoint(cursor, suggestions, it) }
@@ -49,7 +54,7 @@ class SubjectRepository(
             .collectList()
 
 
-    fun getSubjects(): Mono<List<ExchangePoint>> =
+    fun getSubjects(): Flowable<ExchangePoint> =
         toExchangePoints(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "SELECT id,honesty_level,longitude,latitude from exchange_point;",

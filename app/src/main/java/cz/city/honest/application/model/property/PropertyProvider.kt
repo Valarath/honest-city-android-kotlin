@@ -14,6 +14,6 @@ class PropertyProvider {
     }
 }
 
-data class ConnectionProperties(var baseUrl:String, var receiveDataAtHours:Int){
+data class ConnectionProperties(var baseUrl:String, var receiveDataAtHours:Long){
     constructor():this("",0)
 }
