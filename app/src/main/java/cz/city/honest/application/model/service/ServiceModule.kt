@@ -3,6 +3,7 @@ package cz.city.honest.application.model.service
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.repository.*
+import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import dagger.Module
@@ -37,16 +38,14 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getVoteService(
-        voteRepository: VoteRepository,
         voteServerSource: VoteServerSource
-    ): VoteService = VoteService(voteRepository, voteServerSource)
+    ): VoteService = VoteService( voteServerSource)
 
     @Provides
     @Singleton
     fun getUserService(
-        userRepository: UserRepository,
         userServerSource: UserServerSource
-    ): UserService = UserService(userRepository, userServerSource)
+    ): UserService = UserService( userServerSource)
 
     @Provides
     @Singleton

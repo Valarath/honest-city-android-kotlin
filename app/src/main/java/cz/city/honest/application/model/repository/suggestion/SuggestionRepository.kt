@@ -4,25 +4,13 @@ import android.content.ContentValues
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
-import io.reactivex.rxjava3.core.Flowable
+import cz.city.honest.application.model.repository.suggestion.exchange.ExchangeRateSuggestionRepository
 import io.reactivex.rxjava3.core.Observable
 
 abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperationProvider: DatabaseOperationProvider):
     Repository<SUGGESTION_TYPE>(databaseOperationProvider) {
 
-    abstract fun insert(suggestion: SUGGESTION_TYPE): Observable<Long>
-    abstract fun update(suggestion: SUGGESTION_TYPE): Observable<Int>
-    abstract fun get(id:Long):Flowable<SUGGESTION_TYPE>
-    abstract fun delete(id: List<Long>): Observable<Int>
-
-
-    fun insertList(suggestions: List<SUGGESTION_TYPE>) =
-        processListInTransaction(suggestions, ::insert)
-
-    fun updateList(suggestions: List<SUGGESTION_TYPE>) =
-        processListInTransaction(suggestions, ::update)
-
-    protected fun insertBaseSuggestion(suggestion: Suggestion) = Observable.just(
+    override fun insert(suggestion: SUGGESTION_TYPE): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insert(
             TABLE_NAME,
             null,
@@ -30,10 +18,18 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
         )
     )
 
-    protected fun updateBaseSuggestion(suggestion: Suggestion) = Observable.just(
+    override fun update(suggestion: SUGGESTION_TYPE): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(suggestion),
+            "where id = ?",
+            arrayOf(suggestion.id.toString())
+        )
+    )
+
+    override fun delete(suggestion: SUGGESTION_TYPE): Observable<Int> = Observable.just(
+        databaseOperationProvider.writableDatabase.delete(
+            ExchangeRateSuggestionRepository.TABLE_NAME,
             "where id = ?",
             arrayOf(suggestion.id.toString())
         )
@@ -43,6 +39,7 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
         put("id", suggestion.id)
         put("votes", suggestion.votes)
         put("status", suggestion.state.name)
+        put("voted",suggestion.voted)
     }
 
     companion object {

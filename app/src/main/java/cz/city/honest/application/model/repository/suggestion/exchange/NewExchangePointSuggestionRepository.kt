@@ -1,11 +1,12 @@
-package cz.city.honest.application.model.repository.suggestion
+package cz.city.honest.application.model.repository.suggestion.exchange
 
 import android.content.ContentValues
 import android.database.Cursor
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
+import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
+import cz.city.honest.application.model.repository.toBoolean
 import cz.city.honest.mobile.model.dto.Position
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
@@ -16,7 +17,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     ) {
 
     override fun insert(suggestion: NewExchangePointSuggestion): Observable<Long> =
-        insertBaseSuggestion(suggestion)
+        super.insert(suggestion)
             .map {
                 databaseOperationProvider.writableDatabase.insert(
                     TABLE_NAME,
@@ -26,7 +27,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             }
 
     override fun update(suggestion: NewExchangePointSuggestion): Observable<Int> =
-        updateBaseSuggestion(suggestion)
+        super.update(suggestion)
             .map {
                 databaseOperationProvider.writableDatabase.update(
                     TABLE_NAME,
@@ -36,26 +37,27 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
                 )
             }
 
-    override fun get(id: Long): Flowable<NewExchangePointSuggestion> =
+    override fun get(id: List<Long>): Flowable<NewExchangePointSuggestion> =
         findClosedExchangePointSuggestions(id).flatMap {
             toEntities(it) {
                 toNewExchangePointSuggestion(it)
             }
         }
 
-    override fun delete(id: List<Long>): Observable<Int> = Observable.just(
-        databaseOperationProvider.writableDatabase.delete(
-            ExchangeRateSuggestionRepository.TABLE_NAME,
-            "where id = ?",
-            arrayOf(id.toString())
-        )
-    )
+    override fun delete(suggestion: NewExchangePointSuggestion): Observable<Int> =
+        super.delete(suggestion).map {
+            databaseOperationProvider.writableDatabase.delete(
+                ExchangeRateSuggestionRepository.TABLE_NAME,
+                "where id = ?",
+                arrayOf(suggestion.id.toString())
+            )
+        }
 
-    private fun findClosedExchangePointSuggestions(subjectId: Long): Flowable<Cursor> =
+    private fun findClosedExchangePointSuggestions(subjectId: List<Long>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, state, votes, longitude, latitude from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id where exchange_point_id = ?",
-                arrayOf(subjectId.toString())
+                "Select id, state, votes, longitude, latitude, suggestion_id, voted from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
 
@@ -65,7 +67,9 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
                 id = cursor.getLong(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
-                position = Position(cursor.getDouble(3), cursor.getDouble(4))
+                position = Position(cursor.getDouble(3), cursor.getDouble(4)),
+                suggestionId = cursor.getLong(5),
+                voted = cursor.getInt(5).toBoolean()
             )
         )
 

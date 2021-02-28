@@ -26,7 +26,7 @@ class SuggestionService(val suggestionServerSource: SuggestionServerSource, val 
                 Long.MIN_VALUE,
                 state = State.ACCEPTED,
                 votes = 10,
-                exchangePointId = id,
+                watchedSubjectId = id,
                 suggestedExchangeRate = ExchangeRate(
                     55,
                     Watched(LocalDate.now(), LocalDate.now()),
