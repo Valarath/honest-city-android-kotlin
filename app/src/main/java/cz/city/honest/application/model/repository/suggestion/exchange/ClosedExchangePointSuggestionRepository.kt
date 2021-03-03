@@ -54,7 +54,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestions(subjectId: List<Long>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, state, votes, watched_subject_id, suggestion_id, voted from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "Select id, state, votes, watched_subject_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
@@ -62,7 +62,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestionsForWatchedSubjects(exchangePointIds: List<Long>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, state, votes, exchange_point_id, suggestion_id, voted from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(exchangePointIds)})",
+                "Select id, state, votes, exchange_point_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(exchangePointIds)})",
                 arrayOf(mapToQueryParamVariable(exchangePointIds))
             )
         )
@@ -74,8 +74,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
                 watchedSubjectId = cursor.getLong(3),
-                suggestionId = cursor.getLong(4),
-                voted = cursor.getInt(5).toBoolean()
+                suggestionId = cursor.getLong(4)
             )
         )
 

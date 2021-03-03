@@ -7,8 +7,7 @@ import java.io.Serializable
 abstract class Suggestion(
     open val id: Long,
     open val state: State,
-    open val votes: Int,
-    open val voted:Boolean = false
+    open val votes: Int
 ) : Serializable
 
 enum class State : Serializable {
@@ -19,26 +18,23 @@ data class NewExchangePointSuggestion(
     override val id: Long,
     override val state: State,
     override val votes: Int,
-    override val voted:Boolean,
     val position: Position,
     val suggestionId: Long
-) : Suggestion(suggestionId, state, votes,voted)
+) : Suggestion(suggestionId, state, votes)
 
 class ExchangeRateSuggestion(
     override val id: Long,
     override val state: State,
     override val votes: Int,
-    override val voted:Boolean,
     val watchedSubjectId: Long,
     val suggestedExchangeRate: ExchangeRate,
     val suggestionId:Long
-) : Suggestion(suggestionId, state, votes,voted)
+) : Suggestion(suggestionId, state, votes)
 
 class ClosedExchangePointSuggestion(
     override val id: Long,
     override val state: State,
     override val votes: Int,
-    override val voted:Boolean,
     val watchedSubjectId: Long,
     val suggestionId:Long
-) : Suggestion(suggestionId, state, votes,voted)
+) : Suggestion(suggestionId, state, votes)

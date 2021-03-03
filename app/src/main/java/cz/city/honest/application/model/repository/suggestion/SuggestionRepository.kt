@@ -39,7 +39,6 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
         put("id", suggestion.id)
         put("votes", suggestion.votes)
         put("status", suggestion.state.name)
-        put("voted",suggestion.voted)
     }
 
     companion object {

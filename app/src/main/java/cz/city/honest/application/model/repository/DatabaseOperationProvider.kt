@@ -76,7 +76,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createSuggestionTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS suggestion(id integer primary key, status text,votes integer, voted integer)")
+        database.execSQL("Create table IF NOT EXISTS suggestion(id integer primary key, status text,votes integer)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

@@ -62,7 +62,7 @@ class ExchangeRateSuggestionRepository(
     private fun findExchangeRateSuggestions(subjectId: List<Long>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id,voted from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
@@ -70,7 +70,7 @@ class ExchangeRateSuggestionRepository(
     private fun findExchangeRateSuggestionsForWatchedSubjects(ids: List<Long>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id,voted from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
+                "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
                 arrayOf(mapToQueryParamVariable(ids))
             )
         )
@@ -84,8 +84,7 @@ class ExchangeRateSuggestionRepository(
                     votes = cursor.getInt(2),
                     suggestedExchangeRate = it,
                     watchedSubjectId = cursor.getLong(4),
-                    suggestionId = cursor.getLong(5),
-                    voted = cursor.getInt(5).toBoolean()
+                    suggestionId = cursor.getLong(5)
                 )
             }
 

@@ -2,10 +2,10 @@ package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.server.*
-import cz.city.honest.application.model.repository.*
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
+import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -23,16 +23,16 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSubjectService(
-        subjectRepository: SubjectRepository,
+        subjectRepositories: Map<Class<out WatchedSubject>,SubjectRepository<WatchedSubject>>,
         subjectServerSource: SubjectServerSource
     ): SubjectService =
-        SubjectService(subjectRepository, subjectServerSource)
+        SubjectService(subjectRepositories, subjectServerSource)
 
     @Provides
     @Singleton
     fun getSuggestionService(
         suggestionServerSource: SuggestionServerSource,
-        suggestionRepositories:List<SuggestionRepository<out Suggestion>>
+        suggestionRepositories:Map<Class<out Suggestion>,SuggestionRepository<Suggestion>>
     ): SuggestionService = SuggestionService(suggestionServerSource, suggestionRepositories)
 
     @Provides

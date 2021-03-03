@@ -7,17 +7,17 @@ import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
 
-class SubjectService(val subjectRepository: SubjectRepository, val subjectServerSource: SubjectServerSource): Updatable {
+class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,SubjectRepository<WatchedSubject>>, val subjectServerSource: SubjectServerSource): Updatable {
 
     fun getSubjects(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
         Observable.just(mutableMapOf<Class<out WatchedSubject>, List<WatchedSubject>>())
             //.map { addSubjects(it) }
             .map { addFakeSubject(it) }
 
-    private fun addSubjects(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> {
-        subjectRepository.getSubjects().map { subjects.put(ExchangePoint::class.java, it) }
-        return subjects
-    }
+    private fun addSubjects(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> =
+        subjects.entries
+            .forEach { subjectRepositories[it.key]?.insertList(it.value) }
+            .run { subjects }
 
     private fun addFakeSubject(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> {
         subjects[ExchangePoint::class.java] = listOf(
@@ -42,10 +42,6 @@ class SubjectService(val subjectRepository: SubjectRepository, val subjectServer
 
     override fun update(): Observable<Unit> {
 
-        subjectServerSource.getSubjectsInArea()
-            .map {
-                Observable.concat()
-            }
         TODO("Not yet implemented")
     }
 
