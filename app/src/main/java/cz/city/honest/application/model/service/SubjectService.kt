@@ -7,7 +7,7 @@ import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
 
-class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,SubjectRepository<WatchedSubject>>, val subjectServerSource: SubjectServerSource): Updatable {
+class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,SubjectRepository<out WatchedSubject>>, val subjectServerSource: SubjectServerSource): Updatable {
 
     fun getSubjects(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
         Observable.just(mutableMapOf<Class<out WatchedSubject>, List<WatchedSubject>>())
@@ -16,7 +16,7 @@ class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,Subj
 
     private fun addSubjects(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> =
         subjects.entries
-            .forEach { subjectRepositories[it.key]?.insertList(it.value) }
+            .forEach { RepositoryProvider.provide(subjectRepositories,it.key)?.insertList(it.value) }
             .run { subjects }
 
     private fun addFakeSubject(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> {

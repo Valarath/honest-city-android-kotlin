@@ -7,7 +7,7 @@ import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
-class SuggestionService(val suggestionServerSource: SuggestionServerSource, val suggestionRepositories:Map<Class<out Suggestion>,SuggestionRepository<Suggestion>>) {
+class SuggestionService(val suggestionServerSource: SuggestionServerSource, val suggestionRepositories:Map<Class<out Suggestion>,SuggestionRepository<out Suggestion>>) {
 
     fun getSuggestionsForSubject(id: Long): Observable<Suggestion> = Observable.fromIterable(getMockSuggestions(id))
 

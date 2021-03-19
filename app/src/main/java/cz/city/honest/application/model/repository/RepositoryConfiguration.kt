@@ -17,6 +17,7 @@ import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
 import cz.city.honest.mobile.model.dto.ExchangePoint
 import cz.city.honest.mobile.model.dto.WatchedSubject
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey
@@ -53,18 +54,19 @@ class RepositoryModule() {
     @Provides
     @Singleton
     fun getVoteRepository(
-        databaseOperationProvider: DatabaseOperationProvider
-    ): VoteRepository = VoteRepository(databaseOperationProvider)
+        databaseOperationProvider: DatabaseOperationProvider,
+        suggestionRepositories: Map<Class<out Suggestion>, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    ): VoteRepository = VoteRepository(databaseOperationProvider,suggestionRepositories)
 
     @Provides
     @Singleton
-    @IntoMap
-    @ClassKey(ExchangePoint::class)
+    //@IntoMap
+    //@ClassKey(ExchangePoint::class)
     fun getExchangePointRepository(
         databaseOperationProvider: DatabaseOperationProvider,
-        suggestionRepositories: Map<Class<Suggestion>, SuggestionRepository<Suggestion>>,
+        suggestionRepositories: Map<Class<out Suggestion>, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
         exchangeRateRepository: ExchangeRateRepository
-    ): SubjectRepository<out WatchedSubject> =
+    ): SubjectRepository< ExchangePoint> =
         ExchangePointRepository(
             databaseOperationProvider,
             suggestionRepositories,
@@ -73,20 +75,21 @@ class RepositoryModule() {
 
     @Provides
     @Singleton
-    @IntoMap
-    @ClassKey(ClosedExchangePointSuggestion::class)
+    //@IntoMap
+    //@ClassKey(ClosedExchangePointSuggestion::class)
     fun getClosedExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider)
-            : SuggestionRepository<out Suggestion> =
+            : SuggestionRepository<ClosedExchangePointSuggestion> =
         ClosedExchangePointSuggestionRepository(databaseOperationProvider)
 
-    @Provides
+   /* @Provides
     @Singleton
     @IntoMap
-    @ClassKey(ExchangeRateSuggestion::class)
+    @ClassKey(ExchangeRateSuggestion::class)*/
     fun getExchangeRateSuggestionRepository(
         databaseOperationProvider: DatabaseOperationProvider,
         exchangeRateRepository: ExchangeRateRepository
-    ): SuggestionRepository<out Suggestion> =
+    ): SuggestionRepository<out ExchangeRateSuggestion> =
+    //):ExchangeRateSuggestionRepository =
         ExchangeRateSuggestionRepository(databaseOperationProvider, exchangeRateRepository)
 
     @Provides
@@ -94,14 +97,21 @@ class RepositoryModule() {
     @IntoMap
     @ClassKey(NewExchangePointSuggestion::class)
     fun getNewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider)
-            : SuggestionRepository<out Suggestion> =
+            : SuggestionRepository<NewExchangePointSuggestion> =
         NewExchangePointSuggestionRepository(databaseOperationProvider)
-
 
     @Provides
     @Singleton
     fun getExchangeRateRepository(databaseOperationProvider: DatabaseOperationProvider): ExchangeRateRepository =
         ExchangeRateRepository(databaseOperationProvider)
+
+    @Provides
+    @Singleton
+    fun getSubjectRepositories(newExchangePointRepository:SubjectRepository< ExchangePoint>):Map<Class<out WatchedSubject>,SubjectRepository<out WatchedSubject>> = mapOf(ExchangePoint::class.java to newExchangePointRepository )
+
+    @Provides
+    @Singleton
+    fun getSuggestionRepositories(closedExchangePointSuggestionRepository: SuggestionRepository<ClosedExchangePointSuggestion>):Map<Class<out Suggestion>,SuggestionRepository<out Suggestion>> = mapOf(Suggestion::class.java to closedExchangePointSuggestionRepository)
 
 }
 

@@ -23,7 +23,7 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSubjectService(
-        subjectRepositories: Map<Class<out WatchedSubject>,SubjectRepository<WatchedSubject>>,
+        subjectRepositories: Map<Class<out WatchedSubject>,@JvmSuppressWildcards SubjectRepository<out WatchedSubject>>,
         subjectServerSource: SubjectServerSource
     ): SubjectService =
         SubjectService(subjectRepositories, subjectServerSource)
@@ -32,7 +32,7 @@ class ServiceModule {
     @Singleton
     fun getSuggestionService(
         suggestionServerSource: SuggestionServerSource,
-        suggestionRepositories:Map<Class<out Suggestion>,SuggestionRepository<Suggestion>>
+        suggestionRepositories:Map<Class<out Suggestion>,@JvmSuppressWildcards SuggestionRepository<out Suggestion>>
     ): SuggestionService = SuggestionService(suggestionServerSource, suggestionRepositories)
 
     @Provides

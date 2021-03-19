@@ -2,6 +2,7 @@ package cz.city.honest.application.model.repository.authority
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
@@ -17,10 +18,11 @@ class AuthorityRepository(
 ) : Repository<ExchangeRate>(databaseOperationProvider) {
 
     override fun insert(entity: ExchangeRate): Observable<Long> = Observable.just(
-        databaseOperationProvider.writableDatabase.insert(
+        databaseOperationProvider.writableDatabase.insertWithOnConflict(
             TABLE_NAME,
             "",
-            getContentValues(entity)
+            getContentValues(entity),
+            SQLiteDatabase.CONFLICT_REPLACE
         )
     )
 

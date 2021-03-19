@@ -3,6 +3,7 @@ package cz.city.honest.application.model.repository.subject.exchange
 import android.content.ContentValues
 import cz.city.honest.application.model.repository.suggestion.exchange.ClosedExchangePointSuggestionRepository
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.subject.SubjectRepository
@@ -19,7 +20,7 @@ import java.time.LocalDate
 
 class ExchangePointRepository(
     databaseOperationProvider: DatabaseOperationProvider,
-    suggestionRepositories: Map<Class<Suggestion>, SuggestionRepository<Suggestion>>,
+    suggestionRepositories: Map<Class<out Suggestion>, SuggestionRepository<out Suggestion>>,
     exchangeRateRepository: ExchangeRateRepository
 ) : SubjectRepository<ExchangePoint>(
     databaseOperationProvider,
@@ -28,10 +29,11 @@ class ExchangePointRepository(
 ) {
     override fun insert(entity: ExchangePoint): Observable<Long> = super.insert(entity)
         .map {
-            databaseOperationProvider.writableDatabase.insert(
+            databaseOperationProvider.writableDatabase.insertWithOnConflict(
                 TABLE_NAME,
                 "",
-                getContentValues(entity)
+                getContentValues(entity),
+                SQLiteDatabase.CONFLICT_REPLACE
             )
         }
         .flatMap { exchangeRateRepository.insert(entity.exchangePointRate) }
@@ -67,7 +69,7 @@ class ExchangePointRepository(
     private fun findExchangePoint(subjectIds: List<Long>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id integer,latitude,longitude,honesty_level,watched_to,exchange_rates_id from exchange_point where id in( ${
+                "Select id,latitude,longitude,honesty_level,watched_to,exchange_rates_id from exchange_point where id in( ${
                     mapToQueryParamSymbols(
                         subjectIds
                     )

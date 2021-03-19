@@ -2,6 +2,7 @@ package cz.city.honest.application.model.repository.subject.exchange
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
@@ -71,10 +72,11 @@ class ExchangeRateRepository (
 
 
     private fun addExchangeRates(exchangeRate: ExchangeRate) = Observable.just(
-        databaseOperationProvider.writableDatabase.insert(
+        databaseOperationProvider.writableDatabase.insertWithOnConflict(
             EXCHANGE_RATES_TABLE,
             null,
-            getExchangeRatesContentValues(exchangeRate)
+            getExchangeRatesContentValues(exchangeRate),
+            SQLiteDatabase.CONFLICT_REPLACE
         )
     )
 
@@ -93,10 +95,11 @@ class ExchangeRateRepository (
         exchangeRatesId: Long,
         rate: Rate
     ) {
-        databaseOperationProvider.writableDatabase.insert(
+        databaseOperationProvider.writableDatabase.insertWithOnConflict(
             EXCHANGE_RATE_TABLE,
             null,
-            getExchangeRateContentValues(exchangeRatesId, rate)
+            getExchangeRateContentValues(exchangeRatesId, rate),
+            SQLiteDatabase.CONFLICT_REPLACE
         )
     }
 

@@ -2,6 +2,7 @@ package cz.city.honest.application.model.repository.suggestion.exchange
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
@@ -16,10 +17,11 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     override fun insert(suggestion: ClosedExchangePointSuggestion): Observable<Long> =
         super.insert(suggestion)
             .map {
-                databaseOperationProvider.writableDatabase.insert(
+                databaseOperationProvider.writableDatabase.insertWithOnConflict(
                     TABLE_NAME,
                     "",
-                    getContentValues(suggestion)
+                    getContentValues(suggestion),
+                    SQLiteDatabase.CONFLICT_REPLACE
                 )
             }
 
