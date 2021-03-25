@@ -25,7 +25,7 @@ class ExchangeRateRepository (
     .flatMap { updateExchangeRate(entity) }
     .flatMap { updateExchangeRates(entity) }
 
-    override fun get(id: List<Long>): Flowable<ExchangeRate> = findExchangeRates(id)
+    override fun get(id: List<String>): Flowable<ExchangeRate> = findExchangeRates(id)
     .flatMap { toEntities(it) { toExchangeRate(it) } }
 
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.concat(
@@ -51,7 +51,7 @@ class ExchangeRateRepository (
 
 
 
-    private fun findExchangeRates(subjectIds: List<Long>): Flowable<Cursor> =
+    private fun findExchangeRates(subjectIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, buy, currency from exchange_rate where exchange_rates.id in( ${

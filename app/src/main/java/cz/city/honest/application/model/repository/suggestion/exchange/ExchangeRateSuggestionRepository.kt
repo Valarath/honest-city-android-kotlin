@@ -41,14 +41,14 @@ class ExchangeRateSuggestionRepository(
                 )
             }
 
-    override fun get(id: List<Long>): Flowable<ExchangeRateSuggestion> =
+    override fun get(id: List<String>): Flowable<ExchangeRateSuggestion> =
         findExchangeRateSuggestions(id).flatMap {
             toEntities(it) {
                 toExchangeRateSuggestion(it)
             }
         }
 
-    fun getForWatchedSubjects(id: List<Long>): Flowable<ExchangeRateSuggestion> =
+    fun getForWatchedSubjects(id: List<String>): Flowable<ExchangeRateSuggestion> =
         findExchangeRateSuggestionsForWatchedSubjects(id)
             .flatMap { toEntities(it) { toExchangeRateSuggestion(it) } }
 
@@ -61,7 +61,7 @@ class ExchangeRateSuggestionRepository(
             )
         }
 
-    private fun findExchangeRateSuggestions(subjectId: List<Long>): Flowable<Cursor> =
+    private fun findExchangeRateSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
@@ -69,7 +69,7 @@ class ExchangeRateSuggestionRepository(
             )
         )
 
-    private fun findExchangeRateSuggestionsForWatchedSubjects(ids: List<Long>): Flowable<Cursor> =
+    private fun findExchangeRateSuggestionsForWatchedSubjects(ids: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
@@ -78,7 +78,7 @@ class ExchangeRateSuggestionRepository(
         )
 
     private fun toExchangeRateSuggestion(cursor: Cursor): Flowable<ExchangeRateSuggestion> =
-            exchangeRateRepository.get(listOf(cursor.getLong(3)))
+            exchangeRateRepository.get(listOf(cursor.getString(3)))
             .map {
                 ExchangeRateSuggestion(
                     id = cursor.getLong(0),

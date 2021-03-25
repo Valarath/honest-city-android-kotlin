@@ -50,7 +50,7 @@ class ExchangePointRepository(
             }
             .flatMap { exchangeRateRepository.update(entity.exchangePointRate) }
 
-    override fun get(id: List<Long>): Flowable<ExchangePoint> =
+    override fun get(id: List<String>): Flowable<ExchangePoint> =
         findExchangePoint(id)
             .flatMap { toEntities(it) { toExchangePoint(it) } }
 
@@ -66,7 +66,7 @@ class ExchangePointRepository(
         )
     }
 
-    private fun findExchangePoint(subjectIds: List<Long>): Flowable<Cursor> =
+    private fun findExchangePoint(subjectIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id,latitude,longitude,honesty_level,watched_to,exchange_rates_id from exchange_point where id in( ${
@@ -87,7 +87,7 @@ class ExchangePointRepository(
         )
 
     private fun toExchangePoint(cursor: Cursor): Flowable<ExchangePoint> =
-            exchangeRateRepository.get(listOf(cursor.getLong(5)))
+            exchangeRateRepository.get(listOf(cursor.getString(5)))
             .map { toExchangePoint(cursor, it) }
             .flatMap { addSuggestions(it) }
 

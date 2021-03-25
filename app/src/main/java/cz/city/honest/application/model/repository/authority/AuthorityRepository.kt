@@ -35,7 +35,7 @@ class AuthorityRepository(
         )
     )
 
-    override fun get(id: List<Long>): Flowable<ExchangeRate> =
+    override fun get(id: List<String>): Flowable<ExchangeRate> =
         Flowable.just(findAuthorityExchangeRates())
             .flatMap { exchangeRateRepository.get(getAsIdsList(it)) }
 

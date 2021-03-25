@@ -16,7 +16,7 @@ class UserRepository(operationProvider: DatabaseOperationProvider):Repository<Us
         TODO("Not yet implemented")
     }
 
-    override fun get(id: List<Long>): Flowable<User> {
+    override fun get(id: List<String>): Flowable<User> {
         TODO("Not yet implemented")
     }
 

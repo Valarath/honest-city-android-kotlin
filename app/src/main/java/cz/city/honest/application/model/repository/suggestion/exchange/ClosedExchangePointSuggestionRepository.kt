@@ -36,11 +36,11 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
                 )
             }
 
-    override fun get(id: List<Long>): Flowable<ClosedExchangePointSuggestion> =
+    override fun get(id: List<String>): Flowable<ClosedExchangePointSuggestion> =
         findClosedExchangePointSuggestions(id)
             .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
 
-    fun getForWatchedSubjects(id: List<Long>): Flowable<ClosedExchangePointSuggestion> =
+    fun getForWatchedSubjects(id: List<String>): Flowable<ClosedExchangePointSuggestion> =
         findClosedExchangePointSuggestionsForWatchedSubjects(id)
             .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
 
@@ -53,7 +53,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
             )
         }
 
-    private fun findClosedExchangePointSuggestions(subjectId: List<Long>): Flowable<Cursor> =
+    private fun findClosedExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, state, votes, watched_subject_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
@@ -61,7 +61,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
             )
         )
 
-    private fun findClosedExchangePointSuggestionsForWatchedSubjects(exchangePointIds: List<Long>): Flowable<Cursor> =
+    private fun findClosedExchangePointSuggestionsForWatchedSubjects(exchangePointIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, state, votes, exchange_point_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(exchangePointIds)})",

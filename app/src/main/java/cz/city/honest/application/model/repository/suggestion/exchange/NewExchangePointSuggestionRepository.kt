@@ -39,7 +39,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
                 )
             }
 
-    override fun get(id: List<Long>): Flowable<NewExchangePointSuggestion> =
+    override fun get(id: List<String>): Flowable<NewExchangePointSuggestion> =
         findClosedExchangePointSuggestions(id).flatMap {
             toEntities(it) {
                 toNewExchangePointSuggestion(it)
@@ -55,7 +55,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             )
         }
 
-    private fun findClosedExchangePointSuggestions(subjectId: List<Long>): Flowable<Cursor> =
+    private fun findClosedExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, state, votes, longitude, latitude, suggestion_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",

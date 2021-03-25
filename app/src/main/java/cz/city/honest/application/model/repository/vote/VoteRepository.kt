@@ -15,13 +15,14 @@ import cz.city.honest.mobile.model.dto.Vote
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
-class VoteRepository(
+abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     operationProvider: DatabaseOperationProvider,
+    val suggestionTypeClass: Class<SUGGESTION_TYPE>,
     val suggestionRepositories: Map<Class<out Suggestion>, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
 ) :
-    Repository<Vote>(operationProvider) {
+    Repository<VOTE_ENTITY>(operationProvider) {
 
-    override fun insert(entity: Vote): Observable<Long> = Observable.just(
+    override fun insert(entity: VOTE_ENTITY): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
             TABLE_NAME,
             "",
@@ -32,11 +33,11 @@ class VoteRepository(
         .flatMap { updateSuggestion(entity) }
         .map { 0L }
 
-    private fun updateSuggestion(entity: Vote) =
+    private fun updateSuggestion(entity: VOTE_ENTITY) =
         RepositoryProvider.provide(suggestionRepositories, entity.suggestion.javaClass)
             ?.update(entity.suggestion)
 
-    override fun update(entity: Vote): Observable<Int> =
+    override fun update(entity: VOTE_ENTITY): Observable<Int> =
         Observable.just(
             databaseOperationProvider.writableDatabase.update(
                 ExchangePointRepository.TABLE_NAME,
@@ -47,32 +48,48 @@ class VoteRepository(
         )
             .flatMap { updateSuggestion(entity) }
 
-    override fun get(id: List<Long>): Flowable<Vote> {
-        TODO("Not yet implemented")
-    }
+    protected fun getUserId(userIds: List<String>):String = userIds.first()
 
-    private fun findVotes(subjectIds: List<Long>): Flowable<Cursor> =
+    protected fun getVoteUserSuggestions(
+        userIds: List<String>
+    ): Flowable<SUGGESTION_TYPE> = findVotes(userIds)
+        .map { getAllSuggestionIds(it) }
+        .concatMap { getSuggestionTypeRepository().get(it) }
+
+    private fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
+        suggestionRepositories[suggestionTypeClass]
+            .run {this as SuggestionRepository<SUGGESTION_TYPE> }
+
+    private fun findVotes(userIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select user_id, suggestion_id from user_vote where user_id in( ${
                     mapToQueryParamSymbols(
-                        subjectIds
+                        userIds
                     )
                 })",
-                arrayOf(mapToQueryParamVariable(subjectIds))
+                arrayOf(mapToQueryParamVariable(userIds))
             )
         )
 
-    override fun delete(entity: Vote): Observable<Int> = Observable.just(
+    protected fun getAllSuggestionIds(cursor: Cursor): List<String> =
+        mutableListOf<String>()
+            .apply {
+                while (cursor.moveToNext())
+                    add(cursor.getString(1))
+            }
+            .run { this.toList() }
+
+    override fun delete(entity: VOTE_ENTITY): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             SubjectRepository.TABLE_NAME,
             "where user_id = ? && suggestion_id = ?",
             arrayOf(entity.userId, entity.suggestion.id.toString())
         )
     )
-        .flatMap {updateSuggestion(entity)  }
+        .flatMap { updateSuggestion(entity) }
 
-    private fun getContentValues(entity: Vote): ContentValues = ContentValues().apply {
+    private fun getContentValues(entity: VOTE_ENTITY): ContentValues = ContentValues().apply {
         put("user_id", entity.userId)
         put("suggestion_id", entity.suggestion.id)
     }
@@ -83,3 +100,4 @@ class VoteRepository(
     }
 
 }
+

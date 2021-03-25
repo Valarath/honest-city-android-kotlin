@@ -9,7 +9,7 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
 
     abstract fun insert(entity: ENTITY): Observable<Long>
     abstract fun update(entity: ENTITY): Observable<Int>
-    abstract fun get(id:List<Long>):Flowable<ENTITY>
+    abstract fun get(id:List<String>):Flowable<ENTITY>
     abstract fun delete(entity: ENTITY): Observable<Int>
 
     fun insertList(entities: List<ENTITY>) =
