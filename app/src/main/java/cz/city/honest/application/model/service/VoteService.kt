@@ -21,4 +21,14 @@ class VoteService(
             .toObservable()
             .flatMap { voteServerSource.upVote(it) }
 
+    fun vote(vote:Vote) =
+        RepositoryProvider
+            .provide(voteRepositories,vote::class.java)
+            .insert(vote)
+
+    fun delete(vote:Vote)=
+        RepositoryProvider
+            .provide(voteRepositories,vote::class.java)
+            .delete(vote)
+
 }
