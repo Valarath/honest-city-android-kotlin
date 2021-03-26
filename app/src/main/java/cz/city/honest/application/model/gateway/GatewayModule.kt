@@ -20,6 +20,8 @@ class GatewayModule (){
     fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
         .baseUrl(connectionProperties.baseUrl)
+        //.addConverterFactory(GsonConverterFactory.create())
+        //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
         .build()
 
 

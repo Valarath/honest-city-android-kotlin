@@ -1,14 +1,18 @@
 package cz.city.honest.application.model.gateway.server
 
-import cz.city.honest.application.model.gateway.PostUpVoteRequest
-import cz.city.honest.application.model.gateway.VoteGateway
-import reactor.core.publisher.Mono
+import cz.city.honest.mobile.model.dto.Vote
+import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.POST
 
-interface VoteServerSource : VoteGateway {
+interface VoteServerSource  {
 
     @POST("/up-vote")
-    override fun upVote(request: PostUpVoteRequest): Mono<Unit>
+    fun upVote(request: PostUpVoteRequest): Observable<Unit>
 
 }
+
+data class PostUpVoteRequest(
+    val votes: List<Vote>,
+    val userId: String
+)
 
