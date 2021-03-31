@@ -22,10 +22,9 @@ class DatabaseOperationProvider constructor(
     override fun onCreate(database: SQLiteDatabase) {
         createExchangeRateTable(database)
         createAuthorityTable(database)
-        createUserTable(database)
         createSubjectTables(database)
         createSuggestionsTables(database)
-        createUserVotesTable(database)
+        createUserTables(database)
     }
 
     private fun createSubjectTables(database: SQLiteDatabase) {
@@ -75,6 +74,16 @@ class DatabaseOperationProvider constructor(
 
     private fun createSuggestionTable(database: SQLiteDatabase) {
         database.execSQL("Create table IF NOT EXISTS suggestion(id varchar primary key on conflict replace, status text,votes integer)")
+    }
+
+    private fun createUserSuggestionTable(database: SQLiteDatabase){
+        database.execSQL("Create table if not exists user_suggestion(user_id varchar not null, suggestion_id varchar not null, processed integer, type varchar, mark_as varchar, foreign key(suggestion_id) references suggestion(suggestion_id), foreign key(user_id) references user(user_id))")
+    }
+
+    private fun createUserTables(database: SQLiteDatabase){
+        createUserTable(database)
+        createUserVotesTable(database)
+        createUserSuggestionTable(database)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

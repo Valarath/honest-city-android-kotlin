@@ -39,6 +39,10 @@ class AuthorityRepository(
         Flowable.just(findAuthorityExchangeRates())
             .flatMap { exchangeRateRepository.get(getAsIdsList(it)) }
 
+    fun get(): Flowable<ExchangeRate> =
+        Flowable.just(findAuthorityExchangeRates())
+            .flatMap { exchangeRateRepository.get(getAsIdsList(it)) }
+
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             ExchangePointRepository.TABLE_NAME,
@@ -47,7 +51,15 @@ class AuthorityRepository(
         )
     )
 
-    private fun getAsIdsList(cursor: Cursor) = listOf(cursor.getLong(0))
+    fun delete(): Observable<Int> = Observable.just(
+        databaseOperationProvider.writableDatabase.delete(
+            ExchangePointRepository.TABLE_NAME,
+            null,
+            null
+        )
+    )
+
+    private fun getAsIdsList(cursor: Cursor) = listOf(cursor.getString(0))
 
     private fun getContentValues(entity: ExchangeRate) =
         ContentValues().apply {

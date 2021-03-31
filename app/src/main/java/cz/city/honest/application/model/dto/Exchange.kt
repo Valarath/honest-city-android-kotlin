@@ -17,7 +17,7 @@ data class ExchangePointRateValues(override val buy: Double, val sell: Double) :
     ExchangeRateValues(buy)
 
 data class ExchangePoint(
-    override val id: Long,
+    override val id: String,
     override val watchedTo: LocalDate,
     override val honestyStatus: HonestyStatus,
     override val position: Position,

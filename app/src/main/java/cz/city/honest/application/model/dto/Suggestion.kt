@@ -2,6 +2,7 @@ package cz.city.honest.application.model.dto
 
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import cz.city.honest.mobile.model.dto.Position
+import cz.city.honest.mobile.model.dto.User
 import java.io.Serializable
 
 abstract class Suggestion(
@@ -38,3 +39,11 @@ class ClosedExchangePointSuggestion(
     val watchedSubjectId: Long,
     val suggestionId:Long
 ) : Suggestion(suggestionId, state, votes)
+
+data class UserSuggestion(val user: User, val suggestion: Suggestion, val metadata: UserSuggestionMetadata )
+
+data class UserSuggestionMetadata(val processed: Boolean, val markAs: UserSuggestionStateMarking)
+
+enum class UserSuggestionStateMarking{
+    NEW,DELETE
+}

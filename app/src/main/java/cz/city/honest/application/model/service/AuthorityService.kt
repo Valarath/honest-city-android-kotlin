@@ -14,7 +14,10 @@ class AuthorityService(
     val authorityServerSource: AuthorityServerSource
 ) : BaseService(), Updatable {
 
-    fun getAuthority(): Observable<ExchangeRate> = Observable.just(getMockExchangeRate())
+    fun getAuthority(): Observable<ExchangeRate> =
+        authorityRepository
+            .get()
+            .toObservable()
 
     private fun getMockExchangeRate(): ExchangeRate = ExchangeRate(
         25,
@@ -26,11 +29,9 @@ class AuthorityService(
         )
     )
 
-    override fun update(): Observable<Unit> {
-       /* authorityServerSource.getRate()
-            .map { authorityRepository. }*/
-        TODO("Not yet implemented")
-    }
-
-
+    override fun update(): Observable<Unit> =
+        authorityRepository.delete()
+            .flatMap { authorityServerSource.getRate()}
+            .flatMap { authorityRepository.insert(it.exchangeRate)}
+            .map { }
 }

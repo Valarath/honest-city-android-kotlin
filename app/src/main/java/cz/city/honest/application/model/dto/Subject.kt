@@ -13,7 +13,7 @@ enum class HonestyStatus(private val nextLevelOfHonesty: HonestyStatus?) : Seria
 }
 
 open class WatchedSubject(
-    open val id: Long,
+    open val id: String,
     open val watchedTo: LocalDate,
     open val honestyStatus: HonestyStatus,
     open val suggestions: List<Suggestion>
@@ -22,7 +22,7 @@ open class WatchedSubject(
 data class Position(val longitude: Double, val latitude: Double) : Serializable
 
 open class ImmobileWatchedSubject(
-    override val id: Long,
+    override val id: String,
     override val watchedTo: LocalDate,
     override val honestyStatus: HonestyStatus,
     open val position: Position,

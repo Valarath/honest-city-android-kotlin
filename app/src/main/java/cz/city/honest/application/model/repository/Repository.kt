@@ -18,6 +18,9 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
     fun updateList(entities: List<ENTITY>) =
         processListInTransaction(entities, ::update)
 
+    fun deleteList(entities: List<ENTITY>) =
+        processListInTransaction(entities, ::delete)
+
     protected fun toEntities(
         cursor: Cursor, toEntity: (cursor: Cursor) -> Flowable<ENTITY>
     ): Flowable<ENTITY> = Flowable.just(cursor)
@@ -37,4 +40,5 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
     protected fun mapToQueryParamVariable(objects:List<*>) = objects.joinToString()
 }
 
+fun Boolean.toInt() = if (this) 1 else 0
 fun Int.toBoolean():Boolean= this==1

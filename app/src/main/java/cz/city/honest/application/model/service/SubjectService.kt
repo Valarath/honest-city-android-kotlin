@@ -1,13 +1,19 @@
 package cz.city.honest.application.model.service
 
+import cz.city.honest.application.model.gateway.server.GetSubjectsRequest
 import cz.city.honest.application.model.gateway.server.SubjectServerSource
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.mobile.model.dto.*
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
 
-class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,SubjectRepository<out WatchedSubject>>, val subjectServerSource: SubjectServerSource): Updatable {
+class SubjectService(
+    val subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>,
+    val subjectServerSource: SubjectServerSource,
+    val positionProvider: PositionProvider
+) : Updatable {
 
     fun getSubjects(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
         Observable.just(mutableMapOf<Class<out WatchedSubject>, List<WatchedSubject>>())
@@ -15,14 +21,16 @@ class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,Subj
             .map { addFakeSubject(it) }
 
     private fun addSubjects(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> =
-        subjects.entries
-            .forEach { RepositoryProvider.provide(subjectRepositories,it.key)?.insertList(it.value) }
-            .run { subjects }
+        Flowable.fromIterable(subjectRepositories.values)
+            .flatMap { it.get() }
+            .toList ()
+            .toObservable()
+            .toMap {}
 
     private fun addFakeSubject(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> {
         subjects[ExchangePoint::class.java] = listOf(
             ExchangePoint(
-                21, LocalDate.now(), HonestyStatus.DISHONEST,
+                "21", LocalDate.now(), HonestyStatus.DISHONEST,
                 Position(14.423777, 50.084344),
                 mutableListOf(),
                 ExchangeRate(
@@ -40,9 +48,15 @@ class SubjectService(val subjectRepositories: Map<Class<out WatchedSubject>,Subj
         return subjects
     }
 
-    override fun update(): Observable<Unit> {
+    override fun update(): Observable<Unit> =
+        subjectServerSource.getSubjectsInArea(GetSubjectsRequest(positionProvider.provide()))
+            .map { addSubjects(it.subjects) }
+            .map { }
 
-        TODO("Not yet implemented")
-    }
+}
+
+interface PositionProvider{
+
+    fun provide():Position
 
 }

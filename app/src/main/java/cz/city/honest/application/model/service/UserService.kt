@@ -9,8 +9,6 @@ class UserService( val userServerSource: UserServerSource, val userRepository: U
 
     fun getUserData(): Observable<User> = Observable.just(User(66, "blbštejn", 82))
 
-
     override fun update(): Observable<Unit> = userRepository.update()
-
 
 }

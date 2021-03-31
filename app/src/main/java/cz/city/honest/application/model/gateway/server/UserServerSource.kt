@@ -13,7 +13,7 @@ interface UserServerSource : UserGateway {
 }
 
 data class GetUserSuggestionsRequest(
-    val userId: Long
+    val userId: String
 )
 
 data class GetUserSuggestionsResponse(

@@ -20,7 +20,7 @@ import java.util.*
 
 abstract class SubjectRepository<WATCHED_SUBJECT:WatchedSubject>(
     databaseOperationProvider: DatabaseOperationProvider,
-    protected val suggestionRepositories:Map<Class<out Suggestion>,SuggestionRepository<out Suggestion>>,
+    protected val suggestionRepositories:Map<String,SuggestionRepository<out Suggestion>>,
     protected val exchangeRateRepository: ExchangeRateRepository
 ) : Repository<WATCHED_SUBJECT>(databaseOperationProvider){
 
@@ -34,6 +34,8 @@ abstract class SubjectRepository<WATCHED_SUBJECT:WatchedSubject>(
         )
     )
         .map { insertSuggestions(entity.suggestions).run { it } }
+
+    abstract fun get():Flowable<WATCHED_SUBJECT>
 
     private fun insertSuggestions(suggestions:List<Suggestion>)=suggestions.forEach { insertSuggestion(it) }
 

@@ -18,5 +18,5 @@ data class GetSubjectsRequest(
 )
 
 data class GetSubjectsResponse(
-    val subjects: Map<Class<out WatchedSubject>, List<WatchedSubject>>
+    val subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>
 )

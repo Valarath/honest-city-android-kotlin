@@ -18,7 +18,7 @@ import io.reactivex.rxjava3.core.Observable
 abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     operationProvider: DatabaseOperationProvider,
     val suggestionTypeClass: Class<SUGGESTION_TYPE>,
-    val suggestionRepositories: Map<Class<out Suggestion>, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
 ) :
     Repository<VOTE_ENTITY>(operationProvider) {
 
@@ -57,7 +57,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
         .concatMap { getSuggestionTypeRepository().get(it) }
 
     private fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
-        suggestionRepositories[suggestionTypeClass]
+        suggestionRepositories[suggestionTypeClass.simpleName]
             .run {this as SuggestionRepository<SUGGESTION_TYPE> }
 
     private fun findVotes(userIds: List<String>): Flowable<Cursor> =

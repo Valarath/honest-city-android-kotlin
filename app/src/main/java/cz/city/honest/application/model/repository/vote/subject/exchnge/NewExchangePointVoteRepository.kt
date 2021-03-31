@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.core.Flowable
 class NewExchangePointVoteRepository (
     operationProvider: DatabaseOperationProvider,
     suggestionTypeClass: Class<NewExchangePointSuggestion>,
-    suggestionRepositories: Map<Class<out Suggestion>, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
 ) : VoteRepository<VoteForNewExchangePoint, NewExchangePointSuggestion>(
     operationProvider, suggestionTypeClass, suggestionRepositories
 ) {

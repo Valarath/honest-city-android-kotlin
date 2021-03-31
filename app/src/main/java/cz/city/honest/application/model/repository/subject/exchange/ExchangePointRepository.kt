@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 class ExchangePointRepository(
     databaseOperationProvider: DatabaseOperationProvider,
-    suggestionRepositories: Map<Class<out Suggestion>, SuggestionRepository<out Suggestion>>,
+    suggestionRepositories: Map<String, SuggestionRepository<out Suggestion>>,
     exchangeRateRepository: ExchangeRateRepository
 ) : SubjectRepository<ExchangePoint>(
     databaseOperationProvider,
@@ -54,7 +54,7 @@ class ExchangePointRepository(
         findExchangePoint(id)
             .flatMap { toEntities(it) { toExchangePoint(it) } }
 
-    fun get(): Flowable<ExchangePoint> =
+    override fun get(): Flowable<ExchangePoint> =
         findExchangePoint()
             .flatMap { toEntities(it) { toExchangePoint(it) } }
 
@@ -95,7 +95,7 @@ class ExchangePointRepository(
         cursor: Cursor,
         exchangeRate: ExchangeRate
     ) = ExchangePoint(
-        id = cursor.getLong(0),
+        id = cursor.getString(0),
         position = Position(cursor.getDouble(2), cursor.getDouble(1)),
         honestyStatus = HonestyStatus.valueOf(cursor.getString(3)),
         image = "asfa".toByteArray(),
@@ -104,15 +104,15 @@ class ExchangePointRepository(
         watchedTo = LocalDate.parse(cursor.getString(4))
     )
 
-    private fun getClosedExchangePointSuggestion(id: Long) =
+    private fun getClosedExchangePointSuggestion(id: String) =
         getSuggestionRepository(ClosedExchangePointSuggestionRepository::class.java)
             .getForWatchedSubjects(listOf(id))
 
-    private fun getExchangeRateSuggestion(id: Long) =
+    private fun getExchangeRateSuggestion(id: String) =
         getSuggestionRepository(ExchangeRateSuggestionRepository::class.java)
             .getForWatchedSubjects(listOf(id))
 
-    private fun getSuggestions(id: Long) =
+    private fun getSuggestions(id: String) =
         Flowable.concat(getClosedExchangePointSuggestion(id), getExchangeRateSuggestion(id))
 
     private fun addSuggestions(subject: ExchangePoint) =

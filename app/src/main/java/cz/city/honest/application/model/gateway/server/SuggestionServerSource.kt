@@ -2,16 +2,17 @@ package cz.city.honest.application.model.gateway.server
 
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.SuggestionGateway
+import io.reactivex.rxjava3.core.Observable
 import reactor.core.publisher.Mono
 import retrofit2.http.POST
 
 interface SuggestionServerSource : SuggestionGateway {
 
     @POST("/remove")
-    fun remove(request: RemoveSuggestionRequest): Mono<Unit>
+    fun remove(request: RemoveSuggestionRequest): Observable<Unit>
 
     @POST("/suggest")
-    fun suggest(request: PostSuggestRequest): Mono<Unit>
+    fun suggest(request: PostSuggestRequest): Observable<Unit>
 }
 
 
