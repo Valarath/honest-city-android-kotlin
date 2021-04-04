@@ -69,7 +69,7 @@ class ExchangePointRepository(
     private fun findExchangePoint(subjectIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id,latitude,longitude,honesty_level,watched_to,exchange_rates_id from exchange_point where id in( ${
+                "Select exchange_point.id,watched_subject_id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where id in( ${
                     mapToQueryParamSymbols(
                         subjectIds
                     )
@@ -81,7 +81,7 @@ class ExchangePointRepository(
     private fun findExchangePoint(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id integer,latitude,longitude,honesty_level,watched_to,exchange_rates_id from exchange_point",
+                "Select exchange_point.id,watched_subject_id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id",
                 arrayOf()
             )
         )
