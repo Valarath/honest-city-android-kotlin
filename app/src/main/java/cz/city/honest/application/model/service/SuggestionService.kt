@@ -4,6 +4,7 @@ import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.gateway.server.PostSuggestRequest
 import cz.city.honest.application.model.gateway.server.RemoveSuggestionRequest
 import cz.city.honest.application.model.gateway.server.SuggestionServerSource
+import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
@@ -11,11 +12,7 @@ import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 import java.util.*
 
-class SuggestionService(
-    val suggestionServerSource: SuggestionServerSource,
-    val userSuggestionRepository: UserSuggestionRepository,
-    val userService: UserService
-) : Updatable {
+class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>) {
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
@@ -57,38 +54,8 @@ class SuggestionService(
     fun getSuggestionsForUser(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
 
-    override fun update(): Observable<Unit> =
-        userService.getUserData()
-            .concatMap { removeSuggestions(it);suggestSuggestions(it) }
-
-    private fun removeSuggestions(user: User): Observable<Unit> =
-        userSuggestionRepository.getForDelete(listOf(user.id))
-            .toList()
-            .toObservable()
-            .flatMap { removeSuggestions(it) }
-            .map {}
-
-    private fun removeSuggestions(userSuggestions: MutableList<UserSuggestion>) =
-        Flowable.fromIterable(userSuggestions)
-            .map { it.suggestion }
-            .toList()
-            .toObservable()
-            .flatMap { suggestionServerSource.remove(RemoveSuggestionRequest(it)) }
-            .flatMap { userSuggestionRepository.deleteList(userSuggestions) }
-
-    private fun suggestSuggestions(user: User): Observable<Unit> =
-        userSuggestionRepository.getNew(listOf(user.id))
-            .toList()
-            .toObservable()
-            .flatMap { suggestSuggestions(it) }
-            .map {}
-
-    private fun suggestSuggestions(userSuggestions: MutableList<UserSuggestion>) =
-        Flowable.fromIterable(userSuggestions)
-            .map { it.suggestion }
-            .toList()
-            .toObservable()
-            .flatMap { suggestionServerSource.suggest(PostSuggestRequest(it)) }
-            .flatMap { userSuggestionRepository.updateList(userSuggestions) }
+    fun update(suggestion: Suggestion) =
+        RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)
+            .update(suggestion)
 
 }

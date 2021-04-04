@@ -27,7 +27,7 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSubjectService(
-        subjectRepositories: Map<String,@JvmSuppressWildcards SubjectRepository<out WatchedSubject>>,
+        subjectRepositories: Map<String, @JvmSuppressWildcards SubjectRepository<out WatchedSubject>>,
         subjectServerSource: SubjectServerSource,
         positionProvider: PositionProvider
     ): SubjectService =
@@ -36,17 +36,24 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSuggestionService(
+        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    ): SuggestionService = SuggestionService(suggestionRepositories)
+
+    @Provides
+    @Singleton
+    fun getUserSuggestionService(
         userSuggestionRepository: UserSuggestionRepository,
-        userService: UserService,
+        userProvider: UserProvider,
         suggestionServerSource: SuggestionServerSource
-    ): SuggestionService = SuggestionService(suggestionServerSource, userSuggestionRepository, userService)
+    ): UserSuggestionService =
+        UserSuggestionService(suggestionServerSource, userSuggestionRepository, userProvider)
 
     @Provides
     @Singleton
     fun getVoteService(
         voteServerSource: VoteServerSource,
         voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>
-    ): VoteService = VoteService( voteServerSource, voteRepositories)
+    ): VoteService = VoteService(voteServerSource, voteRepositories)
 
     @Provides
     @Singleton
@@ -54,7 +61,7 @@ class ServiceModule {
         userServerSource: UserServerSource,
         userProvider: UserProvider,
         userSuggestionRepository: UserSuggestionRepository
-    ): UserService = UserService( userServerSource,userProvider, userSuggestionRepository)
+    ): UserService = UserService(userServerSource, userProvider, userSuggestionRepository)
 
     @Provides
     @Singleton
