@@ -25,8 +25,11 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
         cursor: Cursor, toEntity: (cursor: Cursor) -> Flowable<ENTITY>
     ): Flowable<ENTITY> = Flowable.just(cursor)
         .repeatUntil { cursor.moveToNext() }
+        .filter { isCursorNotEmpty(it) }
         .flatMap { toEntity(it) }
         .doFinally { cursor.close() }
+
+    private fun isCursorNotEmpty(it: Cursor) = it.count > 0
 
     protected fun processListInTransaction(
         list: List<ENTITY>,
