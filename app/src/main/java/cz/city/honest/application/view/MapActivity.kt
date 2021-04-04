@@ -80,7 +80,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             // scheduleJobs(this)
             return
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
         val scheduleJobs = scheduleJobs(this)
         println(scheduleJobs)
     }
@@ -98,7 +98,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         map = googleMap
         map.setOnMarkerClickListener(MapClickListener(this))
         mapViewModel.watchedSubjects.observe(this, Observer {
-            it.values.forEach { it.forEach { showOnMap(it) } }
+             it.forEach { showOnMap(it) }
         })
         addUserDetailButtonBehavior()
     }

@@ -68,9 +68,8 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
     private fun decorate(view: View, context: Context, suggestion: Suggestion) =
         ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass).decorate(view, context,suggestion)
 
-    private fun getWatchedSubject(): Long =
-        (activity!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as WatchedSubject)
-            .id
+    private fun getWatchedSubject(): String =
+        (activity!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as WatchedSubject).id
 
     private fun getTableLayout(root: View): TableLayout =
         root.findViewById(R.id.suggestions_holder)

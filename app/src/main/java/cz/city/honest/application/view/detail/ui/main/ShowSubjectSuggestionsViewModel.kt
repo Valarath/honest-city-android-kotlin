@@ -8,5 +8,5 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
     var suggestionService: SuggestionService
 ) : ScheduledViewModel(){
 
-    fun getSuggestionsForSubject(subjectId:Long) = suggestionService.getSuggestionsForSubject(subjectId)
+    fun getSuggestionsForSubject(subjectId:String) = suggestionService.getSuggestionsForSubject(subjectId)
 }

@@ -66,11 +66,11 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun toNewExchangePointSuggestion(cursor: Cursor): Flowable<NewExchangePointSuggestion> =
         Flowable.just(
             NewExchangePointSuggestion(
-                id = cursor.getLong(0),
+                id = cursor.getString(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
                 position = Position(cursor.getDouble(3), cursor.getDouble(4)),
-                suggestionId = cursor.getLong(5)
+                suggestionId = cursor.getString(5)
             )
         )
 

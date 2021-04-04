@@ -72,11 +72,11 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun toCloseExchangePointSuggestion(cursor: Cursor): Flowable<ClosedExchangePointSuggestion> =
         Flowable.just(
             ClosedExchangePointSuggestion(
-                id = cursor.getLong(0),
+                id = cursor.getString(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
-                watchedSubjectId = cursor.getLong(3),
-                suggestionId = cursor.getLong(4)
+                watchedSubjectId = cursor.getString(3),
+                suggestionId = cursor.getString(4)
             )
         )
 

@@ -15,17 +15,9 @@ class SubjectService(
     val positionProvider: PositionProvider
 ) : Updatable {
 
-    fun getSubjects(): Observable<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
-        Observable.just(mutableMapOf<Class<out WatchedSubject>, List<WatchedSubject>>())
-            //.map { addSubjects(it) }
-            .map { addFakeSubject(it) }
-
-    private fun addSubjects(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> =
+    fun getSubjects():  Flowable<out WatchedSubject> =
         Flowable.fromIterable(subjectRepositories.values)
             .flatMap { it.get() }
-            .toList ()
-            .toObservable()
-            .toMap {}
 
     private fun addFakeSubject(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> {
         subjects[ExchangePoint::class.java] = listOf(
@@ -49,14 +41,16 @@ class SubjectService(
     }
 
     override fun update(): Observable<Unit> =
-        subjectServerSource.getSubjectsInArea(GetSubjectsRequest(positionProvider.provide()))
-            .map { addSubjects(it.subjects) }
-            .map { }
+        positionProvider.provide()
+            .flatMap { subjectServerSource.getSubjectsInArea(GetSubjectsRequest(it))}
+            .flatMap {Observable.fromIterable( it.subjects.entries)}
+            .map { RepositoryProvider.provide(subjectRepositories,it.key).insertList(it.value)}
+            .map {  }
 
 }
 
 interface PositionProvider{
 
-    fun provide():Position
+    fun provide():Observable<Position>
 
 }

@@ -9,12 +9,11 @@ class MapViewModel @Inject constructor(
     subjectService: SubjectService
 ) : ScheduledViewModel() {
 
-    val watchedSubjects: MutableLiveData<Map<Class<out WatchedSubject>, List<WatchedSubject>>> =
-        MutableLiveData()
+    val watchedSubjects: MutableLiveData< List<WatchedSubject>> = MutableLiveData()
 
     init {
         schedule {
-            subjectService.getSubjects().subscribe {
+            subjectService.getSubjects().toList().toObservable().subscribe {
                 watchedSubjects.postValue(it)
             }
         }

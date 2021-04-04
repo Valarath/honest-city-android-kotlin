@@ -9,6 +9,7 @@ import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
+import java.util.*
 
 class SuggestionService(
     val suggestionServerSource: SuggestionServerSource,
@@ -16,26 +17,30 @@ class SuggestionService(
     val userService: UserService
 ) : Updatable {
 
-    fun getSuggestionsForSubject(id: Long): Observable<Suggestion> =
+    fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
 
-    private fun getMockSuggestions(id: Long): List<Suggestion> {
+    private fun getMockSuggestions(id: String): List<Suggestion> {
         return listOf(
             ClosedExchangePointSuggestion(
-                Long.MAX_VALUE, State.IN_PROGRESS, 5, id, Long.MAX_VALUE
+                UUID.randomUUID().toString(),
+                State.IN_PROGRESS,
+                5,
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString()
             ),
             NewExchangePointSuggestion(
-                55,
+                UUID.randomUUID().toString(),
                 state = State.DECLINED,
                 votes = 6,
                 position = Position(55.0, 77.0),
-                suggestionId = 55
+                suggestionId = UUID.randomUUID().toString()
             ),
             ExchangeRateSuggestion(
-                Long.MIN_VALUE,
+                UUID.randomUUID().toString(),
                 state = State.ACCEPTED,
                 votes = 10,
-                watchedSubjectId = id,
+                watchedSubjectId = UUID.randomUUID().toString(),
                 suggestedExchangeRate = ExchangeRate(
                     55,
                     Watched(LocalDate.now(), LocalDate.now()),
@@ -44,12 +49,12 @@ class SuggestionService(
                         Rate("USD", ExchangeRateValues(22.0))
                     )
                 ),
-                suggestionId = Long.MAX_VALUE
+                suggestionId = UUID.randomUUID().toString()
             )
         )
     }
 
-    fun getSuggestionsForUser(id: Long): Observable<Suggestion> =
+    fun getSuggestionsForUser(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
 
     override fun update(): Observable<Unit> =

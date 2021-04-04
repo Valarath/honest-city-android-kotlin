@@ -10,7 +10,7 @@ import io.reactivex.rxjava3.core.Observable
 
 class VoteService(
     val voteServerSource: VoteServerSource,
-    val voteRepositories: Map<Class<out Vote>, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>
+    val voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>
 ) : Updatable {
 
     override fun update(): Observable<Unit> =

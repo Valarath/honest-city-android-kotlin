@@ -81,12 +81,12 @@ class ExchangeRateSuggestionRepository(
             exchangeRateRepository.get(listOf(cursor.getString(3)))
             .map {
                 ExchangeRateSuggestion(
-                    id = cursor.getLong(0),
+                    id = cursor.getString(0),
                     state = State.valueOf(cursor.getString(1)),
                     votes = cursor.getInt(2),
                     suggestedExchangeRate = it,
-                    watchedSubjectId = cursor.getLong(4),
-                    suggestionId = cursor.getLong(5)
+                    watchedSubjectId = cursor.getString(4),
+                    suggestionId = cursor.getString(5)
                 )
             }
 
