@@ -29,7 +29,7 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
         .flatMap { toEntity(it) }
         .doFinally { cursor.close() }
 
-    private fun isCursorNotEmpty(it: Cursor) = it.count > 0
+    protected fun isCursorNotEmpty(it: Cursor) = it.count > 0
 
     protected fun processListInTransaction(
         list: List<ENTITY>,

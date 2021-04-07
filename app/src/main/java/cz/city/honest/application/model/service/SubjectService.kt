@@ -17,10 +17,10 @@ class SubjectService(
 
     fun getSubjects():  Flowable<out WatchedSubject> =
         Flowable.fromIterable(subjectRepositories.values)
-            .flatMap { it.get() }
+            .map { addFakeSubject() }
+            //.flatMap { it.get() }
 
-    private fun addFakeSubject(subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>): MutableMap<Class<out WatchedSubject>, List<WatchedSubject>> {
-        subjects[ExchangePoint::class.java] = listOf(
+    private fun addFakeSubject()  =
             ExchangePoint(
                 "21", LocalDate.now(), HonestyStatus.DISHONEST,
                 Position(14.423777, 50.084344),
@@ -36,9 +36,6 @@ class SubjectService(
                 ),
                 "aaa".toByteArray()
             )
-        )
-        return subjects
-    }
 
     override fun update(): Observable<Unit> =
         positionProvider.provide()

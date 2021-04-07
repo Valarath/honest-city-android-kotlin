@@ -9,7 +9,9 @@ abstract class Suggestion(
     open val id: String,
     open val state: State,
     open val votes: Int
-) : Serializable
+) : Serializable {
+    fun increaseVotes() = votes.apply { this + 1 }
+}
 
 enum class State : Serializable {
     ACCEPTED, DECLINED, IN_PROGRESS
@@ -29,7 +31,7 @@ class ExchangeRateSuggestion(
     override val votes: Int,
     val watchedSubjectId: String,
     val suggestedExchangeRate: ExchangeRate,
-    val suggestionId:String
+    val suggestionId: String
 ) : Suggestion(suggestionId, state, votes)
 
 class ClosedExchangePointSuggestion(
@@ -37,13 +39,17 @@ class ClosedExchangePointSuggestion(
     override val state: State,
     override val votes: Int,
     val watchedSubjectId: String,
-    val suggestionId:String
+    val suggestionId: String
 ) : Suggestion(suggestionId, state, votes)
 
-data class UserSuggestion(val user: User, val suggestion: Suggestion, val metadata: UserSuggestionMetadata )
+data class UserSuggestion(
+    val user: User,
+    val suggestion: Suggestion,
+    val metadata: UserSuggestionMetadata
+)
 
 data class UserSuggestionMetadata(val processed: Boolean, val markAs: UserSuggestionStateMarking)
 
-enum class UserSuggestionStateMarking{
-    NEW,DELETE
+enum class UserSuggestionStateMarking {
+    NEW, DELETE
 }

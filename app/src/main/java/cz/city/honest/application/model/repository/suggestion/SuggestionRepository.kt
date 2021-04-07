@@ -24,16 +24,16 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(suggestion),
-            "where id = ?",
-            arrayOf(suggestion.id.toString())
+            "id = ?",
+            arrayOf(suggestion.id)
         )
     )
 
     override fun delete(suggestion: SUGGESTION_TYPE): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             ExchangeRateSuggestionRepository.TABLE_NAME,
-            "where id = ?",
-            arrayOf(suggestion.id.toString())
+            "id = ?",
+            arrayOf(suggestion.id)
         )
     )
 

@@ -36,8 +36,8 @@ class ExchangeRateSuggestionRepository(
                 databaseOperationProvider.writableDatabase.update(
                     TABLE_NAME,
                     getContentValues(suggestion),
-                    "where id = ?",
-                    arrayOf(suggestion.id.toString())
+                    "id = ?",
+                    arrayOf(suggestion.id)
                 )
             }
 
@@ -56,8 +56,8 @@ class ExchangeRateSuggestionRepository(
         super.delete(suggestion).map {
             databaseOperationProvider.writableDatabase.delete(
                 TABLE_NAME,
-                "where id = ?",
-                arrayOf(suggestion.id.toString())
+                "id = ?",
+                arrayOf(suggestion.id)
             )
         }
 

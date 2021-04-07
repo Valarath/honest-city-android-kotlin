@@ -37,7 +37,7 @@ class ExchangeRateRepository (
         databaseOperationProvider.writableDatabase.update(
             EXCHANGE_RATES_TABLE,
             getExchangeRatesContentValues(entity),
-            "where id = ?",
+            "id = ?",
             arrayOf(entity.id.toString())
     ))
 
@@ -45,7 +45,7 @@ class ExchangeRateRepository (
         databaseOperationProvider.writableDatabase.update(
             EXCHANGE_RATE_TABLE,
             getExchangeRateContentValues(exchangeRatesId,rate),
-            "where exchange_rates_id = ?",
+            "exchange_rates_id = ?",
             arrayOf(exchangeRatesId.toString())
     ))
 

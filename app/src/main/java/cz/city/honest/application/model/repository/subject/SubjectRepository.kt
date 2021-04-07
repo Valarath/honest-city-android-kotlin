@@ -46,8 +46,8 @@ abstract class SubjectRepository<WATCHED_SUBJECT:WatchedSubject>(
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(entity),
-            "where id = ?",
-            arrayOf(entity.id.toString())
+            "id = ?",
+            arrayOf(entity.id)
         )
     )
         .map { updateSuggestions(entity.suggestions).run { it } }
@@ -60,8 +60,8 @@ abstract class SubjectRepository<WATCHED_SUBJECT:WatchedSubject>(
     override fun delete(entity: WATCHED_SUBJECT): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,
-            "where id = ?",
-            arrayOf(entity.id.toString())
+            "id = ?",
+            arrayOf(entity.id)
         )
     )
         .map { deleteSuggestions(entity.suggestions).run { it } }

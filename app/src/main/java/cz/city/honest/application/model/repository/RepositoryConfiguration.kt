@@ -16,7 +16,11 @@ import cz.city.honest.application.model.repository.suggestion.exchange.NewExchan
 import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
+import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointDeleteVoteRepository
+import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointRateChangeRepository
+import cz.city.honest.application.model.repository.vote.subject.exchnge.NewExchangePointVoteRepository
 import cz.city.honest.mobile.model.dto.ExchangePoint
+import cz.city.honest.mobile.model.dto.Vote
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.Binds
 import dagger.Module
@@ -76,10 +80,10 @@ class RepositoryModule() {
             : SuggestionRepository<out Suggestion> =
         ClosedExchangePointSuggestionRepository(databaseOperationProvider)
 
-     @Provides
-     @Singleton
-     @IntoMap
-     @StringKey("ExchangeRateSuggestion")
+    @Provides
+    @Singleton
+    @IntoMap
+    @StringKey("ExchangeRateSuggestion")
     fun getExchangeRateSuggestionRepository(
         databaseOperationProvider: DatabaseOperationProvider,
         exchangeRateRepository: ExchangeRateRepository
@@ -107,6 +111,36 @@ class RepositoryModule() {
         suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
     ): UserSuggestionRepository =
         UserSuggestionRepository(databaseOperationProvider, userRepository, suggestionRepositories)
+
+    @Provides
+    @Singleton
+    @IntoMap
+    @StringKey("VoteForExchangePointDelete")
+    fun getExchangePointDeleteVoteRepository(
+        operationProvider: DatabaseOperationProvider,
+        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    ): VoteRepository<out Vote, out Suggestion> =
+        ExchangePointDeleteVoteRepository(operationProvider, suggestionRepositories)
+
+    @Provides
+    @Singleton
+    @IntoMap
+    @StringKey("VoteForExchangePointRateChange")
+    fun getExchangePointRateChangeRepository(
+        operationProvider: DatabaseOperationProvider,
+        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    ): VoteRepository<out Vote, out Suggestion> =
+        ExchangePointRateChangeRepository(operationProvider, suggestionRepositories)
+
+    @Provides
+    @Singleton
+    @IntoMap
+    @StringKey("VoteForNewExchangePoint")
+    fun getNewExchangePointVoteRepository(
+        operationProvider: DatabaseOperationProvider,
+        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    ): VoteRepository<out Vote, out Suggestion> =
+        NewExchangePointVoteRepository(operationProvider, suggestionRepositories)
 
 }
 

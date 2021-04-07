@@ -31,8 +31,8 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
                 databaseOperationProvider.writableDatabase.update(
                     TABLE_NAME,
                     getContentValues(suggestion),
-                    "where id = ?",
-                    arrayOf(suggestion.id.toString())
+                    "id = ?",
+                    arrayOf(suggestion.id)
                 )
             }
 
@@ -48,8 +48,8 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
         super.delete(suggestion).map {
             databaseOperationProvider.writableDatabase.delete(
                 ExchangeRateSuggestionRepository.TABLE_NAME,
-                "where id = ?",
-                arrayOf(suggestion.id.toString())
+                "id = ?",
+                arrayOf(suggestion.id)
             )
         }
 
@@ -82,8 +82,9 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
 
     private fun getContentValues(suggestion: ClosedExchangePointSuggestion) =
         ContentValues().apply {
-            put("suggestion_id", suggestion.id)
-            put("exchange_point_it", suggestion.watchedSubjectId)
+            put("id",suggestion.id)
+            put("suggestion_id", suggestion.suggestionId)
+            put("watched_subject_id", suggestion.watchedSubjectId)
         }
 
     companion object {

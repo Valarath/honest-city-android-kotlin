@@ -56,6 +56,8 @@ class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWild
 
     fun update(suggestion: Suggestion) =
         RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)
-            .update(suggestion)
+            .update(updateSuggestion(suggestion))
+
+    private fun updateSuggestion(suggestion: Suggestion) = suggestion.apply { this.increaseVotes() }
 
 }

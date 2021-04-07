@@ -42,8 +42,8 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
             databaseOperationProvider.writableDatabase.update(
                 ExchangePointRepository.TABLE_NAME,
                 getContentValues(entity),
-                "where user_id = ? && suggestion_id = ?",
-                arrayOf(entity.userId, entity.suggestion.id.toString())
+                "user_id = ? && suggestion_id = ?",
+                arrayOf(entity.userId, entity.suggestion.id)
             )
         )
             .flatMap { updateSuggestion(entity) }
@@ -83,8 +83,8 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     override fun delete(entity: VOTE_ENTITY): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             SubjectRepository.TABLE_NAME,
-            "where user_id = ? && suggestion_id = ?",
-            arrayOf(entity.userId, entity.suggestion.id.toString())
+            "user_id = ? && suggestion_id = ?",
+            arrayOf(entity.userId, entity.suggestion.id)
         )
     )
         .flatMap { updateSuggestion(entity) }

@@ -4,6 +4,11 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TableRow;
 
+import androidx.fragment.app.FragmentActivity;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +33,13 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
         put(State.IN_PROGRESS,R.color.suggestionInProgress);
     }};
 
-    public static View asTableRow(Suggestion suggestion, Context context) {
+    public static View asTableRow(VotedSuggestion suggestion, Context context) {
+        return SUGGESTION_TO_TABLE_ROW_CONVERTER_MAP
+                .get(suggestion.getSuggestion().getClass())
+                .convert(suggestion.getSuggestion(), context);
+    }
+
+    public static View asTableRow(Suggestion suggestion,  Context context) {
         return SUGGESTION_TO_TABLE_ROW_CONVERTER_MAP
                 .get(suggestion.getClass())
                 .convert(suggestion, context);
@@ -46,5 +57,4 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
     }
 
     protected abstract View convert(SUGGESTION suggestion, Context context);
-
 }

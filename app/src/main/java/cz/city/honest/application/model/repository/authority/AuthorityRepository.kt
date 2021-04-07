@@ -37,11 +37,11 @@ class AuthorityRepository(
 
     override fun get(id: List<String>): Flowable<ExchangeRate> =
         Flowable.just(findAuthorityExchangeRates())
-            .flatMap { exchangeRateRepository.get(getAsIdsList(it)) }
+            .flatMap { toEntities(it) { exchangeRateRepository.get(getAsIdsList(it)) } }
 
     fun get(): Flowable<ExchangeRate> =
         Flowable.just(findAuthorityExchangeRates())
-            .flatMap { exchangeRateRepository.get(getAsIdsList(it)) }
+            .flatMap { toEntities(it) { exchangeRateRepository.get(getAsIdsList(it)) } }
 
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(

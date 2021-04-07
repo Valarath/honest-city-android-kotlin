@@ -44,7 +44,7 @@ class ExchangePointRepository(
                 databaseOperationProvider.writableDatabase.update(
                     TABLE_NAME,
                     getContentValues(entity),
-                    "where id = ?",
+                    "id = ?",
                     arrayOf(entity.id.toString())
                 )
             }
@@ -61,7 +61,7 @@ class ExchangePointRepository(
     override fun delete(entity: ExchangePoint): Observable<Int> = super.delete(entity).map {
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,
-            "where id = ?",
+            "id = ?",
             arrayOf(entity.id.toString())
         )
     }

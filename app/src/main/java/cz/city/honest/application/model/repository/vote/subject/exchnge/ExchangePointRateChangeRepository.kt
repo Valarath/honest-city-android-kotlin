@@ -10,10 +10,9 @@ import io.reactivex.rxjava3.core.Flowable
 
 class ExchangePointRateChangeRepository (
     operationProvider: DatabaseOperationProvider,
-    suggestionTypeClass: Class<ExchangeRateSuggestion>,
     suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
 ) : VoteRepository<VoteForExchangePointRateChange, ExchangeRateSuggestion>(
-    operationProvider, suggestionTypeClass, suggestionRepositories
+    operationProvider, ExchangeRateSuggestion::class.java, suggestionRepositories
 ) {
     override fun get(userIds: List<String>): Flowable<VoteForExchangePointRateChange> =
         getVoteUserSuggestions(userIds)

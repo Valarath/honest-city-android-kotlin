@@ -52,8 +52,9 @@ class ServiceModule {
     @Singleton
     fun getVoteService(
         voteServerSource: VoteServerSource,
-        voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>
-    ): VoteService = VoteService(voteServerSource, voteRepositories)
+        voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
+        userProvider: UserProvider
+    ): VoteService = VoteService(voteServerSource, voteRepositories,userProvider)
 
     @Provides
     @Singleton

@@ -1,15 +1,36 @@
 package cz.city.honest.application.view.detail.ui.main
 
+import androidx.lifecycle.MutableLiveData
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.service.SuggestionService
+import cz.city.honest.application.model.service.VoteService
 import cz.city.honest.application.viewmodel.ScheduledViewModel
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class ShowSubjectSuggestionsViewModel @Inject constructor(
-    var suggestionService: SuggestionService
-) : ScheduledViewModel(){
+    var suggestionService: SuggestionService, var voteService: VoteService
+) : ScheduledViewModel() {
 
-    fun getSuggestionsForSubject(subjectId:String) = suggestionService.getSuggestionsForSubject(subjectId)
+    fun voteFor(suggestion: Suggestion, subjectId: String) =
+        suggestionService.update(suggestion)
+            .map { getSuggestionsForSubject(subjectId) }
+            .subscribe()
 
-    fun updateSuggestion(suggestion:Suggestion) = suggestionService.update(suggestion)
+    fun getSuggestionsForSubject(subjectId: String) =
+        Observable.merge(getVotedSuggestionsForSubject(subjectId),getUnvotedSuggestionsForSubject(subjectId))
+            .toList()
+            .blockingGet()
+
+    private fun getVotedSuggestionsForSubject(subjectId: String) =
+        voteService.getVotesForSubject(subjectId)
+            .map { VotedSuggestion(it.suggestion,true) }
+
+
+    private fun getUnvotedSuggestionsForSubject(subjectId: String) =
+        suggestionService.getSuggestionsForSubject(subjectId)
+            .map { VotedSuggestion(it,false) }
+
 }
+
+data class VotedSuggestion(val suggestion: Suggestion, val voted: Boolean)
