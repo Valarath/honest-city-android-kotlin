@@ -15,8 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.UserSuggestion
+import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.view.detail.ui.main.SuggestionTableRowConverter
-import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionRowDecoratorProvider
 import cz.city.honest.application.viewmodel.UserDetailViewModel
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
@@ -35,7 +36,7 @@ sealed class UserDetailFragment() : DaggerAppCompatDialogFragment() {
     }
 }
 
-class UserDetailSuggestionsFragment() : UserDetailFragment(){
+class UserDetailSuggestionsFragment() : UserDetailFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +44,9 @@ class UserDetailSuggestionsFragment() : UserDetailFragment(){
         savedInstanceState: Bundle?
     ): View? {
         val root = getRoot(inflater, container)
-        userDetailViewModel.userSuggestions.observe(viewLifecycleOwner, Observer { addSuggestions(it, root) })
+        userDetailViewModel.userSuggestions.observe(
+            viewLifecycleOwner,
+            Observer { addSuggestions(it, root) })
         return root
     }
 
@@ -53,23 +56,32 @@ class UserDetailSuggestionsFragment() : UserDetailFragment(){
     ) = inflater.inflate(R.layout.fragment_show_subject_suggestions, container, false)
 
 
-    private fun addSuggestions(suggestions: List<Suggestion>, root: View) =
+    private fun addSuggestions(suggestions: List<UserSuggestion>, root: View) =
         getTableLayout(root).apply {
             suggestions.forEach {
                 addView(
-                    decorate(SuggestionTableRowConverter.asTableRow(it, activity),activity!!,it))
+                    decorate(SuggestionTableRowConverter.asTableRow(it, activity), activity!!, it)
+                )
             }
         }
 
-    private fun decorate(view: View, context: Context, suggestion:Suggestion) =UserDetailSuggestionRowDecoratorProvider.provide(view.javaClass).decorate(view, context,suggestion)
+    private fun decorate(view: View, context: Context, suggestion: UserSuggestion) =
+        UserDetailSuggestionRowDecoratorProvider.provide(view.javaClass)
+            .decorate(
+                view,
+                UserDetailSuggestionRowDecoratorData(context, suggestion, userDetailViewModel)
+            )
 
-        private fun getTableLayout(root: View): TableLayout =
+    private fun getTableLayout(root: View): TableLayout =
         root.findViewById(R.id.suggestions_holder)
 }
 
 
-sealed class UserDetailSuggestionRowDecorator<VIEW_TYPE : View>{
-    abstract fun decorate(view: VIEW_TYPE, context: Context, suggestion:Suggestion):VIEW_TYPE
+sealed class UserDetailSuggestionRowDecorator<VIEW_TYPE : View> {
+    abstract fun decorate(
+        view: VIEW_TYPE,
+        userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData
+    ): VIEW_TYPE
 
 
     private fun getButtonLayoutParams() = TableRow.LayoutParams(
@@ -77,37 +89,63 @@ sealed class UserDetailSuggestionRowDecorator<VIEW_TYPE : View>{
         TableRow.LayoutParams.WRAP_CONTENT
     )
 
-    protected open fun getVoteCount(context: Context, suggestion:Suggestion): TextView =
+    protected open fun getVoteCount(context: Context, suggestion: Suggestion): TextView =
         TextView(context)
-            .apply { text=suggestion.votes.toString() }
+            .apply { text = suggestion.votes.toString() }
 
-    protected open fun getDeleteButton(context: Context, suggestion:Suggestion) =
-        Button(context).apply {
-            text = "delete"
+    protected open fun getDeleteButton(userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData) =
+        Button(userDetailSuggestionRowDecoratorData.context).apply {
+            text = resources.getString(R.string.delete_user_suggestion)
+            setOnClickListener {
+                userDetailSuggestionRowDecoratorData.viewModel.deleteSuggestion(userDetailSuggestionRowDecoratorData.userSuggestion)
+            }
         }
 
-    protected open fun addDeleteButton(tableRow: TableRow,context: Context, suggestion:Suggestion) =
-        tableRow.apply {
-            if(suggestion.state == State.IN_PROGRESS)
-                addView(getDeleteButton(context, suggestion))
+    protected open fun addDeleteButton(
+        tableRow: TableRow,
+        userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData
+    ) = tableRow.apply {
+            if (isPossibleToDeleteSuggestion(userDetailSuggestionRowDecoratorData))
+                addView(getDeleteButton(userDetailSuggestionRowDecoratorData))
         }
+
+    private fun isPossibleToDeleteSuggestion(userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData) =
+        userDetailSuggestionRowDecoratorData.userSuggestion.suggestion.state == State.IN_PROGRESS
+                && !userDetailSuggestionRowDecoratorData.userSuggestion.metadata.processed
+                && userDetailSuggestionRowDecoratorData.userSuggestion.metadata.markAs != UserSuggestionStateMarking.DELETE
 }
 
 class UserDetailSuggestionTableRowDecorator : UserDetailSuggestionRowDecorator<TableRow>() {
-    override fun decorate(view: TableRow, context: Context, suggestion:Suggestion) = view.apply {
-        addDeleteButton(this,context, suggestion)
+    override fun decorate(
+        view: TableRow,
+        userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData
+    ) = view.apply {
+        addDeleteButton(this, userDetailSuggestionRowDecoratorData)
     }
 }
 
 class UserDetailSuggestionTableLayoutDecorator : UserDetailSuggestionRowDecorator<TableLayout>() {
-    override fun decorate(view: TableLayout, context: Context, suggestion:Suggestion) = view.apply {
+    override fun decorate(
+        view: TableLayout,
+        userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData
+    ) = view.apply {
         children.iterator().forEach {
-            decorateTableRow(it, context,suggestion)
+            decorateTableRow(it, userDetailSuggestionRowDecoratorData)
         }
     }
 
-    private fun decorateTableRow(it: View, context: Context, suggestion:Suggestion) {
+    private fun decorateTableRow(
+        it: View,
+        userDetailSuggestionRowDecoratorData: UserDetailSuggestionRowDecoratorData
+    ) {
         if (it is TableRow)
-            UserDetailSuggestionRowDecoratorProvider.provide(it.javaClass).decorate(it, context,suggestion)
+            UserDetailSuggestionRowDecoratorProvider.provide(it.javaClass)
+                .decorate(it, userDetailSuggestionRowDecoratorData)
     }
 }
+
+data class UserDetailSuggestionRowDecoratorData(
+    val context: Context,
+    val userSuggestion: UserSuggestion,
+    val viewModel: UserDetailViewModel
+)

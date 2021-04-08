@@ -1,19 +1,18 @@
 package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import cz.city.honest.application.model.dto.Suggestion
-import cz.city.honest.application.model.service.SuggestionService
+import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.service.UserService
+import cz.city.honest.application.model.service.UserSuggestionService
 import cz.city.honest.mobile.model.dto.User
 import javax.inject.Inject
 
 class UserDetailViewModel @Inject constructor(
     val userService: UserService,
-    val suggestionService: SuggestionService
+    val userSuggestionService: UserSuggestionService
 ) : ScheduledViewModel() {
 
-    val userSuggestions: MutableLiveData<List<Suggestion>> =
+    val userSuggestions: MutableLiveData<List<UserSuggestion>> =
         MutableLiveData()
     val userData: MutableLiveData<User> = MutableLiveData();
 
@@ -23,18 +22,22 @@ class UserDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getUserSuggestions(user: User) = suggestionService.getSuggestionsForUser(user.id)
+    fun deleteSuggestion(suggestion: UserSuggestion) =
+        userSuggestionService.delete(suggestion)
+            .subscribe()
+
+    private fun getUserSuggestions(user: User) = userSuggestionService.getUserSuggestions(user.id)
         .toList()
-        .blockingSubscribe { userSuggestions.postValue(it) }
+        .blockingSubscribe { userSuggestions.postClearValue(it) }
 
     private fun getUserData() =
         userService
             .getUserData()
             .map { subscribeUserData(it) }
-            .subscribe { userData.postValue(it)}
+            .subscribe { userData.postClearValue(it) }
 
 
-    private fun subscribeUserData(user: User):User{
+    private fun subscribeUserData(user: User): User {
         getUserSuggestions(user)
         return user
     }

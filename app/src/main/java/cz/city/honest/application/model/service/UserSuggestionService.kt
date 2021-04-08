@@ -1,6 +1,8 @@
 package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.dto.UserSuggestion
+import cz.city.honest.application.model.dto.UserSuggestionMetadata
+import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.model.gateway.server.PostSuggestRequest
 import cz.city.honest.application.model.gateway.server.RemoveSuggestionRequest
 import cz.city.honest.application.model.gateway.server.SuggestionServerSource
@@ -19,8 +21,28 @@ class UserSuggestionService(
         userProvider.provide()
             .concatMap { removeSuggestions(it);suggestSuggestions(it) }
 
+    fun getUserSuggestions(id: String): Flowable<UserSuggestion> =
+        userSuggestionRepository.get(listOf(id))
+
+    fun delete(userSuggestion: UserSuggestion) =
+        userSuggestionRepository.update(toDeleteStateSuggestion(userSuggestion))
+
+    private fun toDeleteStateSuggestion(userSuggestion: UserSuggestion) =
+        UserSuggestion(
+            user = userSuggestion.user,
+            suggestion = userSuggestion.suggestion,
+            metadata = getDeleteStateUserSuggestionMetadata()
+        )
+
+    private fun getDeleteStateUserSuggestionMetadata() =
+        UserSuggestionMetadata(
+            processed = false,
+            markAs = UserSuggestionStateMarking.DELETE
+        )
+
     private fun removeSuggestions(user: User): Observable<Unit> =
-        userSuggestionRepository.getForDelete(listOf(user.id))
+        userSuggestionRepository.get(listOf(user.id))
+            .filter { it.metadata.markAs == UserSuggestionStateMarking.DELETE }
             .toList()
             .toObservable()
             .flatMap { removeSuggestions(it) }
@@ -35,11 +57,15 @@ class UserSuggestionService(
             .flatMap { userSuggestionRepository.deleteList(userSuggestions) }
 
     private fun suggestSuggestions(user: User): Observable<Unit> =
-        userSuggestionRepository.getNew(listOf(user.id))
+        userSuggestionRepository.get(listOf(user.id))
+            .filter { isSuggestionNew(it) }
             .toList()
             .toObservable()
             .flatMap { suggestSuggestions(it) }
             .map {}
+
+    private fun isSuggestionNew(userSuggestion: UserSuggestion) =
+        userSuggestion.metadata.markAs == UserSuggestionStateMarking.NEW && !userSuggestion.metadata.processed
 
     private fun suggestSuggestions(userSuggestions: MutableList<UserSuggestion>) =
         Flowable.fromIterable(userSuggestions)

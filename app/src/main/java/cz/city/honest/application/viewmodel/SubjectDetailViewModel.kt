@@ -13,7 +13,7 @@ class SubjectDetailViewModel @Inject constructor(authorityService: AuthorityServ
     init {
         schedule {
             authorityService.getAuthority().subscribe {
-                authorityRate.postValue(it)
+                authorityRate.postClearValue(it)
             }
         }
     }

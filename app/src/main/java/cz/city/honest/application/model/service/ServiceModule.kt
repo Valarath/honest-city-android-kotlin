@@ -5,9 +5,9 @@ import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
-import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
+import cz.city.honest.application.model.service.vote.VoteService
 import cz.city.honest.mobile.model.dto.Vote
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.Module
@@ -36,8 +36,9 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSuggestionService(
-        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-    ): SuggestionService = SuggestionService(suggestionRepositories)
+        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
+        userSuggestionRepository: UserSuggestionRepository
+    ): SuggestionService = SuggestionService(suggestionRepositories,userSuggestionRepository)
 
     @Provides
     @Singleton

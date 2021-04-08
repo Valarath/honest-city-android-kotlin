@@ -4,11 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TableRow;
 
-import androidx.fragment.app.FragmentActivity;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +13,7 @@ import cz.city.honest.application.model.dto.ExchangeRateSuggestion;
 import cz.city.honest.application.model.dto.NewExchangePointSuggestion;
 import cz.city.honest.application.model.dto.State;
 import cz.city.honest.application.model.dto.Suggestion;
+import cz.city.honest.application.model.dto.UserSuggestion;
 
 public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion> {
 
@@ -39,10 +35,10 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
                 .convert(suggestion.getSuggestion(), context);
     }
 
-    public static View asTableRow(Suggestion suggestion,  Context context) {
+    public static View asTableRow(UserSuggestion suggestion, Context context) {
         return SUGGESTION_TO_TABLE_ROW_CONVERTER_MAP
-                .get(suggestion.getClass())
-                .convert(suggestion, context);
+                .get(suggestion.getSuggestion().getClass())
+                .convert(suggestion.getSuggestion(), context);
     }
 
     protected TableRow getGenericSuggestionInformationPanel(

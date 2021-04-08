@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 import java.util.*
 
-class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>) {
+class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>, val userSuggestionRepository: UserSuggestionRepository) {
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
@@ -50,9 +50,6 @@ class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWild
             )
         )
     }
-
-    fun getSuggestionsForUser(id: String): Observable<Suggestion> =
-        Observable.fromIterable(getMockSuggestions(id))
 
     fun update(suggestion: Suggestion) =
         RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)

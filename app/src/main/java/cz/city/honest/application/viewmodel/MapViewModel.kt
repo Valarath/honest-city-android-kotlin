@@ -14,7 +14,7 @@ class MapViewModel @Inject constructor(
     init {
         schedule {
             subjectService.getSubjects().toList().toObservable().subscribe {
-                watchedSubjects.postValue(it)
+                watchedSubjects.postClearValue(it)
             }
         }
     }

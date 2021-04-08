@@ -1,9 +1,12 @@
-package cz.city.honest.application.model.service
+package cz.city.honest.application.model.service.vote
 
 import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.gateway.server.PostUpVoteRequest
 import cz.city.honest.application.model.gateway.server.VoteServerSource
 import cz.city.honest.application.model.repository.vote.VoteRepository
+import cz.city.honest.application.model.service.RepositoryProvider
+import cz.city.honest.application.model.service.Updatable
+import cz.city.honest.application.model.service.UserProvider
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
@@ -25,13 +28,16 @@ class VoteService(
             .flatMap { voteServerSource.upVote(it) }
 
     fun vote(vote: Vote) =
-        RepositoryProvider
-            .provide(voteRepositories, vote::class.java)
+        RepositoryProvider.provide(voteRepositories, vote::class.java)
             .insert(vote)
 
+    fun vote(suggestion: Suggestion) =
+        userProvider.provide()
+            .flatMap { vote(suggestion.toVote(it.id)) }
+
+
     fun delete(vote: Vote) =
-        RepositoryProvider
-            .provide(voteRepositories, vote::class.java)
+        RepositoryProvider.provide(voteRepositories, vote::class.java)
             .delete(vote)
 
     fun getVotesForSubject(id: String): Observable<Vote> =

@@ -1,19 +1,19 @@
 package cz.city.honest.application.view.detail.ui.main
 
-import androidx.lifecycle.MutableLiveData
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.service.SuggestionService
-import cz.city.honest.application.model.service.VoteService
+import cz.city.honest.application.model.service.vote.VoteService
 import cz.city.honest.application.viewmodel.ScheduledViewModel
 import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class ShowSubjectSuggestionsViewModel @Inject constructor(
-    var suggestionService: SuggestionService, var voteService: VoteService
+    var suggestionService: SuggestionService,
+    var voteService: VoteService
 ) : ScheduledViewModel() {
 
     fun voteFor(suggestion: Suggestion, subjectId: String) =
-        suggestionService.update(suggestion)
+        voteService.vote(suggestion)
             .map { getSuggestionsForSubject(subjectId) }
             .subscribe()
 
