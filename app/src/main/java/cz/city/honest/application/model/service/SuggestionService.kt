@@ -17,6 +17,8 @@ class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWild
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
 
+    fun <SUGGESTION_TYPE:Suggestion>getSuggestions(clazz: Class<SUGGESTION_TYPE>):Flowable<out SUGGESTION_TYPE> = (RepositoryProvider.provide(suggestionRepositories,clazz) as SuggestionRepository<SUGGESTION_TYPE>).get()
+
     private fun getMockSuggestions(id: String): List<Suggestion> {
         return listOf(
             ClosedExchangePointSuggestion(
@@ -39,7 +41,7 @@ class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWild
                 votes = 10,
                 watchedSubjectId = UUID.randomUUID().toString(),
                 suggestedExchangeRate = ExchangeRate(
-                    55,
+                    "",
                     Watched(LocalDate.now(), LocalDate.now()),
                     mutableSetOf(
                         Rate("CZK", ExchangeRateValues(22.0)),

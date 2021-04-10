@@ -39,6 +39,11 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
                 )
             }
 
+    override fun get(): Flowable<NewExchangePointSuggestion> =
+        findClosedExchangePointSuggestions().flatMap {
+            toEntities(it) { toNewExchangePointSuggestion(it) }
+        }
+
     override fun get(id: List<String>): Flowable<NewExchangePointSuggestion> =
         findClosedExchangePointSuggestions(id).flatMap {
             toEntities(it) {
@@ -55,10 +60,18 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             )
         }
 
+    private fun findClosedExchangePointSuggestions(): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, suggestion_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id",
+                arrayOf()
+            )
+        )
+
     private fun findClosedExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, state, votes, longitude, latitude, suggestion_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, suggestion_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )

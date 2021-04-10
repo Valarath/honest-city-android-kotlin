@@ -20,7 +20,7 @@ class AuthorityService(
             .toObservable()
 
     private fun getMockExchangeRate(): ExchangeRate = ExchangeRate(
-        25,
+        "",
         Watched(LocalDate.now(), LocalDate.MAX),
         mutableSetOf(
             Rate("CZE", ExchangeRateValues(1.0)),

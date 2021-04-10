@@ -6,10 +6,13 @@ import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
 import cz.city.honest.application.model.repository.suggestion.exchange.ExchangeRateSuggestionRepository
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperationProvider: DatabaseOperationProvider):
     Repository<SUGGESTION_TYPE>(databaseOperationProvider) {
+
+    abstract fun get():Flowable<SUGGESTION_TYPE>
 
     override fun insert(suggestion: SUGGESTION_TYPE): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(

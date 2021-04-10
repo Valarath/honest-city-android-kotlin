@@ -41,6 +41,13 @@ class ExchangeRateSuggestionRepository(
                 )
             }
 
+    override fun get(): Flowable<ExchangeRateSuggestion> =
+        findExchangeRateSuggestions().flatMap {
+            toEntities(it) {
+                toExchangeRateSuggestion(it)
+            }
+        }
+
     override fun get(id: List<String>): Flowable<ExchangeRateSuggestion> =
         findExchangeRateSuggestions(id).flatMap {
             toEntities(it) {
@@ -61,10 +68,18 @@ class ExchangeRateSuggestionRepository(
             )
         }
 
+    private fun findExchangeRateSuggestions(): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "SELECT exchange_rate_change_suggestion.id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id",
+                arrayOf()
+            )
+        )
+
     private fun findExchangeRateSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
@@ -72,7 +87,7 @@ class ExchangeRateSuggestionRepository(
     private fun findExchangeRateSuggestionsForWatchedSubjects(ids: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
+                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
                 arrayOf(mapToQueryParamVariable(ids))
             )
         )

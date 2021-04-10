@@ -26,7 +26,7 @@ class SubjectService(
                 Position(14.423777, 50.084344),
                 mutableListOf(),
                 ExchangeRate(
-                    23, Watched(LocalDate.now(), LocalDate.now()), mutableSetOf(
+                    "", Watched(LocalDate.now(), LocalDate.now()), mutableSetOf(
                         Rate("CZE", ExchangeRateValues(1.0)),
                         Rate("EUR", ExchangeRateValues(17.0)),
                         Rate("USD", ExchangeRateValues(25.0)),

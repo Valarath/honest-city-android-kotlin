@@ -23,13 +23,16 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
 
     protected fun toEntities(
         cursor: Cursor, toEntity: (cursor: Cursor) -> Flowable<ENTITY>
-    ): Flowable<ENTITY> = Flowable.just(cursor)
-        .repeatUntil { cursor.moveToNext() }
-        .filter { isCursorNotEmpty(it) }
-        .flatMap { toEntity(it) }
-        .doFinally { cursor.close() }
+    ): Flowable<ENTITY> =
+        Flowable.generate {
+            if (cursor.moveToNext() && !cursor.isClosed)
+                it.onNext(toEntity(cursor).blockingFirst())
+            else
+                it.onComplete()
+        }
 
-    protected fun isCursorNotEmpty(it: Cursor) = it.count > 0
+    protected fun isCursorNotEmpty(it: Cursor) =
+        it.count > 0
 
     protected fun processListInTransaction(
         list: List<ENTITY>,

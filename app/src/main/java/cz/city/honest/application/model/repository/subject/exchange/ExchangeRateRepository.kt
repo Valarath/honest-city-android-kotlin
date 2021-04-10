@@ -41,7 +41,7 @@ class ExchangeRateRepository (
             arrayOf(entity.id.toString())
     ))
 
-    private fun updateExchangeRate(exchangeRatesId: Long, rate: Rate)= Observable.just(
+    private fun updateExchangeRate(exchangeRatesId: String, rate: Rate)= Observable.just(
         databaseOperationProvider.writableDatabase.update(
             EXCHANGE_RATE_TABLE,
             getExchangeRateContentValues(exchangeRatesId,rate),
@@ -65,7 +65,7 @@ class ExchangeRateRepository (
 
     private fun toExchangeRate(cursor: Cursor) = Flowable.just(
         ExchangeRate(
-            id = cursor.getLong(0),
+            id = cursor.getString(0),
             watched = Watched(LocalDate.now(), LocalDate.now()),
             rates = getExchangeRates(cursor)
         ))
@@ -92,7 +92,7 @@ class ExchangeRateRepository (
 
 
     private fun insertExchangeRate(
-        exchangeRatesId: Long,
+        exchangeRatesId: String,
         rate: Rate
     ) {
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
@@ -103,7 +103,7 @@ class ExchangeRateRepository (
         )
     }
 
-    private fun getExchangeRateContentValues(exchangeRatesId: Long, rate: Rate) =
+    private fun getExchangeRateContentValues(exchangeRatesId: String, rate: Rate) =
         ContentValues().apply {
             put("exchange_rates_id", exchangeRatesId)
             put("buy", rate.rateValues.buy)
@@ -116,22 +116,22 @@ class ExchangeRateRepository (
             put("id", entity.id)
         }
 
-    private fun deleteExchangeRate(exchangeRatesId: Long): Observable<Int> =
+    private fun deleteExchangeRate(exchangeRatesId: String): Observable<Int> =
         Observable.just(
             databaseOperationProvider.writableDatabase.delete(
                 EXCHANGE_RATE_TABLE,
                 "exchange_rates_id=?",
-                arrayOf(exchangeRatesId.toString())
+                arrayOf(exchangeRatesId)
             )
         )
 
 
-    private fun deleteExchangeRates(exchangeRatesId: Long): Observable<Int> =
+    private fun deleteExchangeRates(exchangeRatesId: String): Observable<Int> =
         Observable.just(
             databaseOperationProvider.writableDatabase.delete(
                 EXCHANGE_RATES_TABLE,
                 "id=?",
-                arrayOf(exchangeRatesId.toString())
+                arrayOf(exchangeRatesId)
             )
         )
 

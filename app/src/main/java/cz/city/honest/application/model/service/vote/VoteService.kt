@@ -71,7 +71,7 @@ class VoteService(
                     votes = 10,
                     watchedSubjectId = UUID.randomUUID().toString(),
                     suggestedExchangeRate = ExchangeRate(
-                        55,
+                        "",
                         Watched(LocalDate.now(), LocalDate.now()),
                         mutableSetOf(
                             Rate("CZK", ExchangeRateValues(22.0)),
