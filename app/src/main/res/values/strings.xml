@@ -22,4 +22,8 @@
     <string name="vote_for_suggestion_button">Vote</string>
     <string name="delete_user_suggestion">Delete</string>
 
+    <!-- SUBJECT MENU -->
+    <string name="watched_subject_suggest_change_exchange_rate">Exchange rate is wrong</string>
+    <string name="watched_subject_suggest_non_existence">Delete subject</string>
+
 </resources>

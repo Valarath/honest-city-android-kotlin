@@ -46,7 +46,7 @@ class VoteService(
 
     private fun getMockSuggestions(id: String): List<Vote> {
         return listOf(
-            VoteForExchangePointDelete(
+           /* VoteForExchangePointDelete(
                 ClosedExchangePointSuggestion(
                     UUID.randomUUID().toString(),
                     State.IN_PROGRESS,
@@ -54,7 +54,7 @@ class VoteService(
                     UUID.randomUUID().toString(),
                     UUID.randomUUID().toString()
                 ), id
-            ),
+            ),*/
             VoteForNewExchangePoint(
                 NewExchangePointSuggestion(
                     UUID.randomUUID().toString(),

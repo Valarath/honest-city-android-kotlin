@@ -1,5 +1,6 @@
 package cz.city.honest.application.model.service
 
+import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.dto.UserSuggestionMetadata
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
@@ -27,6 +28,27 @@ class UserSuggestionService(
     fun delete(userSuggestion: UserSuggestion) =
         userSuggestionRepository.update(toDeleteStateSuggestion(userSuggestion))
 
+    fun suggest(userSuggestion: UserSuggestion) =
+        userSuggestionRepository.insert(userSuggestion)
+
+    fun suggest(suggestion: Suggestion,markAs:UserSuggestionStateMarking) =
+        toUserSuggestion(suggestion,markAs)
+            .flatMap { suggest(it) }
+
+    private fun toUserSuggestion(suggestion: Suggestion, markAs:UserSuggestionStateMarking) =
+        userProvider.provide()
+            .map { toUserSuggestion(it, suggestion, markAs) }
+
+    private fun toUserSuggestion(
+        user: User,
+        suggestion: Suggestion,
+        markAs: UserSuggestionStateMarking
+    ) = UserSuggestion(
+        user = user,
+        suggestion = suggestion,
+        metadata = toUserSuggestionMetadata(markAs)
+    )
+
     private fun toDeleteStateSuggestion(userSuggestion: UserSuggestion) =
         UserSuggestion(
             user = userSuggestion.user,
@@ -38,6 +60,12 @@ class UserSuggestionService(
         UserSuggestionMetadata(
             processed = false,
             markAs = UserSuggestionStateMarking.DELETE
+        )
+
+    private fun toUserSuggestionMetadata(markAs: UserSuggestionStateMarking) =
+        UserSuggestionMetadata(
+            processed = false,
+            markAs = markAs
         )
 
     private fun removeSuggestions(user: User): Observable<Unit> =

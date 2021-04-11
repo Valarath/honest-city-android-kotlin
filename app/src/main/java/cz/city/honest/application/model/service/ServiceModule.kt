@@ -37,8 +37,9 @@ class ServiceModule {
     @Singleton
     fun getSuggestionService(
         suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
-        userSuggestionRepository: UserSuggestionRepository
-    ): SuggestionService = SuggestionService(suggestionRepositories,userSuggestionRepository)
+        userSuggestionService: UserSuggestionService,
+        voteService: VoteService
+    ): SuggestionService = SuggestionService(suggestionRepositories,userSuggestionService,voteService)
 
     @Provides
     @Singleton

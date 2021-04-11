@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.detail.SubjectDetailActivity">
+
+    <item
+        android:id="@+id/suggest_different_rate"
+        android:title="@string/watched_subject_suggest_change_exchange_rate"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/suggest_non_existing_subject"
+        android:title="@string/watched_subject_suggest_non_existence"
+        app:showAsAction="ifRoom" />
+
+
+</menu>

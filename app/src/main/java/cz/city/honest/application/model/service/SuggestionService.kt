@@ -6,28 +6,41 @@ import cz.city.honest.application.model.gateway.server.RemoveSuggestionRequest
 import cz.city.honest.application.model.gateway.server.SuggestionServerSource
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
+import cz.city.honest.application.model.service.vote.VoteService
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 import java.util.*
 
-class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>, val userSuggestionRepository: UserSuggestionRepository) {
+class SuggestionService(
+    val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
+    val userSuggestionService: UserSuggestionService,
+    val voteService: VoteService
+) {
+
+    fun suggest(suggestion: Suggestion,markAs:UserSuggestionStateMarking) =
+        userSuggestionService.suggest(suggestion,markAs)
+            .flatMap {voteService.vote(suggestion)  }
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
 
-    fun <SUGGESTION_TYPE:Suggestion>getSuggestions(clazz: Class<SUGGESTION_TYPE>):Flowable<out SUGGESTION_TYPE> = (RepositoryProvider.provide(suggestionRepositories,clazz) as SuggestionRepository<SUGGESTION_TYPE>).get()
+    fun <SUGGESTION_TYPE : Suggestion> getSuggestions(clazz: Class<SUGGESTION_TYPE>): Flowable<out SUGGESTION_TYPE> =
+        (RepositoryProvider.provide(
+            suggestionRepositories,
+            clazz
+        ) as SuggestionRepository<SUGGESTION_TYPE>).get()
 
     private fun getMockSuggestions(id: String): List<Suggestion> {
         return listOf(
-            ClosedExchangePointSuggestion(
+            /*ClosedExchangePointSuggestion(
                 UUID.randomUUID().toString(),
                 State.IN_PROGRESS,
                 5,
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString()
-            ),
+            ),*/
             NewExchangePointSuggestion(
                 UUID.randomUUID().toString(),
                 state = State.DECLINED,
@@ -52,6 +65,11 @@ class SuggestionService(val suggestionRepositories: Map<String, @JvmSuppressWild
             )
         )
     }
+
+    fun suggest(suggestion: Suggestion) =
+        RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)
+            .insert(suggestion)
+            .flatMap { voteService.vote(suggestion) }
 
     fun update(suggestion: Suggestion) =
         RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)

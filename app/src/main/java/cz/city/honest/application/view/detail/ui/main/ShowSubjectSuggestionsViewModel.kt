@@ -1,7 +1,9 @@
 package cz.city.honest.application.view.detail.ui.main
 
 import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.model.service.SuggestionService
+import cz.city.honest.application.model.service.UserSuggestionService
 import cz.city.honest.application.model.service.vote.VoteService
 import cz.city.honest.application.viewmodel.ScheduledViewModel
 import io.reactivex.rxjava3.core.Observable
@@ -18,18 +20,25 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
             .subscribe()
 
     fun getSuggestionsForSubject(subjectId: String) =
-        Observable.merge(getVotedSuggestionsForSubject(subjectId),getUnvotedSuggestionsForSubject(subjectId))
+        Observable.merge(
+            getVotedSuggestionsForSubject(subjectId),
+            getUnvotedSuggestionsForSubject(subjectId)
+        )
             .toList()
             .blockingGet()
 
+    fun suggest(suggestion: Suggestion,markAs: UserSuggestionStateMarking) =
+        suggestionService.suggest(suggestion,markAs)
+            .subscribe()
+
     private fun getVotedSuggestionsForSubject(subjectId: String) =
         voteService.getVotesForSubject(subjectId)
-            .map { VotedSuggestion(it.suggestion,true) }
+            .map { VotedSuggestion(it.suggestion, true) }
 
 
     private fun getUnvotedSuggestionsForSubject(subjectId: String) =
         suggestionService.getSuggestionsForSubject(subjectId)
-            .map { VotedSuggestion(it,false) }
+            .map { VotedSuggestion(it, false) }
 
 }
 

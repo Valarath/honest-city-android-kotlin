@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 class UserDetailActivity : DaggerAppCompatActivity() {
 
-
     protected lateinit var userDetailViewModel: UserDetailViewModel
 
     @Inject

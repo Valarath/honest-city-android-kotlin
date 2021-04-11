@@ -158,7 +158,7 @@ abstract class ActivityModule {
     internal abstract fun mapsActivity(): cz.city.honest.application.view.MapActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
-    internal abstract fun subjectDetailActivityActivity(): SubjectDetailActivity
+    internal abstract fun subjectDetailActivity(): SubjectDetailActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun userDetailActivity(): UserDetailActivity
