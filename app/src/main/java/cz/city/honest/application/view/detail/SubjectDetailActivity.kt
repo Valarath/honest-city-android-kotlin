@@ -8,10 +8,12 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
+import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsViewModel
 import cz.city.honest.application.view.detail.ui.main.SubjectPagerAdapter
+import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatActivity
 import java.util.*
@@ -52,9 +54,11 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     }
 
     private fun setReportClosedSubjectButton(menu: Menu) {
-        if (isCloseSubjectSuggestionSuggested())
+        if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested())
             menu.findItem(R.id.suggest_non_existing_subject).isEnabled = false
     }
+
+    private fun isNewSubjectSuggestion() = getWatchedSubjectId() == NewExchangePointSuggestionExchangePointConverter.getId()
 
     private fun isCloseSubjectSuggestionSuggested() =
         showSubjectSuggestionsViewModel.getSuggestionsForSubject(getWatchedSubjectId())

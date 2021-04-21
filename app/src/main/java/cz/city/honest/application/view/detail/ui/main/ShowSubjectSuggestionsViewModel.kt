@@ -14,6 +14,8 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
     var voteService: VoteService
 ) : ScheduledViewModel() {
 
+    //TODO ADD mutableList liveData - it is possible to do!!
+
     fun voteFor(suggestion: Suggestion, subjectId: String) =
         voteService.vote(suggestion)
             .map { getSuggestionsForSubject(subjectId) }

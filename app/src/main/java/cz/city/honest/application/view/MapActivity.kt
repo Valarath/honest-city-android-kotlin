@@ -127,6 +127,12 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         }
     }
 
+    private fun addCreateSubjectButtonBehaviour() =
+        findViewById<Button>(R.id.add_subject)
+            .apply { mapViewModel.suggestNewSubject()
+                //TODO start activity
+                }
+
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
         MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)
     }
