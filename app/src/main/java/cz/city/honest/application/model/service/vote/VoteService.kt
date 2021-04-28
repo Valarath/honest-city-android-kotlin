@@ -60,8 +60,7 @@ class VoteService(
                     UUID.randomUUID().toString(),
                     state = State.DECLINED,
                     votes = 6,
-                    position = Position(55.0, 77.0),
-                    suggestionId = UUID.randomUUID().toString()
+                    position = Position(55.0, 77.0)
                 ), id
             ),
             VoteForExchangePointRateChange(
@@ -77,8 +76,7 @@ class VoteService(
                             Rate("CZK", ExchangeRateValues(22.0)),
                             Rate("USD", ExchangeRateValues(22.0))
                         )
-                    ),
-                    suggestionId = UUID.randomUUID().toString()
+                    )
                 ), id
             )
         )

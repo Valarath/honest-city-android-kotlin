@@ -60,7 +60,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select closed_exchange_point_suggestion.id, state, votes, watched_subject_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id",
+                "Select closed_exchange_point_suggestion.id, state, votes, watched_subject_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id",
                 arrayOf()
             )
         )
@@ -68,7 +68,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select closed_exchange_point_suggestion.id, status, votes, watched_subject_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "Select closed_exchange_point_suggestion.id, status, votes, watched_subject_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
@@ -76,7 +76,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestionsForWatchedSubjects(exchangePointIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select closed_exchange_point_suggestion.id, status, votes, exchange_point_id, suggestion_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.suggestion_id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(exchangePointIds)})",
+                "Select closed_exchange_point_suggestion.id, status, votes, exchange_point_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(exchangePointIds)})",
                 arrayOf(mapToQueryParamVariable(exchangePointIds))
             )
         )
@@ -87,15 +87,13 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
                 id = cursor.getString(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
-                watchedSubjectId = cursor.getString(3),
-                suggestionId = cursor.getString(4)
+                watchedSubjectId = cursor.getString(3)
             )
         )
 
     private fun getContentValues(suggestion: ClosedExchangePointSuggestion) =
         ContentValues().apply {
             put("id",suggestion.id)
-            put("suggestion_id", suggestion.suggestionId)
             put("watched_subject_id", suggestion.watchedSubjectId)
         }
 

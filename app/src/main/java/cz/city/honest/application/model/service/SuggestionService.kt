@@ -45,8 +45,7 @@ class SuggestionService(
                 UUID.randomUUID().toString(),
                 state = State.DECLINED,
                 votes = 6,
-                position = Position(55.0, 77.0),
-                suggestionId = UUID.randomUUID().toString()
+                position = Position(55.0, 77.0)
             ),
             ExchangeRateSuggestion(
                 UUID.randomUUID().toString(),
@@ -60,8 +59,7 @@ class SuggestionService(
                         Rate("CZK", ExchangeRateValues(22.0)),
                         Rate("USD", ExchangeRateValues(22.0))
                     )
-                ),
-                suggestionId = UUID.randomUUID().toString()
+                )
             )
         )
     }

@@ -71,7 +71,7 @@ class ExchangeRateSuggestionRepository(
     private fun findExchangeRateSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT exchange_rate_change_suggestion.id, state, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id",
+                "SELECT exchange_rate_change_suggestion.id, state, votes,exchange_rates_id, watched_subject_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.id",
                 arrayOf()
             )
         )
@@ -79,7 +79,7 @@ class ExchangeRateSuggestionRepository(
     private fun findExchangeRateSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
@@ -87,7 +87,7 @@ class ExchangeRateSuggestionRepository(
     private fun findExchangeRateSuggestionsForWatchedSubjects(ids: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id, suggestion_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
+                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
                 arrayOf(mapToQueryParamVariable(ids))
             )
         )
@@ -100,15 +100,13 @@ class ExchangeRateSuggestionRepository(
                     state = State.valueOf(cursor.getString(1)),
                     votes = cursor.getInt(2),
                     suggestedExchangeRate = it,
-                    watchedSubjectId = cursor.getString(4),
-                    suggestionId = cursor.getString(5)
+                    watchedSubjectId = cursor.getString(4)
                 )
             }
 
     private fun getContentValues(suggestion: ExchangeRateSuggestion) =
         ContentValues().apply {
             put("id",suggestion.id)
-            put("suggestion_id", suggestion.suggestionId)
             put("exchange_point_id", suggestion.watchedSubjectId)
             put("exchange_rates_id", suggestion.suggestedExchangeRate.id)
         }

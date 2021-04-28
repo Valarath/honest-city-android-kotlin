@@ -62,8 +62,7 @@ class MapViewModel @Inject constructor(
             id = UUID.randomUUID().toString(),
             state = State.IN_PROGRESS,
             votes = 1,
-            position = position,
-            suggestionId = UUID.randomUUID().toString()
+            position = position
         )
 
     private fun getSubjects() =

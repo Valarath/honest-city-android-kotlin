@@ -63,7 +63,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findClosedExchangePointSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, suggestion_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id",
                 arrayOf()
             )
         )
@@ -71,7 +71,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findClosedExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, suggestion_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.suggestion_id = suggestion.id where suggestion_id in( ${mapToQueryParamSymbols(subjectId)})",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
                 arrayOf(mapToQueryParamVariable(subjectId))
             )
         )
@@ -82,15 +82,13 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
                 id = cursor.getString(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
-                position = Position(cursor.getDouble(3), cursor.getDouble(4)),
-                suggestionId = cursor.getString(5)
+                position = Position(cursor.getDouble(3), cursor.getDouble(4))
             )
         )
 
     private fun getContentValues(suggestion: NewExchangePointSuggestion) =
         ContentValues().apply {
             put("id",suggestion.id)
-            put("suggestion_id", suggestion.suggestionId)
             put("latitude", suggestion.position.latitude)
             put("longitude", suggestion.position.longitude)
         }

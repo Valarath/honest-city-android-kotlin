@@ -20,9 +20,8 @@ data class NewExchangePointSuggestion(
     override val id: String,
     override val state: State,
     override val votes: Int,
-    val position: Position,
-    val suggestionId: String
-) : Suggestion(suggestionId, state, votes) {
+    val position: Position
+) : Suggestion(id, state, votes) {
     override fun toVote(userId: String): Vote = VoteForNewExchangePoint(this,userId)
 }
 
@@ -31,9 +30,8 @@ class ExchangeRateSuggestion(
     override val state: State,
     override val votes: Int,
     val watchedSubjectId: String,
-    val suggestedExchangeRate: ExchangeRate,
-    val suggestionId: String
-) : Suggestion(suggestionId, state, votes) {
+    val suggestedExchangeRate: ExchangeRate
+) : Suggestion(id, state, votes) {
     override fun toVote(userId: String): Vote = VoteForExchangePointRateChange(this,userId)
 }
 
@@ -41,9 +39,8 @@ class ClosedExchangePointSuggestion(
     override val id: String,
     override val state: State,
     override val votes: Int,
-    val watchedSubjectId: String,
-    val suggestionId: String
-) : Suggestion(suggestionId, state, votes) {
+    val watchedSubjectId: String
+) : Suggestion(id, state, votes) {
     override fun toVote(userId: String): Vote = VoteForExchangePointDelete(this,userId)
 }
 

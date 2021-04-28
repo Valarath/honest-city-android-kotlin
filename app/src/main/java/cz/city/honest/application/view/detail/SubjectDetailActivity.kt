@@ -76,7 +76,6 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
     private fun createClosedExchangePointSuggestion() = ClosedExchangePointSuggestion(
         id = UUID.randomUUID().toString(),
-        suggestionId = UUID.randomUUID().toString(),
         state = State.IN_PROGRESS,
         votes = 1,
         watchedSubjectId = getWatchedSubjectId()
