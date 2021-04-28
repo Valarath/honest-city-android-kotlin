@@ -6,6 +6,7 @@ import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.time.LocalDate
 
 
@@ -39,7 +40,8 @@ class SubjectService(
 
     override fun update(): Observable<Unit> =
         positionProvider.provide()
-            .flatMap { subjectServerSource.getSubjectsInArea(GetSubjectsRequest(it))}
+            .firstOrError()
+            .flatMapObservable { subjectServerSource.getSubjectsInArea(GetSubjectsRequest(it))}
             .flatMap {Observable.fromIterable( it.subjects.entries)}
             .map { RepositoryProvider.provide(subjectRepositories,it.key).insertList(it.value)}
             .map {  }
@@ -48,6 +50,6 @@ class SubjectService(
 
 interface PositionProvider{
 
-    fun provide():Observable<Position>
+    fun provide(): Observable<Position>
 
 }

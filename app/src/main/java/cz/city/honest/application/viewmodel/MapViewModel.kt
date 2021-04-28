@@ -36,8 +36,9 @@ class MapViewModel @Inject constructor(
 
     fun suggestNewSubject() =
         positionProvider.provide()
+            .firstOrError()
             .map { getNewExchangePointSuggestion(it) }
-            .flatMap { suggestNewSubject(it) }
+            .flatMapObservable { suggestNewSubject(it) }
             .map { addWatchedSubject(it) }
             .subscribe { it }
 
@@ -60,7 +61,7 @@ class MapViewModel @Inject constructor(
         NewExchangePointSuggestion(
             id = UUID.randomUUID().toString(),
             state = State.IN_PROGRESS,
-            votes = 0,
+            votes = 1,
             position = position,
             suggestionId = UUID.randomUUID().toString()
         )

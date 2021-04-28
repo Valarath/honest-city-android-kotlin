@@ -89,7 +89,8 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
 
     private fun getContentValues(suggestion: NewExchangePointSuggestion) =
         ContentValues().apply {
-            put("suggestion_id", suggestion.id)
+            put("id",suggestion.id)
+            put("suggestion_id", suggestion.suggestionId)
             put("latitude", suggestion.position.latitude)
             put("longitude", suggestion.position.longitude)
         }

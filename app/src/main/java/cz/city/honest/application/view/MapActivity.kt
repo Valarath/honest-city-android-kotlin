@@ -70,6 +70,8 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION),1)
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -81,8 +83,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             return
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
-        val scheduleJobs = scheduleJobs(this)
-        println(scheduleJobs)
+        //scheduleJobs(this)
     }
 
     /**
@@ -101,6 +102,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
              it.forEach { showOnMap(it) }
         })
         addUserDetailButtonBehavior()
+        addCreateSubjectButtonBehaviour()
     }
 
     private fun scheduleJobs(context: Context) =
@@ -129,7 +131,10 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
 
     private fun addCreateSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)
-            .apply { mapViewModel.suggestNewSubject()
+            .apply {
+                setOnClickListener {
+                    mapViewModel.suggestNewSubject()
+                }
                 //TODO start activity
                 }
 

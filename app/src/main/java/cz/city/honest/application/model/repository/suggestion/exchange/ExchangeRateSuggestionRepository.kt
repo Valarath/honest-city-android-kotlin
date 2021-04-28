@@ -107,7 +107,8 @@ class ExchangeRateSuggestionRepository(
 
     private fun getContentValues(suggestion: ExchangeRateSuggestion) =
         ContentValues().apply {
-            put("suggestion_id", suggestion.id)
+            put("id",suggestion.id)
+            put("suggestion_id", suggestion.suggestionId)
             put("exchange_point_id", suggestion.watchedSubjectId)
             put("exchange_rates_id", suggestion.suggestedExchangeRate.id)
         }
