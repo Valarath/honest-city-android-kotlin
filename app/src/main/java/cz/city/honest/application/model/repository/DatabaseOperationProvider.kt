@@ -61,15 +61,15 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createExchangeRateChangeSuggestionTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS exchange_rate_change_suggestion(id varchar primary key,suggestion_id varchar not null,watched_subject_id varchar not null, exchange_rates_id varchar not null, foreign key(suggestion_id) references suggestion(suggestion_id), foreign key(watched_subject_id) references watched_subject(watched_subject_id), foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
+        database.execSQL("Create table IF NOT EXISTS exchange_rate_change_suggestion(id varchar primary key,watched_subject_id varchar not null, exchange_rates_id varchar not null, foreign key(id) references suggestion(id), foreign key(watched_subject_id) references watched_subject(watched_subject_id), foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
     }
 
     private fun createCloseExchangePointSuggestionTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS closed_exchange_point_suggestion(id varchar primary key,suggestion_id varchar not null,watched_subject_id varchar not null, foreign key(suggestion_id) references suggestion(suggestion_id), foreign key(watched_subject_id) references watched_subject(watched_subject_id))")
+        database.execSQL("Create table IF NOT EXISTS closed_exchange_point_suggestion(id varchar primary key,watched_subject_id varchar not null, foreign key(id) references suggestion(id), foreign key(watched_subject_id) references watched_subject(watched_subject_id))")
     }
 
     private fun createNewExchangePointSuggestionTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS new_exchange_point_suggestion(id varchar primary key,suggestion_id varchar not null,latitude float,longitude float, foreign key(suggestion_id) references suggestion(suggestion_id))")
+        database.execSQL("Create table IF NOT EXISTS new_exchange_point_suggestion(id varchar primary key,latitude float,longitude float, foreign key(id) references suggestion(id))")
     }
 
     private fun createSuggestionTable(database: SQLiteDatabase) {
