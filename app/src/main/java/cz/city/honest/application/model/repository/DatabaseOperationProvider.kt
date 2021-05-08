@@ -25,6 +25,7 @@ class DatabaseOperationProvider constructor(
         createSubjectTables(database)
         createSuggestionsTables(database)
         createUserTables(database)
+        createSettingsTables(database)
     }
 
     private fun createSubjectTables(database: SQLiteDatabase) {
@@ -84,6 +85,14 @@ class DatabaseOperationProvider constructor(
         createUserTable(database)
         createUserVotesTable(database)
         createUserSuggestionTable(database)
+    }
+
+    private fun createSettingsTables(database: SQLiteDatabase){
+        createCurrencySettingsTable(database)
+    }
+
+    private fun createCurrencySettingsTable(database: SQLiteDatabase){
+        database.execSQL("Create table if not exists currency_settings(id varchar primary key on conflict replace, currency varchar not null, main_country_currency integer not null)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

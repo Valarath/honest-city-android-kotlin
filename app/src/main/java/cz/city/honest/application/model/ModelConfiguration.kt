@@ -20,7 +20,7 @@ import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [JobModule::class,ContextModule::class, AndroidSupportInjectionModule::class, AndroidServiceModule::class, ActivityModule::class, ServiceModule::class, GatewayModule::class, RepositoryModule::class, AndroidSupportInjectionModule::class, ViewModelModule::class, PropertyModule::class, TestConfiguration::class])
+@Component(modules = [JobModule::class,ContextModule::class, AndroidSupportInjectionModule::class, AndroidServiceModule::class, ActivityModule::class, ServiceModule::class, GatewayModule::class, RepositoryModule::class, AndroidSupportInjectionModule::class, ViewModelModule::class, PropertyModule::class])
 interface ModelConfiguration : AndroidInjector<DaggerApplication> {
 
     fun inject(application: BaseApplication): Unit;

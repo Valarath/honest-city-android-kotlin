@@ -1,11 +1,9 @@
 package cz.city.honest.application.model.repository
 
 import android.content.Context
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
-import cz.city.honest.application.model.dto.ExchangeRateSuggestion
-import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
+import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangePointRepository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangeRateRepository
@@ -19,13 +17,10 @@ import cz.city.honest.application.model.repository.vote.VoteRepository
 import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointDeleteVoteRepository
 import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointRateChangeRepository
 import cz.city.honest.application.model.repository.vote.subject.exchnge.NewExchangePointVoteRepository
-import cz.city.honest.mobile.model.dto.ExchangePoint
 import cz.city.honest.mobile.model.dto.Vote
 import cz.city.honest.mobile.model.dto.WatchedSubject
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import javax.inject.Singleton
@@ -56,6 +51,12 @@ class RepositoryModule() {
     fun getUserRepository(
         databaseOperationProvider: DatabaseOperationProvider
     ): UserRepository = UserRepository(databaseOperationProvider)
+
+    @Provides
+    @Singleton
+    fun getCurrencySettingsRepository(
+        databaseOperationProvider: DatabaseOperationProvider
+    ): CurrencySettingsRepository = CurrencySettingsRepository(databaseOperationProvider)
 
     @Provides
     @Singleton
