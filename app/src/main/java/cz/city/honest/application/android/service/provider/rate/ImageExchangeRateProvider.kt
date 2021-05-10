@@ -1,33 +1,35 @@
-package cz.city.honest.application.android.service.provider
+package cz.city.honest.application.android.service.provider.rate
 
+import androidx.lifecycle.MutableLiveData
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import cz.city.honest.application.model.dto.CurrencySettings
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
+import cz.city.honest.application.viewmodel.postClearValue
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import cz.city.honest.mobile.model.dto.ExchangeRateValues
 import cz.city.honest.mobile.model.dto.Rate
 import cz.city.honest.mobile.model.dto.Watched
-import io.reactivex.rxjava3.core.Flowable
 import java.time.LocalDate
 import java.util.*
 
-class CameraExchangeRateProvider(
-    val cameraResult: Flowable<ExchangeRate> = Flowable.empty(),
-    private val currencySettingsService: CurrencySettingsService
+class ImageExchangeRateProvider(
+    private val currencySettingsService: CurrencySettingsService,
+    private val imageExchangeRateResultProvider:ImageExchangeRateResultProvider
 ) {
 
     fun provide(image: InputImage) = TextRecognition
         .getClient()
         .process(image)
-        .addOnSuccessListener { provide(it) }
+        .addOnSuccessListener { imageExchangeRateResultProvider.result.postClearValue(provide(it)) }
 
     fun provide(text: Text) =
         currencySettingsService.get()
             .toList()
             .filter { containsAllCurrencies(it, text) }
             .map { toExchangeRate(text, it) }
+            .blockingGet()
 
     private fun containsAllCurrencies(
         it: MutableList<CurrencySettings>,
@@ -47,15 +49,15 @@ class CameraExchangeRateProvider(
         )
     }
 
-    fun toRates(text: Text, currencySettings: MutableList<CurrencySettings>): MutableSet<Rate> =
+    private fun toRates(text: Text, currencySettings: MutableList<CurrencySettings>): MutableSet<Rate> =
         currencySettings
             .map { toRate(text, it, getMainCurrency(currencySettings)) }
             .toMutableSet()
 
-    fun getMainCurrency(currencySettings: MutableList<CurrencySettings>) =
+    private fun getMainCurrency(currencySettings: MutableList<CurrencySettings>) =
         currencySettings.first { it.mainCountryCurrency }
 
-    fun toRate(
+    private fun toRate(
         text: Text,
         currencySettings: CurrencySettings,
         mainCurrency: CurrencySettings
@@ -68,7 +70,7 @@ class CameraExchangeRateProvider(
             .minBy { it.rateValues.buy }!!
 
 
-    fun toRate(line: Text.Line, currency: String) =
+    private fun toRate(line: Text.Line, currency: String) =
         Rate(
             currency = currency,
             rateValues = ExchangeRateValues(
@@ -95,3 +97,5 @@ class CameraExchangeRateProvider(
         currencySettings: CurrencySettings
     ) = it.text.toLowerCase().contains(currencySettings.currency)
 }
+
+class ImageExchangeRateResultProvider( val result: MutableLiveData<ExchangeRate>)
