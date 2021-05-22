@@ -1,0 +1,21 @@
+package cz.city.honest.application.view.camera
+
+
+import android.os.Bundle
+import androidx.fragment.app.FragmentTransaction
+import cz.city.honest.application.R
+import dagger.android.support.DaggerAppCompatActivity
+
+
+class CameraActivity : DaggerAppCompatActivity(){
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_camera)
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.camera, CameraFragment())
+        transaction.commit()
+    }
+
+}

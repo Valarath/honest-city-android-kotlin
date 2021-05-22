@@ -7,7 +7,6 @@ import cz.city.honest.application.configuration.ContextModule
 import cz.city.honest.application.job.JobModule
 import cz.city.honest.application.model.gateway.GatewayModule
 import cz.city.honest.application.model.property.PropertyModule
-import cz.city.honest.application.model.repository.TestConfiguration
 import cz.city.honest.application.model.repository.RepositoryModule
 import cz.city.honest.application.model.service.ServiceModule
 import cz.city.honest.application.view.ActivityModule

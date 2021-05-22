@@ -34,8 +34,7 @@ class ImageExchangeRateProvider(
     private fun containsAllCurrencies(
         it: MutableList<CurrencySettings>,
         text: Text
-    ) = it.map { text.text.contains(it.currency) }
-        .reduce { valueOne, valueTwo -> valueOne == valueTwo }
+    ) = it.all { text.text.contains(it.currency) }
 
 
     private fun toExchangeRate(
@@ -98,4 +97,4 @@ class ImageExchangeRateProvider(
     ) = it.text.toLowerCase().contains(currencySettings.currency)
 }
 
-class ImageExchangeRateResultProvider( val result: MutableLiveData<ExchangeRate>)
+class ImageExchangeRateResultProvider( val result: MutableLiveData<ExchangeRate> = MutableLiveData())

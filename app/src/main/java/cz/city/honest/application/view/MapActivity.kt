@@ -23,6 +23,8 @@ import com.google.android.gms.maps.model.LatLng
 import cz.city.honest.application.R
 import cz.city.honest.application.job.UpdateScheduledJob
 import cz.city.honest.application.model.property.ConnectionProperties
+import cz.city.honest.application.view.camera.CameraActivity
+import cz.city.honest.application.view.camera.CameraFragment
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsFragment
@@ -65,13 +67,16 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION),1)
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA),1)
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -131,9 +136,10 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
 
     private fun addCreateSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)
-            .apply {
-                setOnClickListener {
-                    mapViewModel.suggestNewSubject()
+            .also {
+                it.setOnClickListener {
+                    //mapViewModel.suggestNewSubject()
+                    this.startActivity(Intent(this, CameraActivity::class.java))
                 }
                 //TODO start activity
                 }
@@ -172,10 +178,16 @@ abstract class ActivityModule {
     internal abstract fun subjectDetailActivity(): SubjectDetailActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun cameraActivity(): CameraActivity
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun userDetailActivity(): UserDetailActivity
 
     @ContributesAndroidInjector
     internal abstract fun showSubjectSuggestions(): ShowSubjectSuggestionsFragment
+
+    @ContributesAndroidInjector
+    internal abstract fun cameraFragment(): CameraFragment
 
     //TODO to fragment module
     @ContributesAndroidInjector(modules = [ViewModelModule::class])

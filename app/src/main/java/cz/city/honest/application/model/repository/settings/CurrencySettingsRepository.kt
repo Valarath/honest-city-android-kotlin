@@ -61,7 +61,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
     private fun getContentValues(entity: CurrencySettings) =
         ContentValues().apply {
             put("id", entity.id)
-            put("language", entity.currency)
+            put("currency", entity.currency)
             put("main_country_currency", entity.mainCountryCurrency)
         }
 
@@ -75,13 +75,13 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
 
     private fun findLanguageSettings() =
         databaseOperationProvider.readableDatabase.rawQuery(
-            "Select id, language, main_country_currency from language_settings",
+            "Select id, currency, main_country_currency from currency_settings",
             null
         )
 
     private fun findLanguageSettings(ids: List<String>) =
         databaseOperationProvider.readableDatabase.rawQuery(
-            "Select id, language, main_country_currency from language_settings",
+            "Select id, currency, main_country_currency from currency_settings",
             arrayOf(mapToQueryParamVariable(ids))
         )
 
