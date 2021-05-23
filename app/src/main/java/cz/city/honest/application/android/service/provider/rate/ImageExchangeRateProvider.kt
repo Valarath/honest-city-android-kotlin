@@ -51,13 +51,12 @@ class ImageExchangeRateProvider(
     private fun toExchangeRate(
         text: Text,
         currencySettings: MutableList<CurrencySettings>
-    ): ExchangeRate {
-        return ExchangeRate(
+    ) = ExchangeRate(
             id = UUID.randomUUID().toString(),
             rates = toRates(text, currencySettings),
             watched = Watched(LocalDate.now(), null)
         )
-    }
+
 
     private fun toRates(
         text: Text,
@@ -74,8 +73,7 @@ class ImageExchangeRateProvider(
         text: Text,
         currencySettings: CurrencySettings,
         mainCurrency: CurrencySettings
-    ) =
-        text.textBlocks
+    ) = text.textBlocks
             .flatMap { it.lines }
             .filter { containsLineLanguage(it, currencySettings) }
             .filter { isDemand(it, mainCurrency, currencySettings) }

@@ -8,7 +8,8 @@ class ImageCameraAnalyzer(private val imageExchangeRateProvider: ImageExchangeRa
 
     override fun analyze(imageProxy: ImageProxy) {
         val image = imageProxy.image?:return
-        imageExchangeRateProvider.provide(InputImage.fromMediaImage(image,0))
+        val inputImage = InputImage.fromBitmap(ImageUtils.getInputImage(imageProxy,image), 0)
+        imageExchangeRateProvider.provide(inputImage)
             .addOnCompleteListener {  imageProxy.close()}
     }
 }
