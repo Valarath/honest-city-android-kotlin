@@ -33,12 +33,12 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
     )
 
     override fun get(ids: List<String>): Flowable<CurrencySettings> =
-        Flowable.just(findLanguageSettings(ids))
-            .flatMap { toEntities(it) { toLanguageSettings(it) } }
+        Flowable.just(findCurrencySettings(ids))
+            .flatMap { toEntities(it) { toCurrencySettings(it) } }
 
     fun get(): Flowable<CurrencySettings> =
-        Flowable.just(findLanguageSettings())
-            .flatMap { toEntities(it) { toLanguageSettings(it) } }
+        Flowable.just(findCurrencySettings())
+            .flatMap { toEntities(it) { toCurrencySettings(it) } }
 
     override fun delete(entity: CurrencySettings): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
@@ -65,7 +65,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
             put("main_country_currency", entity.mainCountryCurrency)
         }
 
-    private fun toLanguageSettings(cursor: Cursor) = Flowable.just(
+    private fun toCurrencySettings(cursor: Cursor) = Flowable.just(
         CurrencySettings(
             id = cursor.getString(0),
             currency = cursor.getString(1),
@@ -73,13 +73,13 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         )
     )
 
-    private fun findLanguageSettings() =
+    private fun findCurrencySettings() =
         databaseOperationProvider.readableDatabase.rawQuery(
             "Select id, currency, main_country_currency from currency_settings",
             null
         )
 
-    private fun findLanguageSettings(ids: List<String>) =
+    private fun findCurrencySettings(ids: List<String>) =
         databaseOperationProvider.readableDatabase.rawQuery(
             "Select id, currency, main_country_currency from currency_settings",
             arrayOf(mapToQueryParamVariable(ids))

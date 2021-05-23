@@ -16,25 +16,36 @@ import java.util.*
 
 class ImageExchangeRateProvider(
     private val currencySettingsService: CurrencySettingsService,
-    private val imageExchangeRateResultProvider:ImageExchangeRateResultProvider
+    private val imageExchangeRateResultProvider: ImageExchangeRateResultProvider
 ) {
 
     fun provide(image: InputImage) = TextRecognition
         .getClient()
         .process(image)
-        .addOnSuccessListener { imageExchangeRateResultProvider.result.postClearValue(provide(it)) }
+        .addOnSuccessListener {
+            provide(it)
+                .subscribe {
+                    imageExchangeRateResultProvider.result.postClearValue(it)
+                }
+        }
 
     fun provide(text: Text) =
         currencySettingsService.get()
             .toList()
             .filter { containsAllCurrencies(it, text) }
             .map { toExchangeRate(text, it) }
-            .blockingGet()
 
     private fun containsAllCurrencies(
-        it: MutableList<CurrencySettings>,
+        currencySettings: MutableList<CurrencySettings>,
         text: Text
-    ) = it.all { text.text.contains(it.currency) }
+    ) = currencySettings.isNotEmpty() && currencySettings.all { containsCurrency(text, it) }
+
+    private fun containsCurrency(
+        text: Text,
+        currencySettings: CurrencySettings
+    ) = text.text
+        .toLowerCase(Locale.ROOT)
+        .contains(currencySettings.currency)
 
 
     private fun toExchangeRate(
@@ -48,7 +59,10 @@ class ImageExchangeRateProvider(
         )
     }
 
-    private fun toRates(text: Text, currencySettings: MutableList<CurrencySettings>): MutableSet<Rate> =
+    private fun toRates(
+        text: Text,
+        currencySettings: MutableList<CurrencySettings>
+    ): MutableSet<Rate> =
         currencySettings
             .map { toRate(text, it, getMainCurrency(currencySettings)) }
             .toMutableSet()
@@ -65,7 +79,7 @@ class ImageExchangeRateProvider(
             .flatMap { it.lines }
             .filter { containsLineLanguage(it, currencySettings) }
             .filter { isDemand(it, mainCurrency, currencySettings) }
-            .map { toRate(it,currencySettings.currency) }
+            .map { toRate(it, currencySettings.currency) }
             .minBy { it.rateValues.buy }!!
 
 
@@ -97,4 +111,4 @@ class ImageExchangeRateProvider(
     ) = it.text.toLowerCase().contains(currencySettings.currency)
 }
 
-class ImageExchangeRateResultProvider( val result: MutableLiveData<ExchangeRate> = MutableLiveData())
+class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())
