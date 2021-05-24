@@ -47,7 +47,7 @@ class ImageExchangeRateProvider(
         currencySettings: MutableList<CurrencySetting>,
         mainCurrency: CurrencySetting
     ) = currencySettings
-        .all {validateLines(text,it, mainCurrency)  }
+        .any {validateLines(text,it, mainCurrency)  }
 
     private fun validateLines(
         text: Text,
@@ -55,13 +55,14 @@ class ImageExchangeRateProvider(
         mainCurrency: CurrencySetting
     ) = text.textBlocks
         .flatMap { it.lines }
-        .all { validateLine(it, currencySetting, mainCurrency) }
+        .any { validateLine(it, currencySetting, mainCurrency) }
 
     private fun validateLine(
         line: Text.Line,
         currencySetting: CurrencySetting,
         mainCurrency: CurrencySetting
     ) = containsLineLanguage(line, currencySetting)
+            //TODO tohle jeste zkontroluj
             && isDemand(line, mainCurrency, currencySetting)
 
     private fun containsCurrency(
