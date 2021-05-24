@@ -1,6 +1,6 @@
 package cz.city.honest.application.model.service.settings
 
-import cz.city.honest.application.model.dto.CurrencySettings
+import cz.city.honest.application.model.dto.CurrencySetting
 import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
 import cz.city.honest.application.model.service.BaseService
 import cz.city.honest.application.model.service.Updatable
@@ -14,8 +14,8 @@ class CurrencySettingsService(private val currencySettingsRepository: CurrencySe
         TODO("Not yet implemented")
     }
 
-    fun update(settings:List<CurrencySettings>)=currencySettingsRepository.updateList(settings)
+    fun update(settings:List<CurrencySetting>)=currencySettingsRepository.updateList(settings)
 
-    fun insert(settings:List<CurrencySettings>)=currencySettingsRepository.insertList(settings)
+    fun insert(settings:List<CurrencySetting>)=currencySettingsRepository.insertList(settings)
 
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
-import cz.city.honest.application.model.dto.CurrencySettings
+import cz.city.honest.application.model.dto.CurrencySetting
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
 import cz.city.honest.application.viewmodel.postClearValue
 import cz.city.honest.mobile.model.dto.ExchangeRate
@@ -36,49 +36,69 @@ class ImageExchangeRateProvider(
             .map { toExchangeRate(text, it) }
 
     private fun containsAllCurrencies(
-        currencySettings: MutableList<CurrencySettings>,
+        currencySettings: MutableList<CurrencySetting>,
         text: Text
-    ) = currencySettings.isNotEmpty() && currencySettings.all { containsCurrency(text, it) }
+    ) = currencySettings.isNotEmpty()
+            && currencySettings.all { containsCurrency(text, it) }
+            && validateLines(text,currencySettings,getMainCurrency(currencySettings))
+
+    private fun validateLines(
+        text: Text,
+        currencySettings: MutableList<CurrencySetting>,
+        mainCurrency: CurrencySetting
+    ) = currencySettings
+        .all {validateLines(text,it, mainCurrency)  }
+
+    private fun validateLines(
+        text: Text,
+        currencySetting: CurrencySetting,
+        mainCurrency: CurrencySetting
+    ) = text.textBlocks
+        .flatMap { it.lines }
+        .all { validateLine(it, currencySetting, mainCurrency) }
+
+    private fun validateLine(
+        line: Text.Line,
+        currencySetting: CurrencySetting,
+        mainCurrency: CurrencySetting
+    ) = containsLineLanguage(line, currencySetting)
+            && isDemand(line, mainCurrency, currencySetting)
 
     private fun containsCurrency(
         text: Text,
-        currencySettings: CurrencySettings
+        currencySetting: CurrencySetting
     ) = text.text
         .toLowerCase(Locale.ROOT)
-        .contains(currencySettings.currency)
+        .contains(currencySetting.currency)
 
 
     private fun toExchangeRate(
         text: Text,
-        currencySettings: MutableList<CurrencySettings>
+        currencySettings: MutableList<CurrencySetting>
     ) = ExchangeRate(
-            id = UUID.randomUUID().toString(),
-            rates = toRates(text, currencySettings),
-            watched = Watched(LocalDate.now(), null)
-        )
-
+        id = UUID.randomUUID().toString(),
+        rates = toRates(text, currencySettings),
+        watched = Watched(LocalDate.now(), null)
+    )
 
     private fun toRates(
         text: Text,
-        currencySettings: MutableList<CurrencySettings>
+        currencySettings: MutableList<CurrencySetting>
     ): MutableSet<Rate> =
         currencySettings
-            .map { toRate(text, it, getMainCurrency(currencySettings)) }
+            .map { toRate(text, it) }
             .toMutableSet()
 
-    private fun getMainCurrency(currencySettings: MutableList<CurrencySettings>) =
+    private fun getMainCurrency(currencySettings: MutableList<CurrencySetting>) =
         currencySettings.first { it.mainCountryCurrency }
 
     private fun toRate(
         text: Text,
-        currencySettings: CurrencySettings,
-        mainCurrency: CurrencySettings
+        currencySetting: CurrencySetting
     ) = text.textBlocks
-            .flatMap { it.lines }
-            .filter { containsLineLanguage(it, currencySettings) }
-            .filter { isDemand(it, mainCurrency, currencySettings) }
-            .map { toRate(it, currencySettings.currency) }
-            .minBy { it.rateValues.buy }!!
+        .flatMap { it.lines }
+        .map { toRate(it, currencySetting.currency) }
+        .minBy { it.rateValues.buy }!!
 
 
     private fun toRate(line: Text.Line, currency: String) =
@@ -97,16 +117,16 @@ class ImageExchangeRateProvider(
 
     private fun isDemand(
         it: Text.Line,
-        mainCurrency: CurrencySettings,
-        currencySettings: CurrencySettings
+        mainCurrency: CurrencySetting,
+        currencySetting: CurrencySetting
     ) = it.text
         .substringBefore(mainCurrency.currency)
-        .contains(currencySettings.currency)
+        .contains(currencySetting.currency)
 
     private fun containsLineLanguage(
         it: Text.Line,
-        currencySettings: CurrencySettings
-    ) = it.text.toLowerCase().contains(currencySettings.currency)
+        currencySetting: CurrencySetting
+    ) = it.text.toLowerCase().contains(currencySetting.currency)
 }
 
 class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())
