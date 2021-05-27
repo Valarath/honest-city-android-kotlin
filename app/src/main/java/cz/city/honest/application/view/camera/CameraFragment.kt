@@ -1,11 +1,7 @@
 package cz.city.honest.application.view.camera
 
-import android.graphics.*
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
@@ -66,27 +62,6 @@ class CameraFragment : DaggerAppCompatDialogFragment(){
         val container = view as ConstraintLayout
         val viewFinder: PreviewView = container.findViewById(R.id.viewfinder)
         viewFinder.post { setUpCamera() }
-        /*overlay.apply {
-            setZOrderOnTop(true)
-            holder.setFormat(PixelFormat.TRANSPARENT)
-            holder.addCallback(object : SurfaceHolder.Callback {
-                override fun surfaceChanged(
-                    holder: SurfaceHolder?,
-                    format: Int,
-                    width: Int,
-                    height: Int
-                ) {
-                }
-
-                override fun surfaceDestroyed(holder: SurfaceHolder?) {
-                }
-
-                override fun surfaceCreated(holder: SurfaceHolder?) {
-                    holder?.let { drawOverlay(it, 74, 8) }
-                }
-
-            })
-        }*/
 
     }
 
@@ -126,53 +101,5 @@ class CameraFragment : DaggerAppCompatDialogFragment(){
                     , ImageCameraAnalyzer(imageExchangeRateProvider)
                 )
             }
-
-
-    private fun drawOverlay(
-        holder: SurfaceHolder,
-        heightCropPercent: Int,
-        widthCropPercent: Int
-    ) {
-        val canvas = holder.lockCanvas()
-        val bgPaint = Paint().apply {
-            alpha = 140
-        }
-        canvas.drawPaint(bgPaint)
-        val rectPaint = Paint()
-        rectPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        rectPaint.style = Paint.Style.FILL
-        rectPaint.color = Color.WHITE
-        val outlinePaint = Paint()
-        outlinePaint.style = Paint.Style.STROKE
-        outlinePaint.color = Color.WHITE
-        outlinePaint.strokeWidth = 4f
-        val surfaceWidth = holder.surfaceFrame.width()
-        val surfaceHeight = holder.surfaceFrame.height()
-
-        val cornerRadius = 25f
-        // Set rect centered in frame
-        val rectTop = surfaceHeight * heightCropPercent / 2 / 100f
-        val rectLeft = surfaceWidth * widthCropPercent / 2 / 100f
-        val rectRight = surfaceWidth * (1 - widthCropPercent / 2 / 100f)
-        val rectBottom = surfaceHeight * (1 - heightCropPercent / 2 / 100f)
-        val rect = RectF(rectLeft, rectTop, rectRight, rectBottom)
-        canvas.drawRoundRect(
-            rect, cornerRadius, cornerRadius, rectPaint
-        )
-        canvas.drawRoundRect(
-            rect, cornerRadius, cornerRadius, outlinePaint
-        )
-        val textPaint = Paint()
-        textPaint.color = Color.WHITE
-        textPaint.textSize = 50F
-
-        //val overlayText = getString(R.string.overlay_help)
-        val textBounds = Rect()
-        //textPaint.getTextBounds(overlayText, 0, overlayText.length, textBounds)
-        val textX = (surfaceWidth - textBounds.width()) / 2f
-        val textY = rectBottom + textBounds.height() + 15f // put text below rect and 15f padding
-        //canvas.drawText(getString(R.string.overlay_help), textX, textY, textPaint)
-        holder.unlockCanvasAndPost(canvas)
-    }
 
 }
