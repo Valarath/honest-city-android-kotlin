@@ -58,7 +58,8 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
             menu.findItem(R.id.suggest_non_existing_subject).isEnabled = false
     }
 
-    private fun isNewSubjectSuggestion() = getWatchedSubjectId() == NewExchangePointSuggestionExchangePointConverter.getId()
+    private fun isNewSubjectSuggestion() =
+        getWatchedSubjectId() == NewExchangePointSuggestionExchangePointConverter.getId()
 
     private fun isCloseSubjectSuggestionSuggested() =
         showSubjectSuggestionsViewModel.getSuggestionsForSubject(getWatchedSubjectId())
@@ -68,10 +69,13 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         (intent.extras[INTENT_SUBJECT] as WatchedSubject).id
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        MENU_ACTIONS[item.itemId]!!.invoke()
+        if (item.itemId == android.R.id.home)
+            finish().run { true }
+        else
+            MENU_ACTIONS[item.itemId]!!.invoke()
 
     private fun suggestNonExistingSubject() = showSubjectSuggestionsViewModel
-        .suggest(createClosedExchangePointSuggestion(),UserSuggestionStateMarking.DELETE)
+        .suggest(createClosedExchangePointSuggestion(), UserSuggestionStateMarking.DELETE)
         .let { true }
 
     private fun createClosedExchangePointSuggestion() = ClosedExchangePointSuggestion(

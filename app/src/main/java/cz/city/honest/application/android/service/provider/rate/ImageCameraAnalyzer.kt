@@ -10,6 +10,6 @@ class ImageCameraAnalyzer(private val imageExchangeRateProvider: ImageExchangeRa
         val image = imageProxy.image?:return
         val inputImage = InputImage.fromBitmap(ImageUtils.getInputImage(imageProxy,image), 0)
         imageExchangeRateProvider.provide(inputImage)
-            .addOnCompleteListener {  imageProxy.close()}
+            .addOnCompleteListener { imageProxy.close()}
     }
 }
