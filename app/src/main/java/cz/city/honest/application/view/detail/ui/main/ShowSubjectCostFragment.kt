@@ -9,6 +9,7 @@ import android.widget.TableRow
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
+import cz.city.honest.application.view.component.rate.ExchangeRateTable
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.viewmodel.SubjectDetailViewModel
 import cz.city.honest.mobile.model.dto.ExchangePoint
@@ -33,74 +34,16 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = inflater.inflate(R.layout.fragment_subject_detail, container, false)
+        val root = inflater.inflate(R.layout.exchange_rate_table, container, false)
         subjectDetailViewModel.authorityRate.observe(viewLifecycleOwner, Observer {
-            showExchangePointRates(it, root)
+            ExchangeRateTable(activity!!,it,root)
         })
         return root
     }
-
-    private fun showExchangePointRates(
-        it: ExchangeRate,
-        root: View
-    ) {
-        val tableLayout = getTableLayout(root)
-        val firstRow = tableLayout.findViewById<TableRow>(R.id.exchange_rate_holder_headers)
-        tableLayout.removeAllViews()
-        tableLayout.addView(firstRow)
-        addRows(getRows(it.rates.toMap(), getExchangePointRate()), tableLayout)
-    }
-
-    private fun getExchangePointRate() =
-        (activity!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as ExchangePoint)
-            .exchangePointRate
-            .rates
-            .toMap()
-
-    private fun getTableLayout(root: View): TableLayout =
-        root.findViewById(R.id.exchange_rate_holder)
-
-    private fun addRows(
-        tableRows: List<TableRow>,
-        tableLayout: TableLayout
-    ): Unit = tableRows
-        .forEach { tableLayout.addView(it) }
-
-    private fun getRows(
-        authorityRates: Map<String, ExchangeRateValues>,
-        exchangePointRates: Map<String, ExchangeRateValues>
-    ): List<TableRow> =
-        authorityRates.entries
-            .filter { exchangePointRates[it.key] != null }
-            .map { getRow(it.value, exchangePointRates[it.key]!!, it.key) }
-
-    private fun getRow(
-        authorityRate: ExchangeRateValues,
-        exchangePointRate: ExchangeRateValues,
-        currency: String
-    ): TableRow =
-        TableRow(activity)
-            .apply {
-                this.addView(TableRowCreator.getCell(currency, activity!!))
-                this.addView(TableRowCreator.getCell(exchangePointRate.buy, activity!!))
-                this.addView(TableRowCreator.getCell(authorityRate.buy, activity!!))
-                this.addView(
-                    TableRowCreator.getCell(
-                        getPercentageDifferenceFromAuthorityRate(
-                            authorityRate,
-                            exchangePointRate
-                        ), activity!!
-                    )
-                )
-            }
-
-    private fun getPercentageDifferenceFromAuthorityRate(
-        authorityRate: ExchangeRateValues,
-        exchangePointRate: ExchangeRateValues
-    ) = (authorityRate.buy - exchangePointRate.buy) / authorityRate.buy
 
     companion object {
 

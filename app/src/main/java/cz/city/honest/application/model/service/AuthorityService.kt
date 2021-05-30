@@ -15,9 +15,10 @@ class AuthorityService(
 ) : BaseService(), Updatable {
 
     fun getAuthority(): Observable<ExchangeRate> =
-        authorityRepository
+        Observable.just(getMockExchangeRate())
+        /*authorityRepository
             .get()
-            .toObservable()
+            .toObservable()*/
 
     private fun getMockExchangeRate(): ExchangeRate = ExchangeRate(
         "",

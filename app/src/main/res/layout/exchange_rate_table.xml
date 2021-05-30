@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:id="@+id/exchange_rate_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="33dp"
+            tools:layout_editor_absoluteY="107dp">
+
+            <TableRow
+                android:id="@+id/exchange_rate_holder_headers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/currency_header" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/exchange_point_rate_header" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/authority_rate_header" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.25"
+                    android:gravity="center"
+                    android:text="@string/exchange_point_to_authority_rates_difference" />
+            </TableRow>
+
+
+        </TableLayout>
+    </ScrollView>
+
+</LinearLayout >

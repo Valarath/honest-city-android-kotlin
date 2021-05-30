@@ -87,7 +87,8 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             // scheduleJobs(this)
             return
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
+        //TODO you want these two
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
         //scheduleJobs(this)
     }
 
