@@ -25,6 +25,8 @@ import cz.city.honest.application.job.UpdateScheduledJob
 import cz.city.honest.application.model.property.ConnectionProperties
 import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.view.camera.CameraFragment
+import cz.city.honest.application.view.camera.result.CameraResultActivity
+import cz.city.honest.application.view.camera.result.CameraResultFragment
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsFragment
@@ -189,6 +191,12 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector
     internal abstract fun cameraFragment(): CameraFragment
+
+    @ContributesAndroidInjector
+    internal abstract fun cameraResultFragment(): CameraResultFragment
+
+    @ContributesAndroidInjector
+    internal abstract fun cameraResultActivity(): CameraResultActivity
 
     //TODO to fragment module
     @ContributesAndroidInjector(modules = [ViewModelModule::class])

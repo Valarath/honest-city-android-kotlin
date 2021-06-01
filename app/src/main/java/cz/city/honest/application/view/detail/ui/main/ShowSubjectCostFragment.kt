@@ -1,15 +1,15 @@
 package cz.city.honest.application.view.detail.ui.main
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableLayout
-import android.widget.TableRow
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
 import cz.city.honest.application.view.component.rate.ExchangeRateTable
+import cz.city.honest.application.view.component.rate.ExchangeRateTableData
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.viewmodel.SubjectDetailViewModel
 import cz.city.honest.mobile.model.dto.ExchangePoint
@@ -40,10 +40,17 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
     ): View {
         val root = inflater.inflate(R.layout.exchange_rate_table, container, false)
         subjectDetailViewModel.authorityRate.observe(viewLifecycleOwner, Observer {
-            ExchangeRateTable(activity!!,it,root)
+            ExchangeRateTable(activity!!,getExchangeRateTableData(it,root))
         })
         return root
     }
+
+    private fun getExchangeRateTableData(authorityRate: ExchangeRate, root: View) =
+        ExchangeRateTableData(authorityRate, getExchangePointRate(), root)
+
+    private fun getExchangePointRate() =
+        ((context as Activity)!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as ExchangePoint)
+            .exchangePointRate
 
     companion object {
 

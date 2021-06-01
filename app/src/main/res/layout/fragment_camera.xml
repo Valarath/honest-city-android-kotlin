@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/camera_layout"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.camera.CameraFragment">
@@ -11,13 +12,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-    <!--SurfaceView
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="@id/viewfinder"
-        app:layout_constraintEnd_toEndOf="@id/viewfinder"
-        app:layout_constraintBottom_toBottomOf="@id/viewfinder"
-        app:layout_constraintTop_toTopOf="@id/viewfinder" /-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

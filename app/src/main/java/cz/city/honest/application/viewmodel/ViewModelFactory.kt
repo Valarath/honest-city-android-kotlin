@@ -54,4 +54,9 @@ abstract class ViewModelModule {
     @ViewModelKey(ShowSubjectSuggestionsViewModel::class)
     internal abstract fun showSubjectSuggestionsViewModel(showSubjectSuggestionsViewModel: ShowSubjectSuggestionsViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(CameraResultViewModel::class)
+    internal abstract fun cameraResultViewModel(showSubjectSuggestionsViewModel: CameraResultViewModel): ViewModel
+
 }

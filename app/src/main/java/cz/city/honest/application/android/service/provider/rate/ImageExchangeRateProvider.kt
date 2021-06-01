@@ -23,17 +23,14 @@ class ImageExchangeRateProvider(
         .getClient()
         .process(image)
         .addOnSuccessListener {
-            provide(it)
-                .subscribe {
-                    imageExchangeRateResultProvider.result.postClearValue(it)
-                }
+            provide(it).subscribe { imageExchangeRateResultProvider.result.postClearValue(it) }
         }
 
     fun provide(text: Text) =
         currencySettingsService.get()
             .toList()
             .filter { containsAllCurrencies(it, text) }
-            .map { toExchangeRate(text, it) }
+            .map { toExchangeRate(text, it) }!!
 
     private fun containsAllCurrencies(
         currencySettings: MutableList<CurrencySetting>,
@@ -87,7 +84,7 @@ class ImageExchangeRateProvider(
         currencySettings: MutableList<CurrencySetting>
     ): MutableSet<Rate> =
         currencySettings
-            .filter {!it.mainCountryCurrency  }
+            .filter { !it.mainCountryCurrency }
             .map { toRate(text, it, getMainCurrency(currencySettings)) }
             .toMutableSet()
 
@@ -115,9 +112,9 @@ class ImageExchangeRateProvider(
 
     private fun getExchangeRateValue(line: Text.Line) =
         line.elements
-            .first { it.text.toIntOrNull() != null }
-            .text
-            .toDouble()
+            .map { it.text.replace(",", ".") }
+            .mapNotNull { it.toDoubleOrNull() }
+            .max()!!
 
     private fun isDemand(
         it: Text.Line,
@@ -142,7 +139,7 @@ class ImageExchangeRateProvider(
         mainCurrency: CurrencySetting
     ) = currencyPart
         .substringAfter(mainCurrency.currency)
-        .contains(Regex(".*\\d.*"))
+        .contains(Regex(".*\\d.*\\d.*"))
 
 
     //TODO check if this is not contains in isDemand?

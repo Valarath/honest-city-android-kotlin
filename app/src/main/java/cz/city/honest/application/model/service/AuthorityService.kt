@@ -26,7 +26,8 @@ class AuthorityService(
         mutableSetOf(
             Rate("CZE", ExchangeRateValues(1.0)),
             Rate("EUR", ExchangeRateValues(22.0)),
-            Rate("USD", ExchangeRateValues(22.0))
+            Rate("USD", ExchangeRateValues(22.0)),
+            Rate("AUD", ExchangeRateValues(10.0))
         )
     )
 

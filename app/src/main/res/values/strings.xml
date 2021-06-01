@@ -26,5 +26,11 @@
     <!-- SUBJECT MENU -->
     <string name="watched_subject_suggest_change_exchange_rate">Exchange rate</string>
     <string name="watched_subject_suggest_non_existence">Delete subject</string>
+    <string name="title_activity_camera_result_fragment">CameraResultFragment</string>
+    <!--
+
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="title_activity_camera_result">CameraResultActivity</string>
 
 </resources>

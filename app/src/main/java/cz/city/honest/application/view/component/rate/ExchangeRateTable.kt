@@ -1,6 +1,5 @@
 package cz.city.honest.application.view.component.rate
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.view.View
@@ -8,39 +7,33 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import cz.city.honest.application.R
-import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.view.detail.ui.main.TableRowCreator
 import cz.city.honest.application.view.detail.ui.main.toMap
-import cz.city.honest.mobile.model.dto.ExchangePoint
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import cz.city.honest.mobile.model.dto.ExchangeRateValues
+import java.util.*
 
 class ExchangeRateTable(
     context: Context,
-    private val authorityRate: ExchangeRate,
-    private val root: View
+    private val data:ExchangeRateTableData
 ) : LinearLayout(context) {
 
     init {
-        showExchangePointRates(authorityRate, root)
+        showExchangePointRates(data)
     }
 
     private fun showExchangePointRates(
-        it: ExchangeRate,
-        root: View
+        data:ExchangeRateTableData
     ) {
-        val tableLayout = getTableLayout(root)
+        val tableLayout = getTableLayout(data.root)
         val firstRow = tableLayout.findViewById<TableRow>(R.id.exchange_rate_holder_headers)
         tableLayout.removeAllViews()
         tableLayout.addView(firstRow)
-        addRows(getRows(it.rates.toMap(), getExchangePointRate()), tableLayout)
+        addRows(getRows(data), tableLayout)
     }
 
-    private fun getExchangePointRate() =
-        ((context as Activity)!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as ExchangePoint)
-            .exchangePointRate
-            .rates
-            .toMap()
+    private fun getRows(data: ExchangeRateTableData) =
+        getRows(data.authorityRate.rates.toMap(), data.exchangePointRate.rates.toMap())
 
     private fun getTableLayout(root: View): TableLayout =
         root.findViewById(R.id.exchange_rate_holder)
@@ -56,8 +49,8 @@ class ExchangeRateTable(
         exchangePointRates: Map<String, ExchangeRateValues>
     ): List<TableRow> =
         authorityRates.entries
-            .filter { exchangePointRates[it.key] != null }
-            .map { getRow(it.value, exchangePointRates[it.key]!!, it.key) }
+            .filter { exchangePointRates[it.getLowerCaseKey()] != null }
+            .map { getRow(it.value, exchangePointRates[it.getLowerCaseKey()]!!, it.key) }
 
     private fun getRow(
         authorityRate: ExchangeRateValues,
@@ -92,6 +85,7 @@ class ExchangeRateTable(
         authorityRate: ExchangeRateValues,
         exchangePointRate: ExchangeRateValues
     ) = ((authorityRate.buy - exchangePointRate.buy) / authorityRate.buy)
+        .times(100)
         .run { correctFormat(this) }
 
     private fun correctFormat(difference: Double): Double =
@@ -101,3 +95,11 @@ class ExchangeRateTable(
             difference
 
 }
+
+data class ExchangeRateTableData(
+    val authorityRate: ExchangeRate,
+    val exchangePointRate: ExchangeRate,
+    val root: View
+)
+
+fun Map.Entry<String, Any>.getLowerCaseKey() = this.key.toLowerCase(Locale.getDefault())
