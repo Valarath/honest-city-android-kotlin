@@ -32,5 +32,6 @@
     -->
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_camera_result">CameraResultActivity</string>
+    <string name="suggest_new_rate_text">Suggest</string>
 
 </resources>

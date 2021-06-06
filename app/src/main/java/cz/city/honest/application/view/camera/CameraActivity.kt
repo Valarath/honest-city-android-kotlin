@@ -15,4 +15,7 @@ class CameraActivity : DaggerAppCompatActivity(){
         transaction.commit()
     }
 
+    companion object{
+        const val WATCHED_SUBJECT:String ="exchangePoint"
+    }
 }

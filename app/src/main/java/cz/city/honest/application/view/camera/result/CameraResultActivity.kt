@@ -18,6 +18,6 @@ class CameraResultActivity : DaggerAppCompatActivity() {
 
     companion object {
         const val EXCHANGE_RATE_RESULT:String = "exchangeRateResult"
-        const val EXCHANGE_POINT_ID:String = "exchangePointId"
+        const val WATCHED_SUBJECT:String = "watchedSubject"
     }
 }

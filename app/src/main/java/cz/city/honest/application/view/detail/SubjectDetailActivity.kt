@@ -1,5 +1,6 @@
 package cz.city.honest.application.view.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,9 +9,9 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
-import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
+import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsViewModel
 import cz.city.honest.application.view.detail.ui.main.SubjectPagerAdapter
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
@@ -66,7 +67,9 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
             .any { it.suggestion is ClosedExchangePointSuggestion }
 
     private fun getWatchedSubjectId() =
-        (intent.extras[INTENT_SUBJECT] as WatchedSubject).id
+        getWatchedSubject().id
+
+    private fun getWatchedSubject() = (intent.extras[INTENT_SUBJECT] as WatchedSubject)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == android.R.id.home)
@@ -85,7 +88,12 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         watchedSubjectId = getWatchedSubjectId()
     )
 
-    private fun suggestExchangeRateChange() = true
+    private fun suggestExchangeRateChange() =
+        Intent(this, CameraActivity::class.java)
+            .apply { this.putExtra(CameraActivity.WATCHED_SUBJECT, getWatchedSubject()) }
+            .let { this.startActivity(it) }
+            .let { true }
+
 
     companion object {
         const val INTENT_SUBJECT: String = "intentSubject"

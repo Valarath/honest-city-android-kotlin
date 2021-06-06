@@ -19,10 +19,9 @@ import cz.city.honest.application.android.service.provider.rate.ImageExchangeRat
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateResultProvider
 import cz.city.honest.application.view.camera.result.CameraResultActivity
 import cz.city.honest.application.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
-import cz.city.honest.application.view.camera.result.CameraResultFragment
-import cz.city.honest.application.view.component.rate.ExchangeRateTable
-import cz.city.honest.application.view.component.rate.ExchangeRateTableData
+import cz.city.honest.mobile.model.dto.ExchangePoint
 import cz.city.honest.mobile.model.dto.ExchangeRate
+import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.util.concurrent.ExecutorService
@@ -54,19 +53,30 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         val root = inflater.inflate(R.layout.fragment_camera, container, false)
-        imageExchangeRateResultProvider.result.observe(viewLifecycleOwner, Observer {
-
-            val intent = Intent(activity, CameraResultActivity::class.java)
-            intent.putExtra(EXCHANGE_RATE_RESULT,it )
-            startActivity(intent)
-        })
+        imageExchangeRateResultProvider.result
+            .observe(viewLifecycleOwner,
+                Observer { showCameraAnalyzerResult(it) }
+            )
         return root
     }
 
+    private fun showCameraAnalyzerResult(exchangeRate: ExchangeRate?) {
+        exchangeRate?.let { openCameraResultActivity(it) }
+    }
+
+    private fun openCameraResultActivity(exchangeRate: ExchangeRate) {
+        val intent = Intent(activity, CameraResultActivity::class.java)
+        intent.putExtra(EXCHANGE_RATE_RESULT, exchangeRate)
+        intent.putExtra(CameraResultActivity.WATCHED_SUBJECT, getWatchedSubject())
+        startActivity(intent)
+        imageExchangeRateResultProvider.result.postValue(null)
+    }
+
+    private fun getWatchedSubject():WatchedSubject? = activity!!.intent.extras?.get(CameraActivity.WATCHED_SUBJECT)
+        .run { if(this != null)this as WatchedSubject else null }
+
     override fun onDestroyView() {
         super.onDestroyView()
-
-        // Shut down our background executor
         cameraExecutor.shutdown()
         scopedExecutor.shutdown()
     }
@@ -85,7 +95,6 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
 
     private fun initViewFinder(container: ConstraintLayout) {
         val viewFinder: PreviewView = findViewFinder(container)
-        viewFinder.visibility = View.VISIBLE
         viewFinder.post { setUpCamera() }
     }
 
@@ -102,22 +111,22 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
     }
 
     private fun bindCameraUseCases() {
-
-        val preview = Preview.Builder()
-            .build()
-            .apply { setSurfaceProvider(viewfinder.surfaceProvider) }
-
         try {
             cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, preview, getImageAnalyzer())
+            cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, getPreview(), getImageAnalyzer())
         } catch (exc: IllegalStateException) {
             println(exc)
         }
     }
 
+    private fun getPreview() =
+        Preview.Builder()
+            .build()
+            .apply { setSurfaceProvider(viewfinder.surfaceProvider) }
+
+
     private fun getImageAnalyzer() =
         ImageAnalysis.Builder()
-            // We request aspect ratio but no resolution
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {

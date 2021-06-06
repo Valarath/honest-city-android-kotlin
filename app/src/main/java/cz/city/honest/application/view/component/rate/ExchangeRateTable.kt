@@ -2,6 +2,7 @@ package cz.city.honest.application.view.component.rate
 
 import android.content.Context
 import android.graphics.Color
+import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TableLayout
@@ -11,21 +12,24 @@ import cz.city.honest.application.view.detail.ui.main.TableRowCreator
 import cz.city.honest.application.view.detail.ui.main.toMap
 import cz.city.honest.mobile.model.dto.ExchangeRate
 import cz.city.honest.mobile.model.dto.ExchangeRateValues
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
+import kotlin.math.round
 
-class ExchangeRateTable(
-    context: Context,
-    private val data:ExchangeRateTableData
-) : LinearLayout(context) {
+class ExchangeRateTable: LinearLayout {
 
-    init {
+    constructor(context: Context, attributeSet: AttributeSet):super(context,attributeSet)
+
+    constructor(context: Context, data:ExchangeRateTableData):super(context,null){
         showExchangePointRates(data)
     }
 
-    private fun showExchangePointRates(
+    fun showExchangePointRates(
         data:ExchangeRateTableData
     ) {
-        val tableLayout = getTableLayout(data.root)
+        inflate(context, R.layout.exchange_rate_table, this)
+        val tableLayout = getTableLayout()
         val firstRow = tableLayout.findViewById<TableRow>(R.id.exchange_rate_holder_headers)
         tableLayout.removeAllViews()
         tableLayout.addView(firstRow)
@@ -35,8 +39,8 @@ class ExchangeRateTable(
     private fun getRows(data: ExchangeRateTableData) =
         getRows(data.authorityRate.rates.toMap(), data.exchangePointRate.rates.toMap())
 
-    private fun getTableLayout(root: View): TableLayout =
-        root.findViewById(R.id.exchange_rate_holder)
+    private fun getTableLayout(): TableLayout =
+        findViewById(R.id.exchange_rate_holder)
 
     private fun addRows(
         tableRows: List<TableRow>,
@@ -73,7 +77,7 @@ class ExchangeRateTable(
             }
 
     private fun getPercentageDifferenceFromAuthorityRate(difference: Double) =
-        TableRowCreator.getCell(difference, context!!)
+        TableRowCreator.getCell("${BigDecimal(difference).setScale(2, RoundingMode.HALF_UP)} %", context!!)
             .apply {
                 if (difference > 0)
                     this.setTextColor(Color.GREEN)
