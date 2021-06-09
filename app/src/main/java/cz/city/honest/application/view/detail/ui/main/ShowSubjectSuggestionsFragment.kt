@@ -65,7 +65,7 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
             .decorate(view, ShowSubjectSuggestionRowDecoratorData(context,suggestion,showSubjectSuggestionsViewModel,getWatchedSubjectId()))
 
     private fun getWatchedSubjectId(): String =
-        (activity!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as WatchedSubject).id
+        (activity!!.intent.extras[SubjectDetailActivity.WATCHED_SUBJECT] as WatchedSubject).id
 
     private fun getTableLayout(root: View): TableLayout =
         root.findViewById(R.id.suggestions_holder)

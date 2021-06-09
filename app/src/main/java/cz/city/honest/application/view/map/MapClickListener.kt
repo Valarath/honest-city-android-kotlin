@@ -11,7 +11,7 @@ class MapClickListener(val context: Context) : GoogleMap.OnMarkerClickListener {
 
     override fun onMarkerClick(marker: Marker): Boolean {
         val intent = Intent(context, SubjectDetailActivity::class.java)
-        intent.putExtra(SubjectDetailActivity.INTENT_SUBJECT, marker.tag as WatchedSubject)
+        intent.putExtra(SubjectDetailActivity.WATCHED_SUBJECT, marker.tag as WatchedSubject)
         context.startActivity(intent)
         return true
     }

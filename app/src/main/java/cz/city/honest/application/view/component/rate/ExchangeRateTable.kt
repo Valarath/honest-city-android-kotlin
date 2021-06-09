@@ -63,7 +63,7 @@ class ExchangeRateTable: LinearLayout {
     ): TableRow =
         TableRow(context)
             .apply {
-                this.addView(TableRowCreator.getCell(currency, context!!))
+                this.addView(TableRowCreator.getCell(currency.toUpperCase(Locale.getDefault()), context!!))
                 this.addView(TableRowCreator.getCell(exchangePointRate.buy, context!!))
                 this.addView(TableRowCreator.getCell(authorityRate.buy, context!!))
                 this.addView(

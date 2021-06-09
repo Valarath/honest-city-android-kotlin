@@ -22,6 +22,7 @@
     <string name="title_activity_user_detail">UserDetail</string>
     <string name="vote_for_suggestion_button">Vote</string>
     <string name="delete_user_suggestion">Delete</string>
+    <string name="analyze_actual_rate">Analyze rate</string>
 
     <!-- SUBJECT MENU -->
     <string name="watched_subject_suggest_change_exchange_rate">Exchange rate</string>
@@ -33,5 +34,6 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_camera_result">CameraResultActivity</string>
     <string name="suggest_new_rate_text">Suggest</string>
+    <string name="suggest_rate_button">suggest rate</string>
 
 </resources>

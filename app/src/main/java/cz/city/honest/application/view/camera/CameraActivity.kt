@@ -16,6 +16,6 @@ class CameraActivity : DaggerAppCompatActivity(){
     }
 
     companion object{
-        const val WATCHED_SUBJECT:String ="exchangePoint"
+        const val WATCHED_SUBJECT:String ="watchedSubject"
     }
 }

@@ -6,4 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".view.detail.ui.main.ShowSubjectCostFragment">
 
+    <cz.city.honest.application.view.component.rate.ExchangeRateTable
+        android:id="@+id/exchange_rate"
+        tools:ignore="MissingConstraints"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
+    <Button
+        android:id="@+id/suggest_rate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/suggest_rate_button"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="303dp"
+        tools:ignore="MissingConstraints" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

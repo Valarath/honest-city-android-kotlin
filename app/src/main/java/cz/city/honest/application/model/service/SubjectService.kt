@@ -28,10 +28,10 @@ class SubjectService(
                 mutableListOf(),
                 ExchangeRate(
                     "", Watched(LocalDate.now(), LocalDate.now()), mutableSetOf(
-                        Rate("CZE", ExchangeRateValues(1.0)),
-                        Rate("EUR", ExchangeRateValues(17.0)),
-                        Rate("USD", ExchangeRateValues(25.0)),
-                        Rate("TRR", ExchangeRateValues(22.0))
+                        Rate("cze", ExchangeRateValues(1.0)),
+                        Rate("eur", ExchangeRateValues(17.0)),
+                        Rate("usd", ExchangeRateValues(25.0)),
+                        Rate("trr", ExchangeRateValues(22.0))
 
                     )
                 ),

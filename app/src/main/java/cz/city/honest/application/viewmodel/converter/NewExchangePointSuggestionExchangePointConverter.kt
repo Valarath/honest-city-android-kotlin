@@ -32,6 +32,6 @@ class NewExchangePointSuggestionExchangePointConverter {
             to = LocalDate.now()
         )
 
-        fun getId()= NewExchangePointSuggestion::class.java.simpleName
+        fun getId(): String = NewExchangePointSuggestion::class.java.simpleName
     }
 }

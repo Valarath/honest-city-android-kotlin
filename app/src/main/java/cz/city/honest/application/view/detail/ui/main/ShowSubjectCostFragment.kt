@@ -1,13 +1,16 @@
 package cz.city.honest.application.view.detail.ui.main
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
+import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.view.component.rate.ExchangeRateTable
 import cz.city.honest.application.view.component.rate.ExchangeRateTableData
 import cz.city.honest.application.view.detail.SubjectDetailActivity
@@ -38,19 +41,77 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = inflater.inflate(R.layout.exchange_rate_table, container, false)
-        subjectDetailViewModel.authorityRate.observe(viewLifecycleOwner, Observer {
-            ExchangeRateTable(activity!!,getExchangeRateTableData(it,root))
-        })
+        val root = inflater.inflate(R.layout.fragment_subject_detail, container, false)
+        initExchangeRateTable(root)
+        setSuggestNewRateButton(root)
         return root
     }
 
-    private fun getExchangeRateTableData(authorityRate: ExchangeRate, root: View) =
-        ExchangeRateTableData(authorityRate, getExchangePointRate(), root)
+    private fun initExchangeRateTable(root: View) {
+        subjectDetailViewModel.authorityRate.observe(viewLifecycleOwner, Observer {
+            setComponentsVisibility(root, it)
+        })
+    }
+
+    private fun findExchangeRateTable(root: View) =
+        root.findViewById<ExchangeRateTable>(R.id.exchange_rate)
+
+    private fun setComponentsVisibility(
+        root: View,
+        it: ExchangeRate
+    ) {
+        val subjectRate = getExchangePointRate()
+        if (subjectRate.rates.isEmpty())
+            showSuggestRateButtonOnly(root)
+        else
+            showExchangeRateTableOnly(root, it, subjectRate)
+    }
+
+    private fun showSuggestRateButtonOnly(
+        root: View
+    ) {
+        getSuggestRateButton(root)
+            .apply { this.visibility = View.VISIBLE }
+        findExchangeRateTable(root).visibility = View.GONE
+    }
+
+    private fun showExchangeRateTableOnly(
+        root: View,
+        it: ExchangeRate,
+        subjectRate: ExchangeRate
+    ) {
+        val exchangeRateTable = findExchangeRateTable(root)
+        setSuggestNewRateButton(root)
+        exchangeRateTable.visibility = View.VISIBLE
+        exchangeRateTable.showExchangePointRates(getExchangeRateTableData(it, subjectRate, root))
+    }
+
+    private fun setSuggestNewRateButton(root: View) =
+        getSuggestRateButton(root)
+            .apply { this.visibility = View.GONE }
+            .apply { this.setOnClickListener { suggestExchangeRateChange() } }
+
+    private fun suggestExchangeRateChange() =
+        Intent(activity, CameraActivity::class.java)
+            .apply { this.putExtra(CameraActivity.WATCHED_SUBJECT, getExchangePoint()) }
+            .let { this.startActivity(it) }
+
+    private fun getSuggestRateButton(root: View) =
+        root.findViewById<Button>(R.id.suggest_rate_button)
+
+    private fun getExchangeRateTableData(
+        authorityRate: ExchangeRate,
+        subjectRate: ExchangeRate,
+        root: View
+    ) =
+        ExchangeRateTableData(authorityRate,subjectRate, root)
 
     private fun getExchangePointRate() =
-        ((context as Activity)!!.intent.extras[SubjectDetailActivity.INTENT_SUBJECT] as ExchangePoint)
+        getExchangePoint()
             .exchangePointRate
+
+    private fun getExchangePoint() =
+        ((context as Activity)!!.intent.extras[SubjectDetailActivity.WATCHED_SUBJECT] as ExchangePoint)
 
     companion object {
 

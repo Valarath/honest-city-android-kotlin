@@ -51,6 +51,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.subject_menu, menu)
         setReportClosedSubjectButton(menu)
+        setSuggestDifferentRateButton(menu)
         return true
     }
 
@@ -58,6 +59,13 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested())
             menu.findItem(R.id.suggest_non_existing_subject).isEnabled = false
     }
+
+    private fun setSuggestDifferentRateButton(menu: Menu) =
+        menu.findItem(R.id.suggest_non_existing_subject)
+            .apply {
+                if (isNewSubjectSuggestion())
+                    this.title = R.string.analyze_actual_rate.toString()
+            }
 
     private fun isNewSubjectSuggestion() =
         getWatchedSubjectId() == NewExchangePointSuggestionExchangePointConverter.getId()
@@ -69,7 +77,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     private fun getWatchedSubjectId() =
         getWatchedSubject().id
 
-    private fun getWatchedSubject() = (intent.extras[INTENT_SUBJECT] as WatchedSubject)
+    private fun getWatchedSubject() = (intent.extras[WATCHED_SUBJECT] as WatchedSubject)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == android.R.id.home)
@@ -96,7 +104,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
 
     companion object {
-        const val INTENT_SUBJECT: String = "intentSubject"
+        const val WATCHED_SUBJECT: String = "watchedSubject"
     }
 }
 
