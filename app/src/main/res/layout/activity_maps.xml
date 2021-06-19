@@ -15,7 +15,18 @@
         android:background="@drawable/circular_button"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:text="666" />
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/login_map_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="right|top"
+        android:background="@drawable/circular_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="visible"
+        android:text="@string/map_login_button" />
 
     <Button
         android:id="@+id/add_subject"

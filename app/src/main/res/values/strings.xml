@@ -36,4 +36,9 @@
     <string name="suggest_new_rate_text">Suggest</string>
     <string name="suggest_rate_button">suggest rate</string>
 
+    <string name="facebook_app_id">147271464019967</string>
+    <string name="fb_login_protocol_scheme">fb147271464019967</string>
+    <string name="map_login_button">login</string>
+
+
 </resources>

@@ -25,11 +25,14 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
         cursor: Cursor, toEntity: (cursor: Cursor) -> Flowable<ENTITY>
     ): Flowable<ENTITY> =
         Flowable.generate {
-            if (cursor.moveToNext() && !cursor.isClosed)
+            if (cursorContainsData(cursor))
                 it.onNext(toEntity(cursor).blockingFirst())
             else
                 it.onComplete()
         }
+
+    protected fun cursorContainsData(cursor: Cursor) =
+        cursor.moveToNext() && !cursor.isClosed
 
     protected fun isCursorNotEmpty(it: Cursor) =
         it.count > 0

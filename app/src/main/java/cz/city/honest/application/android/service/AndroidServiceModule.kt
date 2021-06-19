@@ -5,6 +5,7 @@ import cz.city.honest.application.android.service.provider.AndroidPositionProvid
 import cz.city.honest.application.android.service.provider.AndroidUserProvider
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateProvider
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateResultProvider
+import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.service.PositionProvider
 import cz.city.honest.application.model.service.UserProvider
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
@@ -21,7 +22,7 @@ class AndroidServiceModule {
 
     @Provides
     @Singleton
-    fun getUserProvider(): UserProvider = AndroidUserProvider()
+    fun getUserProvider(userRepository: UserRepository): UserProvider = AndroidUserProvider(userRepository)
 
     @Provides
     @Singleton

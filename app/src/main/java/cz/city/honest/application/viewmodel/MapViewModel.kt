@@ -4,10 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
-import cz.city.honest.application.model.service.PositionProvider
-import cz.city.honest.application.model.service.SubjectService
-import cz.city.honest.application.model.service.SuggestionService
-import cz.city.honest.application.model.service.UserSuggestionService
+import cz.city.honest.application.model.service.*
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
@@ -19,20 +16,23 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(
-    var subjectService: SubjectService,
-    var suggestionService: SuggestionService,
-    var positionProvider: PositionProvider
+    private var subjectService: SubjectService,
+    private var suggestionService: SuggestionService,
+    private var positionProvider: PositionProvider,
+    private var userService: UserService
 ) : ScheduledViewModel() {
 
     val watchedSubjects: MutableLiveData<List<WatchedSubject>> = MutableLiveData()
+    val loggedUser: MutableLiveData<User> = MutableLiveData()
 
     init {
         schedule {
-            getSubjects().subscribe {
-                watchedSubjects.postClearValue(it)
-            }
+            getSubjects().subscribe { watchedSubjects.postClearValue(it) }
+            getUser().subscribe { loggedUser.postClearValue(it) }
         }
     }
+
+    private fun getUser() = userService.getUserData()
 
     fun suggestNewSubject() =
         positionProvider.provide()

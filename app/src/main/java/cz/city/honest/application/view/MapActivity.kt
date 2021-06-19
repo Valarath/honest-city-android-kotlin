@@ -11,6 +11,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -35,6 +36,7 @@ import cz.city.honest.application.view.user.UserDetailActivity
 import cz.city.honest.application.view.user.ui.main.UserDetailSuggestionsFragment
 import cz.city.honest.application.viewmodel.MapViewModel
 import cz.city.honest.application.viewmodel.ViewModelModule
+import cz.city.honest.mobile.model.dto.User
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.Module
 import dagger.android.AndroidInjectionModule
@@ -106,11 +108,23 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.setOnMarkerClickListener(MapClickListener(this))
-        mapViewModel.watchedSubjects.observe(this, Observer {
-             it.forEach { showOnMap(it) }
-        })
-        addUserDetailButtonBehavior()
+        mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
+        mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
         addCreateSubjectButtonBehaviour()
+    }
+
+    private fun getLoggedUserObserver(): Observer<User> {
+        return Observer {
+            findViewById<Button>(R.id.login_map_button).apply { visibility = View.GONE }
+            setUserDetailButton(it)
+            println(it)
+        }
+    }
+
+    private fun getWatchedSubjectObserver(): Observer<List<WatchedSubject>> {
+        return Observer {
+            it.forEach { showOnMap(it) }
+        }
     }
 
     private fun scheduleJobs(context: Context) =
@@ -130,12 +144,16 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun getUpdateScheduledJobComponentName(context: Context) =
         ComponentName(context, UpdateScheduledJob::class.java)
 
-    private fun addUserDetailButtonBehavior() {
-        val userDetail = findViewById<Button>(R.id.user_detail);
-        userDetail.setOnClickListener {
-            this.startActivity(Intent(this, UserDetailActivity::class.java))
-        }
-    }
+    private fun setUserDetailButton(user: User) =
+        findViewById<Button>(R.id.user_detail)
+            .also {
+                it.visibility = View.VISIBLE
+                it.text = user.score.toString()
+                it.setOnClickListener { setUserDetailButtonListener() }
+            }
+
+    private fun setUserDetailButtonListener() =
+        this.startActivity(Intent(this, UserDetailActivity::class.java))
 
     private fun addCreateSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)

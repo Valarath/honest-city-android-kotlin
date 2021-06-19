@@ -13,12 +13,12 @@ import java.util.*
 
 class UserService(
     val userServerSource: UserServerSource,
-    val userProvider: UserProvider,
+    private val userProvider: UserProvider,
     val userSuggestionRepository: UserSuggestionRepository
 ) : Updatable {
 
     fun getUserData(): Observable<User> =
-        Observable.just(User(UUID.randomUUID().toString(), "blbštejn", 82))
+       userProvider.provide()
 
     override fun update(): Observable<Unit> = Observable.empty()
         /*userServerSource.getUserSuggestions(getGetUserSuggestionsRequest(userProvider.provide()))
