@@ -39,6 +39,14 @@
                 android:value=".view.MapActivity" />
         </activity>
         <activity
+            android:name=".view.login.LoginActivity"
+            android:label="@string/title_activity_camera_result"
+            android:parentActivityName=".view.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.MapActivity" />
+        </activity>
+        <activity
             android:name=".view.camera.CameraActivity"
             android:label="@string/title_camera_activity"
             android:parentActivityName=".view.MapActivity">

@@ -31,6 +31,7 @@ import cz.city.honest.application.view.camera.result.CameraResultFragment
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsFragment
+import cz.city.honest.application.view.login.LoginActivity
 import cz.city.honest.application.view.map.MapClickListener
 import cz.city.honest.application.view.user.UserDetailActivity
 import cz.city.honest.application.view.user.ui.main.UserDetailSuggestionsFragment
@@ -108,6 +109,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         map.setOnMarkerClickListener(MapClickListener(this))
+        setLoginButton()
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
         addCreateSubjectButtonBehaviour()
@@ -115,11 +117,18 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
 
     private fun getLoggedUserObserver(): Observer<User> {
         return Observer {
-            findViewById<Button>(R.id.login_map_button).apply { visibility = View.GONE }
+            setLoginButton(visibility = View.GONE)
             setUserDetailButton(it)
-            println(it)
         }
     }
+
+    private fun setLoginButton(visibility: Int = View.VISIBLE) =
+        findViewById<Button>(R.id.login_map_button)
+            .apply { this.visibility = visibility }
+            .apply { this.setOnClickListener {  setLoginButtonListener()} }
+
+    private fun setLoginButtonListener() =
+        this.startActivity(Intent(this, LoginActivity::class.java))
 
     private fun getWatchedSubjectObserver(): Observer<List<WatchedSubject>> {
         return Observer {
@@ -203,6 +212,9 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun userDetailActivity(): UserDetailActivity
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun loginActivity(): LoginActivity
 
     @ContributesAndroidInjector
     internal abstract fun showSubjectSuggestions(): ShowSubjectSuggestionsFragment
