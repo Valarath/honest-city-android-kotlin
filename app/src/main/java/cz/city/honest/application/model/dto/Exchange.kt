@@ -1,6 +1,5 @@
-package cz.city.honest.mobile.model.dto
+package cz.city.honest.application.model.dto
 
-import cz.city.honest.application.model.dto.Suggestion
 import java.io.Serializable
 import java.time.LocalDate
 

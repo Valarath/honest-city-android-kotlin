@@ -51,6 +51,11 @@ class GatewayModule (){
     fun getVoteGateway(retrofit: Retrofit): VoteServerSource =
         getGateway(retrofit, VoteServerSource::class.java)
 
+    @Provides
+    @Singleton
+    fun getFacebookLoginServerSource(retrofit: Retrofit): FacebookLoginServerSource =
+        getGateway(retrofit, FacebookLoginServerSource::class.java)
+
     private fun <T> getGateway(retrofit: Retrofit, gateway: Class<T>) = retrofit.create(gateway)
 
 }

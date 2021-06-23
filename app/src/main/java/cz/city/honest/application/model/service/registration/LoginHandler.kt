@@ -1,0 +1,11 @@
+package cz.city.honest.application.model.service.registration
+
+import cz.city.honest.application.model.dto.User
+import io.reactivex.rxjava3.core.Observable
+
+abstract class LoginHandler<DATA : LoginData> {
+
+    abstract fun login(data: DATA): Observable<User>
+}
+
+interface LoginData

@@ -37,7 +37,7 @@ import cz.city.honest.application.view.user.UserDetailActivity
 import cz.city.honest.application.view.user.ui.main.UserDetailSuggestionsFragment
 import cz.city.honest.application.viewmodel.MapViewModel
 import cz.city.honest.application.viewmodel.ViewModelModule
-import cz.city.honest.mobile.model.dto.User
+import cz.city.honest.application.model.dto.User
 import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.Module
 import dagger.android.AndroidInjectionModule

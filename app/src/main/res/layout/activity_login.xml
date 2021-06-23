@@ -7,14 +7,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.login.LoginActivity">
 
-    <!--com.facebook.login.widget.LoginButton
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        tools:ignore="MissingConstraints" /-->
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="170dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

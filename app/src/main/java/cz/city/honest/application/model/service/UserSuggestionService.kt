@@ -8,7 +8,7 @@ import cz.city.honest.application.model.gateway.server.PostSuggestRequest
 import cz.city.honest.application.model.gateway.server.RemoveSuggestionRequest
 import cz.city.honest.application.model.gateway.server.SuggestionServerSource
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
-import cz.city.honest.mobile.model.dto.User
+import cz.city.honest.application.model.dto.User
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 

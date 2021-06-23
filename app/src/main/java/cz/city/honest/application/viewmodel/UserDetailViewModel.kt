@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.UserSuggestionService
-import cz.city.honest.mobile.model.dto.User
+import cz.city.honest.application.model.dto.User
 import javax.inject.Inject
 
 class UserDetailViewModel @Inject constructor(

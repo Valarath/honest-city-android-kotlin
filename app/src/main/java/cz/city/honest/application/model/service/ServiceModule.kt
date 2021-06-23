@@ -6,14 +6,21 @@ import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
+import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
+import cz.city.honest.application.model.service.registration.FacebookLoginHandler
+import cz.city.honest.application.model.service.registration.LoginData
+import cz.city.honest.application.model.service.registration.LoginHandler
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
 import cz.city.honest.application.model.service.vote.VoteService
+import cz.city.honest.application.model.dto.LoginProvider
 import cz.city.honest.mobile.model.dto.Vote
 import cz.city.honest.mobile.model.dto.WatchedSubject
+import dagger.MapKey
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
 import javax.inject.Singleton
 
 @Module
@@ -41,7 +48,8 @@ class ServiceModule {
         suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
         userSuggestionService: UserSuggestionService,
         voteService: VoteService
-    ): SuggestionService = SuggestionService(suggestionRepositories,userSuggestionService,voteService)
+    ): SuggestionService =
+        SuggestionService(suggestionRepositories, userSuggestionService, voteService)
 
     @Provides
     @Singleton
@@ -58,15 +66,26 @@ class ServiceModule {
         voteServerSource: VoteServerSource,
         voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
         userProvider: UserProvider
-    ): VoteService = VoteService(voteServerSource, voteRepositories,userProvider)
+    ): VoteService = VoteService(voteServerSource, voteRepositories, userProvider)
+
+    @Provides
+    @IntoMap
+    @LoginProviderKey(LoginProvider.FACEBOOK)
+    fun getFacebookLoginHandler(
+        serverSource: FacebookLoginServerSource,
+        userRepository: UserRepository
+    ): LoginHandler<out LoginData> = FacebookLoginHandler(serverSource, userRepository)
+
 
     @Provides
     @Singleton
     fun getUserService(
         userServerSource: UserServerSource,
         userProvider: UserProvider,
-        userSuggestionRepository: UserSuggestionRepository
-    ): UserService = UserService(userServerSource, userProvider, userSuggestionRepository)
+        userSuggestionRepository: UserSuggestionRepository,
+        loginProviders: Map<LoginProvider, @JvmSuppressWildcards LoginHandler<out LoginData>>
+    ): UserService =
+        UserService(userServerSource, userProvider, userSuggestionRepository, loginProviders)
 
     @Provides
     @Singleton
@@ -75,7 +94,7 @@ class ServiceModule {
         subjectService: SubjectService,
         userService: UserService,
         settingsService: CurrencySettingsService
-    ): List<Updatable> = listOf(authorityService, subjectService, userService,settingsService)
+    ): List<Updatable> = listOf(authorityService, subjectService, userService, settingsService)
 
     @Provides
     @Singleton
@@ -86,4 +105,13 @@ class ServiceModule {
     @Singleton
     fun getCurrencySettingsService(currencySettingsRepository: CurrencySettingsRepository): CurrencySettingsService =
         CurrencySettingsService(currencySettingsRepository)
+
 }
+
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@MapKey
+annotation class LoginProviderKey(val value: LoginProvider)

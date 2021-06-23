@@ -3,16 +3,13 @@ package cz.city.honest.application.viewmodel
 import androidx.lifecycle.MutableLiveData
 import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
+import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.model.service.*
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Observable
-import java.time.LocalDate
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(

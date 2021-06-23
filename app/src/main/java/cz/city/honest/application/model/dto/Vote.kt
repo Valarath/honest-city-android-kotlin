@@ -1,9 +1,5 @@
-package cz.city.honest.mobile.model.dto
+package cz.city.honest.application.model.dto
 
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
-import cz.city.honest.application.model.dto.ExchangeRateSuggestion
-import cz.city.honest.application.model.dto.NewExchangePointSuggestion
-import cz.city.honest.application.model.dto.Suggestion
 import java.io.Serializable
 
 abstract class Vote(open val suggestion: Suggestion, open val userId: String) : Serializable
