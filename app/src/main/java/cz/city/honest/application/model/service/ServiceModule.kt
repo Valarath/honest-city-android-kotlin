@@ -1,6 +1,6 @@
 package cz.city.honest.application.model.service
 
-import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
@@ -9,18 +9,26 @@ import cz.city.honest.application.model.repository.suggestion.SuggestionReposito
 import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
+import cz.city.honest.application.model.service.authority.AuthorityService
+import cz.city.honest.application.model.service.authorization.AuthorizationService
+import cz.city.honest.application.model.service.authorization.FacebookLoginDataProvider
+import cz.city.honest.application.model.service.authorization.LoginDataProvider
 import cz.city.honest.application.model.service.registration.FacebookLoginHandler
-import cz.city.honest.application.model.service.registration.LoginData
 import cz.city.honest.application.model.service.registration.LoginHandler
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
+import cz.city.honest.application.model.service.subject.PositionProvider
+import cz.city.honest.application.model.service.subject.SubjectService
+import cz.city.honest.application.model.service.suggestion.SuggestionService
+import cz.city.honest.application.model.service.update.PrivateUpdatable
+import cz.city.honest.application.model.service.update.PublicUpdatable
+import cz.city.honest.application.model.service.update.UpdateService
+import cz.city.honest.application.model.service.user.UserSuggestionService
 import cz.city.honest.application.model.service.vote.VoteService
-import cz.city.honest.application.model.dto.LoginProvider
-import cz.city.honest.mobile.model.dto.Vote
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.MapKey
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
 import javax.inject.Singleton
 
 @Module
@@ -40,7 +48,11 @@ class ServiceModule {
         subjectServerSource: SubjectServerSource,
         positionProvider: PositionProvider
     ): SubjectService =
-        SubjectService(subjectRepositories, subjectServerSource, positionProvider)
+        SubjectService(
+            subjectRepositories,
+            subjectServerSource,
+            positionProvider
+        )
 
     @Provides
     @Singleton
@@ -49,7 +61,11 @@ class ServiceModule {
         userSuggestionService: UserSuggestionService,
         voteService: VoteService
     ): SuggestionService =
-        SuggestionService(suggestionRepositories, userSuggestionService, voteService)
+        SuggestionService(
+            suggestionRepositories,
+            userSuggestionService,
+            voteService
+        )
 
     @Provides
     @Singleton
@@ -69,37 +85,65 @@ class ServiceModule {
     ): VoteService = VoteService(voteServerSource, voteRepositories, userProvider)
 
     @Provides
+    @Singleton
+    fun getAuthorizationService(
+        authorizationServerSource: AuthorizationServerSource,
+        userService: UserService,
+        loginHandlers: Map<String, @JvmSuppressWildcards LoginHandler<out LoginData>>,
+        loginDataProviders: Map<LoginProvider, @JvmSuppressWildcards LoginDataProvider<out LoginData>>
+    ): AuthorizationService = AuthorizationService(authorizationServerSource, userService,loginHandlers,loginDataProviders)
+
+    @Provides
+    @Singleton
+    @IntoMap
+    @StringKey("FacebookLoginData")
+    fun getFacebookLoginHandler(
+        serverSource: AuthorizationServerSource,
+        userService: UserService
+    ): LoginHandler<out LoginData> = FacebookLoginHandler(serverSource,userService)
+
+    @Provides
     @IntoMap
     @LoginProviderKey(LoginProvider.FACEBOOK)
-    fun getFacebookLoginHandler(
-        serverSource: FacebookLoginServerSource,
-        userRepository: UserRepository
-    ): LoginHandler<out LoginData> = FacebookLoginHandler(serverSource, userRepository)
+    fun getFacebookLoginDataProvider(
+    ): LoginDataProvider<out LoginData> = FacebookLoginDataProvider()
 
 
     @Provides
     @Singleton
     fun getUserService(
         userServerSource: UserServerSource,
-        userProvider: UserProvider,
         userSuggestionRepository: UserSuggestionRepository,
-        loginProviders: Map<LoginProvider, @JvmSuppressWildcards LoginHandler<out LoginData>>
+        userRepository: UserRepository
     ): UserService =
-        UserService(userServerSource, userProvider, userSuggestionRepository, loginProviders)
+        UserService(userServerSource, userSuggestionRepository,userRepository)
 
     @Provides
     @Singleton
-    fun getUpdatableServices(
-        authorityService: AuthorityService,
-        subjectService: SubjectService,
+    fun getPrivateUpdatableServices(
+        voteService: VoteService,
         userService: UserService,
-        settingsService: CurrencySettingsService
-    ): List<Updatable> = listOf(authorityService, subjectService, userService, settingsService)
+        settingsService: CurrencySettingsService,
+        userSuggestionService: UserSuggestionService
+    ): List<PrivateUpdatable> =
+        listOf(voteService, userService, settingsService,userSuggestionService)
 
     @Provides
     @Singleton
-    fun getUpdateService(updatableServices: @JvmSuppressWildcards List<Updatable>): UpdateService =
-        UpdateService(updatableServices)
+    fun getPublicUpdatableServices(
+        authorityService: AuthorityService,
+        subjectService: SubjectService
+    ): List<PublicUpdatable> =
+        listOf(authorityService, subjectService)
+
+    @Provides
+    @Singleton
+    fun getUpdateService(
+        privateUpdatableServices: @JvmSuppressWildcards List<PrivateUpdatable>,
+        publicUpdatableServices: @JvmSuppressWildcards List<PublicUpdatable>,
+        authorizationService: AuthorizationService
+    ): UpdateService =
+        UpdateService(privateUpdatableServices, publicUpdatableServices, authorizationService)
 
     @Provides
     @Singleton

@@ -4,11 +4,10 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.NewExchangePointSuggestion
+import cz.city.honest.application.model.dto.Position
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
-import cz.city.honest.application.model.repository.toBoolean
-import cz.city.honest.mobile.model.dto.Position
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 

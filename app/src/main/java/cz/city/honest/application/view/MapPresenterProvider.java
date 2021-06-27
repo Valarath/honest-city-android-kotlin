@@ -3,10 +3,10 @@ package cz.city.honest.application.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import cz.city.honest.application.model.dto.ExchangePoint;
+import cz.city.honest.application.model.dto.WatchedSubject;
 import cz.city.honest.application.view.map.ExchangePointMapPresenter;
 import cz.city.honest.application.view.map.MapPresenter;
-import cz.city.honest.mobile.model.dto.ExchangePoint;
-import cz.city.honest.mobile.model.dto.WatchedSubject;
 
 public class MapPresenterProvider {
 

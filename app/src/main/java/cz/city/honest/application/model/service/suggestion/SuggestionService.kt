@@ -1,13 +1,10 @@
-package cz.city.honest.application.model.service
+package cz.city.honest.application.model.service.suggestion
 
 import cz.city.honest.application.model.dto.*
-import cz.city.honest.application.model.gateway.server.PostSuggestRequest
-import cz.city.honest.application.model.gateway.server.RemoveSuggestionRequest
-import cz.city.honest.application.model.gateway.server.SuggestionServerSource
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
-import cz.city.honest.application.model.repository.user.UserSuggestionRepository
+import cz.city.honest.application.model.service.RepositoryProvider
+import cz.city.honest.application.model.service.user.UserSuggestionService
 import cz.city.honest.application.model.service.vote.VoteService
-import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
@@ -65,12 +62,18 @@ class SuggestionService(
     }
 
     fun suggest(suggestion: Suggestion) =
-        RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)
+        RepositoryProvider.provide(
+            suggestionRepositories,
+            suggestion::class.java
+        )
             .insert(suggestion)
             .flatMap { voteService.vote(suggestion) }
 
     fun update(suggestion: Suggestion) =
-        RepositoryProvider.provide(suggestionRepositories, suggestion::class.java)
+        RepositoryProvider.provide(
+            suggestionRepositories,
+            suggestion::class.java
+        )
             .update(updateSuggestion(suggestion))
 
     private fun updateSuggestion(suggestion: Suggestion) = suggestion.apply { this.increaseVotes() }

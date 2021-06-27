@@ -38,7 +38,7 @@ import cz.city.honest.application.view.user.ui.main.UserDetailSuggestionsFragmen
 import cz.city.honest.application.viewmodel.MapViewModel
 import cz.city.honest.application.viewmodel.ViewModelModule
 import cz.city.honest.application.model.dto.User
-import cz.city.honest.mobile.model.dto.WatchedSubject
+import cz.city.honest.application.model.dto.WatchedSubject
 import dagger.Module
 import dagger.android.AndroidInjectionModule
 import dagger.android.ContributesAndroidInjector
@@ -80,8 +80,14 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
                 Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA),1)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CAMERA
+                ), 1
+            )
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -112,20 +118,20 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         setLoginButton()
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
-        addCreateSubjectButtonBehaviour()
     }
 
     private fun getLoggedUserObserver(): Observer<User> {
         return Observer {
             setLoginButton(visibility = View.GONE)
             setUserDetailButton(it)
+            setCreateSubjectButtonBehaviour()
         }
     }
 
     private fun setLoginButton(visibility: Int = View.VISIBLE) =
         findViewById<Button>(R.id.login_map_button)
             .apply { this.visibility = visibility }
-            .apply { this.setOnClickListener {  setLoginButtonListener()} }
+            .apply { this.setOnClickListener { setLoginButtonListener() } }
 
     private fun setLoginButtonListener() =
         this.startActivity(Intent(this, LoginActivity::class.java))
@@ -164,15 +170,15 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun setUserDetailButtonListener() =
         this.startActivity(Intent(this, UserDetailActivity::class.java))
 
-    private fun addCreateSubjectButtonBehaviour() =
+    private fun setCreateSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)
+            .apply { this.visibility = View.VISIBLE }
             .also {
                 it.setOnClickListener {
-                    //mapViewModel.suggestNewSubject()
+                    mapViewModel.suggestNewSubject()
                     this.startActivity(Intent(this, CameraActivity::class.java))
                 }
-                //TODO start activity
-                }
+            }
 
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
         MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)

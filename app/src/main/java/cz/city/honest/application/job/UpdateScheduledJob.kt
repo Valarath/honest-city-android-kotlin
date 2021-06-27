@@ -2,7 +2,7 @@ package cz.city.honest.application.job
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import cz.city.honest.application.model.service.UpdateService
+import cz.city.honest.application.model.service.update.UpdateService
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 

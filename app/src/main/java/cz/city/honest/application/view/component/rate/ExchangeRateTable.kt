@@ -8,14 +8,13 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import cz.city.honest.application.R
+import cz.city.honest.application.model.dto.ExchangeRate
+import cz.city.honest.application.model.dto.ExchangeRateValues
 import cz.city.honest.application.view.detail.ui.main.TableRowCreator
 import cz.city.honest.application.view.detail.ui.main.toMap
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.ExchangeRateValues
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
-import kotlin.math.round
 
 class ExchangeRateTable: LinearLayout {
 

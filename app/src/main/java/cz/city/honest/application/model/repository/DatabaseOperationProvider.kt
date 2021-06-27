@@ -42,7 +42,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createUserTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS user(id varchar primary key ON CONFLICT REPLACE,score float,username text)")
+        database.execSQL("Create table IF NOT EXISTS user(id varchar primary key ON CONFLICT REPLACE,score float, username text, logged integer, login_provider varchar)")
     }
 
     private fun createExchangeRateTable(database: SQLiteDatabase) {

@@ -3,10 +3,9 @@ package cz.city.honest.application.model.repository.subject.exchange
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
-import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate

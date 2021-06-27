@@ -1,18 +1,20 @@
-package cz.city.honest.application.model.service
+package cz.city.honest.application.model.service.authority
 
+import cz.city.honest.application.model.dto.ExchangeRate
+import cz.city.honest.application.model.dto.ExchangeRateValues
+import cz.city.honest.application.model.dto.Rate
+import cz.city.honest.application.model.dto.Watched
 import cz.city.honest.application.model.gateway.server.AuthorityServerSource
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.ExchangeRateValues
-import cz.city.honest.mobile.model.dto.Rate
-import cz.city.honest.mobile.model.dto.Watched
+import cz.city.honest.application.model.service.BaseService
+import cz.city.honest.application.model.service.update.PublicUpdatable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
 class AuthorityService(
     val authorityRepository: AuthorityRepository,
     val authorityServerSource: AuthorityServerSource
-) : BaseService(), Updatable {
+) : BaseService(), PublicUpdatable {
 
     fun getAuthority(): Observable<ExchangeRate> =
         Observable.just(getMockExchangeRate())

@@ -13,11 +13,10 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import cz.city.honest.application.R
+import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.service.registration.FacebookLoginData
 import cz.city.honest.application.view.user.UserDetailActivity
 import cz.city.honest.application.viewmodel.LoginViewModel
-import cz.city.honest.application.model.dto.LoginProvider
-import cz.city.honest.application.model.dto.User
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -81,7 +80,7 @@ class LoginResultFacebookCallback(
     override fun onSuccess(result: LoginResult) {
         if (result.accessToken.isExpired)
             LoginManager.getInstance().logInWithReadPermissions(activity, LoginActivity.FACEBOOK_PERMISSIONS)
-        loginViewModel.loginUser(FacebookLoginData(result.accessToken), LoginProvider.FACEBOOK)
+        loginViewModel.registerUser(FacebookLoginData(result.accessToken.token))
     }
 
     override fun onCancel() {

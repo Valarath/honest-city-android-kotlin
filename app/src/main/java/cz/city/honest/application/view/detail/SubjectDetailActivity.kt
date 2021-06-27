@@ -11,11 +11,11 @@ import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsViewModel
 import cz.city.honest.application.view.detail.ui.main.SubjectPagerAdapter
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatActivity
 import java.util.*
 import javax.inject.Inject

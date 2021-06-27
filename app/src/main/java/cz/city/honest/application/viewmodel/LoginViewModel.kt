@@ -1,13 +1,14 @@
 package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import cz.city.honest.application.model.service.UserService
-import cz.city.honest.application.model.service.registration.LoginData
-import cz.city.honest.application.model.dto.LoginProvider
+import cz.city.honest.application.model.dto.LoginData
+import cz.city.honest.application.model.dto.LoginDataUser
 import cz.city.honest.application.model.dto.User
+import cz.city.honest.application.model.service.UserService
+import cz.city.honest.application.model.service.authorization.AuthorizationService
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private var userService: UserService) : ScheduledViewModel(){
+class LoginViewModel @Inject constructor(private var userService: UserService,private var authorizationService: AuthorizationService) : ScheduledViewModel(){
 
     val loggedUser: MutableLiveData<User> = MutableLiveData()
 
@@ -17,8 +18,12 @@ class LoginViewModel @Inject constructor(private var userService: UserService) :
         }
     }
 
-    fun loginUser(loginData: LoginData, loginProvider: LoginProvider) =
-        userService.login(loginProvider,loginData)
+    fun registerUser(loginData: LoginData) =
+        authorizationService.register(loginData)
+            .subscribe ()
+
+    fun loginUser(user: LoginDataUser) =
+        authorizationService.login(user)
             .subscribe ()
 
     private fun getUser() = userService.getUserData()

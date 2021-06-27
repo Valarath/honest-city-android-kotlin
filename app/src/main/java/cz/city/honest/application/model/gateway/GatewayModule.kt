@@ -53,8 +53,8 @@ class GatewayModule (){
 
     @Provides
     @Singleton
-    fun getFacebookLoginServerSource(retrofit: Retrofit): FacebookLoginServerSource =
-        getGateway(retrofit, FacebookLoginServerSource::class.java)
+    fun getAuthorizationServerSource(retrofit: Retrofit): AuthorizationServerSource =
+        getGateway(retrofit, AuthorizationServerSource::class.java)
 
     private fun <T> getGateway(retrofit: Retrofit, gateway: Class<T>) = retrofit.create(gateway)
 

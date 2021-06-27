@@ -4,13 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
-import cz.city.honest.application.model.dto.CurrencySetting
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
 import cz.city.honest.application.viewmodel.postClearValue
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.ExchangeRateValues
-import cz.city.honest.mobile.model.dto.Rate
-import cz.city.honest.mobile.model.dto.Watched
 import java.time.LocalDate
 import java.util.*
 

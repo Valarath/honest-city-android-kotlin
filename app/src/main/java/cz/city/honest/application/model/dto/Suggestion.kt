@@ -1,6 +1,5 @@
 package cz.city.honest.application.model.dto
 
-import cz.city.honest.mobile.model.dto.*
 import java.io.Serializable
 
 abstract class Suggestion(

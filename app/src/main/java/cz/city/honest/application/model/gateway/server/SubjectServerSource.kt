@@ -1,8 +1,8 @@
 package cz.city.honest.application.model.gateway.server
 
+import cz.city.honest.application.model.dto.Position
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.gateway.SubjectGateway
-import cz.city.honest.mobile.model.dto.Position
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
 

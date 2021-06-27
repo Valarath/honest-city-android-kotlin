@@ -4,11 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
-import cz.city.honest.application.model.dto.ExchangeRateSuggestion
-import cz.city.honest.application.model.dto.NewExchangePointSuggestion
-import cz.city.honest.application.model.dto.State
-import cz.city.honest.mobile.model.dto.Rate
+import cz.city.honest.application.model.dto.*
 
 
 class ClosedExchangePointSuggestionTableRowConverter :

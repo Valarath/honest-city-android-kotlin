@@ -8,11 +8,11 @@ import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
+import cz.city.honest.application.model.dto.ExchangeRate
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.view.component.rate.ExchangeRateTable
 import cz.city.honest.application.view.component.rate.ExchangeRateTableData
 import cz.city.honest.application.viewmodel.CameraResultViewModel
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
 

@@ -17,11 +17,10 @@ import cz.city.honest.application.R
 import cz.city.honest.application.android.service.provider.rate.ImageCameraAnalyzer
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateProvider
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateResultProvider
+import cz.city.honest.application.model.dto.ExchangeRate
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.view.camera.result.CameraResultActivity
 import cz.city.honest.application.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
-import cz.city.honest.mobile.model.dto.ExchangePoint
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.util.concurrent.ExecutorService
@@ -72,7 +71,7 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
         imageExchangeRateResultProvider.result.postValue(null)
     }
 
-    private fun getWatchedSubject():WatchedSubject? = activity!!.intent.extras?.get(CameraActivity.WATCHED_SUBJECT)
+    private fun getWatchedSubject(): WatchedSubject? = activity!!.intent.extras?.get(CameraActivity.WATCHED_SUBJECT)
         .run { if(this != null)this as WatchedSubject else null }
 
     override fun onDestroyView() {

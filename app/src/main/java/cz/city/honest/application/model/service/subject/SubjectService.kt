@@ -1,12 +1,14 @@
-package cz.city.honest.application.model.service
+package cz.city.honest.application.model.service.subject
 
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.gateway.server.GetSubjectsRequest
 import cz.city.honest.application.model.gateway.server.SubjectServerSource
 import cz.city.honest.application.model.repository.subject.SubjectRepository
-import cz.city.honest.mobile.model.dto.*
+import cz.city.honest.application.model.service.update.PublicUpdatable
+import cz.city.honest.application.model.service.RepositoryProvider
+
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
 import java.time.LocalDate
 
 
@@ -14,7 +16,7 @@ class SubjectService(
     val subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>,
     val subjectServerSource: SubjectServerSource,
     val positionProvider: PositionProvider
-) : Updatable {
+) : PublicUpdatable {
 
     fun getSubjects():  Flowable<out WatchedSubject> =
         Flowable.fromIterable(subjectRepositories.values)
@@ -43,7 +45,10 @@ class SubjectService(
             .firstOrError()
             .flatMapObservable { subjectServerSource.getSubjectsInArea(GetSubjectsRequest(it))}
             .flatMap {Observable.fromIterable( it.subjects.entries)}
-            .map { RepositoryProvider.provide(subjectRepositories,it.key).insertList(it.value)}
+            .map { RepositoryProvider.provide(
+                subjectRepositories,
+                it.key
+            ).insertList(it.value)}
             .map {  }
 
 }

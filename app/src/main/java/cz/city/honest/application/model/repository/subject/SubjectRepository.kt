@@ -1,24 +1,18 @@
 package cz.city.honest.application.model.repository.subject
 
 import android.content.ContentValues
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangeRateRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
-import cz.city.honest.application.model.repository.suggestion.exchange.ExchangeRateSuggestionRepository
 import cz.city.honest.application.model.service.RepositoryProvider
-import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import java.time.LocalDate
-import java.util.*
 
-abstract class SubjectRepository<WATCHED_SUBJECT:WatchedSubject>(
+abstract class SubjectRepository<WATCHED_SUBJECT: WatchedSubject>(
     databaseOperationProvider: DatabaseOperationProvider,
     protected val suggestionRepositories:Map<String,SuggestionRepository<out Suggestion>>,
     protected val exchangeRateRepository: ExchangeRateRepository

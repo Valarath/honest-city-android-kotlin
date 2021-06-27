@@ -12,8 +12,8 @@ import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.State
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.view.detail.SubjectDetailActivity
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
 

@@ -4,16 +4,11 @@ import android.content.ContentValues
 import cz.city.honest.application.model.repository.suggestion.exchange.ClosedExchangePointSuggestionRepository
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.suggestion.exchange.ExchangeRateSuggestionRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
-import cz.city.honest.mobile.model.dto.ExchangePoint
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.HonestyStatus
-import cz.city.honest.mobile.model.dto.Position
-import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate

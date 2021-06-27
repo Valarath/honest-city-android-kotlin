@@ -7,8 +7,6 @@ import android.widget.TableRow;
 import java.util.HashMap;
 import java.util.Map;
 
-import cz.city.honest.mobile.model.dto.WatchedSubject;
-
 public class ShowSubjectSuggestionRowDecoratorProvider {
 
     private static Map<Class<? extends View>, ShowSubjectSuggestionRowDecorator<? extends View>> VIEW_TO_TYPE_DECORATORS = new HashMap<>();

@@ -12,11 +12,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import cz.city.honest.application.R
+import cz.city.honest.application.model.dto.ExchangePoint
+import cz.city.honest.application.model.dto.HonestyStatus
+import cz.city.honest.application.model.dto.Position
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.view.MapActivity
-import cz.city.honest.mobile.model.dto.ExchangePoint
-import cz.city.honest.mobile.model.dto.HonestyStatus
-import cz.city.honest.mobile.model.dto.Position
-import cz.city.honest.mobile.model.dto.WatchedSubject
 import java.io.ByteArrayOutputStream
 
 

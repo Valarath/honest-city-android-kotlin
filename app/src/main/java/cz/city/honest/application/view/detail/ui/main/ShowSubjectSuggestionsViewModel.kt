@@ -2,8 +2,7 @@ package cz.city.honest.application.view.detail.ui.main
 
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
-import cz.city.honest.application.model.service.SuggestionService
-import cz.city.honest.application.model.service.UserSuggestionService
+import cz.city.honest.application.model.service.suggestion.SuggestionService
 import cz.city.honest.application.model.service.vote.VoteService
 import cz.city.honest.application.viewmodel.ScheduledViewModel
 import io.reactivex.rxjava3.core.Observable

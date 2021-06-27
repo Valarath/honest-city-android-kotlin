@@ -10,15 +10,15 @@ import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
+import cz.city.honest.application.model.dto.ExchangePoint
+import cz.city.honest.application.model.dto.ExchangeRate
+import cz.city.honest.application.model.dto.ExchangeRateValues
+import cz.city.honest.application.model.dto.Rate
 import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.view.component.rate.ExchangeRateTable
 import cz.city.honest.application.view.component.rate.ExchangeRateTableData
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.viewmodel.SubjectDetailViewModel
-import cz.city.honest.mobile.model.dto.ExchangePoint
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.ExchangeRateValues
-import cz.city.honest.mobile.model.dto.Rate
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
 

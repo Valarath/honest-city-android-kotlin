@@ -1,0 +1,23 @@
+package cz.city.honest.application.model.service.authorization
+
+import com.facebook.AccessToken
+import cz.city.honest.application.model.service.registration.FacebookLoginData
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.subjects.AsyncSubject
+
+class FacebookLoginDataProvider:LoginDataProvider<FacebookLoginData> {
+
+    override fun provide(): Single<FacebookLoginData> =
+        AsyncSubject.create<AccessToken> { AccessToken.getCurrentAccessToken() }
+            .map { getFreshAccessToken(it) }
+            .filter { !it.isExpired }
+            .map { FacebookLoginData(it.token) }
+            .toList()
+            .map { it.first() }
+
+        private fun getFreshAccessToken(accessToken: AccessToken) = accessToken.apply {
+            if(isExpired)
+                AccessToken.refreshCurrentAccessTokenAsync()
+        }
+
+}

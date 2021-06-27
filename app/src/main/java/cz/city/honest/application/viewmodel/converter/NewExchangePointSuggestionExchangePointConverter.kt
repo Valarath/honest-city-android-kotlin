@@ -1,10 +1,6 @@
 package cz.city.honest.application.viewmodel.converter
 
-import cz.city.honest.application.model.dto.NewExchangePointSuggestion
-import cz.city.honest.mobile.model.dto.ExchangePoint
-import cz.city.honest.mobile.model.dto.ExchangeRate
-import cz.city.honest.mobile.model.dto.HonestyStatus
-import cz.city.honest.mobile.model.dto.Watched
+import cz.city.honest.application.model.dto.*
 import java.time.LocalDate
 
 class NewExchangePointSuggestionExchangePointConverter {

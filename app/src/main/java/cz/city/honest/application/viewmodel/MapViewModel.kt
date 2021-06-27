@@ -1,13 +1,12 @@
 package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import cz.city.honest.application.model.dto.NewExchangePointSuggestion
-import cz.city.honest.application.model.dto.State
-import cz.city.honest.application.model.dto.User
-import cz.city.honest.application.model.dto.UserSuggestionStateMarking
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.service.*
+import cz.city.honest.application.model.service.subject.PositionProvider
+import cz.city.honest.application.model.service.subject.SubjectService
+import cz.city.honest.application.model.service.suggestion.SuggestionService
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
-import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import java.util.*
 import javax.inject.Inject

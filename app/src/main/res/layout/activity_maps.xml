@@ -35,6 +35,7 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
+        android:visibility="gone"
         android:text="+"
         android:textSize="180sp" />
 

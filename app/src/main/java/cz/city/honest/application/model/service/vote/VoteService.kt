@@ -5,9 +5,8 @@ import cz.city.honest.application.model.gateway.server.PostUpVoteRequest
 import cz.city.honest.application.model.gateway.server.VoteServerSource
 import cz.city.honest.application.model.repository.vote.VoteRepository
 import cz.city.honest.application.model.service.RepositoryProvider
-import cz.city.honest.application.model.service.Updatable
+import cz.city.honest.application.model.service.update.PrivateUpdatable
 import cz.city.honest.application.model.service.UserProvider
-import cz.city.honest.mobile.model.dto.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
@@ -17,15 +16,15 @@ class VoteService(
     val voteServerSource: VoteServerSource,
     val voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
     val userProvider: UserProvider
-) : Updatable {
+) : PrivateUpdatable {
 
-    override fun update(): Observable<Unit> =
+    override fun update(accessToken:String): Observable<Unit> =
         Flowable.fromIterable(voteRepositories.values)
             .flatMap { it.get(listOf()) }
             .toList()
             .map { PostUpVoteRequest(it.toList(), "") }
             .toObservable()
-            .flatMap { voteServerSource.upVote(it) }
+            .flatMap { voteServerSource.upVote(it,accessToken) }
 
     fun vote(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)
