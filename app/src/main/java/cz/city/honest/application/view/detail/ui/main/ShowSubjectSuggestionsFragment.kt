@@ -109,7 +109,7 @@ sealed class ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View> {
 
 class ShowSubjectSuggestionTableRowDecorator : ShowSubjectSuggestionRowDecorator<TableRow>() {
     override fun decorate(view: TableRow, data:ShowSubjectSuggestionRowDecoratorData) = view.apply {
-        if (data.votedSuggestion.suggestion.state == State.IN_PROGRESS)
+        if (data.votedSuggestion.suggestion.state == State.IN_PROGRESS && data.viewModel.loggedUser !=null)
             addView(getVoteButton(data))
     }
 }

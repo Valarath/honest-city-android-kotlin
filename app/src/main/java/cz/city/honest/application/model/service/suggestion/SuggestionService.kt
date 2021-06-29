@@ -31,13 +31,12 @@ class SuggestionService(
 
     private fun getMockSuggestions(id: String): List<Suggestion> {
         return listOf(
-            /*ClosedExchangePointSuggestion(
-                UUID.randomUUID().toString(),
-                State.IN_PROGRESS,
-                5,
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString()
-            ),*/
+            ClosedExchangePointSuggestion(
+                id =UUID.randomUUID().toString(),
+                state = State.IN_PROGRESS,
+                votes = 5,
+                watchedSubjectId = UUID.randomUUID().toString()
+            ),
             NewExchangePointSuggestion(
                 UUID.randomUUID().toString(),
                 state = State.DECLINED,
