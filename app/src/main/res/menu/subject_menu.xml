@@ -7,11 +7,11 @@
     <item
         android:id="@+id/suggest_different_rate"
         android:title="@string/watched_subject_suggest_change_exchange_rate"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never"/>
     <item
         android:id="@+id/suggest_non_existing_subject"
         android:title="@string/watched_subject_suggest_non_existence"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
 
 </menu>

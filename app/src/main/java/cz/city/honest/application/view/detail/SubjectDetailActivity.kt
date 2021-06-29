@@ -56,16 +56,26 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     }
 
     private fun setReportClosedSubjectButton(menu: Menu) {
-        if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested())
-            menu.findItem(R.id.suggest_non_existing_subject).isEnabled = false
+        if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested() || showSubjectSuggestionsViewModel.loggedUser == null)
+            menu.findItem(R.id.suggest_non_existing_subject)
+                .apply { disableMenuItem(this) }
     }
 
     private fun setSuggestDifferentRateButton(menu: Menu) =
-        menu.findItem(R.id.suggest_non_existing_subject)
+        menu.findItem(R.id.suggest_different_rate)
+            .apply {
+                if (showSubjectSuggestionsViewModel.loggedUser == null && !isNewSubjectSuggestion())
+                    disableMenuItem(this)
+            }
             .apply {
                 if (isNewSubjectSuggestion())
                     this.title = R.string.analyze_actual_rate.toString()
             }
+
+    private fun disableMenuItem(menuItem: MenuItem) = menuItem.apply {
+        this.isEnabled = false
+        this.isVisible = false
+    }
 
     private fun isNewSubjectSuggestion() =
         getWatchedSubjectId() == NewExchangePointSuggestionExchangePointConverter.getId()
