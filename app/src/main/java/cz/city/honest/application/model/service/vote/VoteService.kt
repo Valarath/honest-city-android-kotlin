@@ -13,8 +13,8 @@ import java.time.LocalDate
 import java.util.*
 
 class VoteService(
-    val voteServerSource: VoteServerSource,
-    val voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
+    private val voteServerSource: VoteServerSource,
+    private val voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
     val userProvider: UserProvider
 ) : PrivateUpdatable {
 

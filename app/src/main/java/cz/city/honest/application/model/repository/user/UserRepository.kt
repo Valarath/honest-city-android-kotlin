@@ -11,14 +11,14 @@ import cz.city.honest.application.model.repository.autorization.LoginDataReposit
 import cz.city.honest.application.model.repository.toBoolean
 import cz.city.honest.application.model.service.RepositoryProvider
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
 class UserRepository(
     operationProvider: DatabaseOperationProvider,
     val loginDataRepositories: Map<String, LoginDataRepository<out LoginData>>
-) :
-    Repository<User>(operationProvider) {
+) : Repository<User>(operationProvider) {
 
     override fun insert(entity: User): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
@@ -70,13 +70,15 @@ class UserRepository(
         findUser(loginData.userId())
             .map { toUser(it,loginData) }
 
-    fun getLoggedUser(): Single<User> =
+    fun getLoggedUser(): Maybe<User> =
         findLoggedUser()
+            .filter { cursorContainsData(it) }
             .flatMap { toUser(it) }
 
     private fun toUser(cursor: Cursor) = getLoginDataRepository(cursor.getString(4))
         .getByUserId(cursor.getString(0))
         .map { toUser(cursor, it as LoginData) }
+        .toMaybe()
 
     private fun toUser(cursor: Cursor, loginData: LoginData): User {
         return User(
@@ -91,7 +93,7 @@ class UserRepository(
     private fun findLoggedUser(): Single<Cursor> =
         Single.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, score, username, logged, login_provider,login_data_class from user where logged",
+                "Select id, score, username, logged, login_data_class from user where logged",
                 arrayOf()
             )
         )
@@ -99,7 +101,7 @@ class UserRepository(
     private fun findUser(subjectId: String): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, score, username, logged, login_provider,login_data_class from user where id = ?)",
+                "Select id, score, username, logged, login_data_class from user where id = ?",
                 arrayOf(subjectId)
             )
         )

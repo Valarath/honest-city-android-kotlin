@@ -17,7 +17,7 @@ class UserService(
 
     fun getLoggedUser(): Observable<User> = userRepository.getLoggedUser().toObservable()
 
-    fun getUserDataAsMaybe(): Maybe<User> = userRepository.getLoggedUser().toMaybe()
+    fun getUserDataAsMaybe(): Maybe<User> = userRepository.getLoggedUser()
 
     fun getUser(providerUserId: String, providerDataType: Class<out LoginData>) =
         userRepository
