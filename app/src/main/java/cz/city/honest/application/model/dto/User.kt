@@ -2,19 +2,17 @@ package cz.city.honest.application.model.dto
 
 import java.io.Serializable
 
-open class User(
+data class User(
     val id: String,
     val username: String,
     val score: Int,
     var logged: Boolean,
-    val loginProvider: LoginProvider
+    val loginData: LoginData
 ) : Serializable
 
-interface LoginData
-
-class LoginDataUser(id: String, username: String, score: Int, logged: Boolean, loginProvider: LoginProvider, val loginData: LoginData) :
-    User(id, username, score, logged, loginProvider)
-
+interface LoginData{
+    fun userId():String
+}
 
 enum class LoginProvider{
     FACEBOOK

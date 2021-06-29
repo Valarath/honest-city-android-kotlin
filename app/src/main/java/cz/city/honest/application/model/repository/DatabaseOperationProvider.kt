@@ -42,7 +42,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createUserTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS user(id varchar primary key ON CONFLICT REPLACE,score float, username text, logged integer, login_provider varchar)")
+        database.execSQL("Create table IF NOT EXISTS user(id varchar primary key ON CONFLICT REPLACE,score float, username text, logged integer, login_data_class varchar)")
     }
 
     private fun createExchangeRateTable(database: SQLiteDatabase) {
@@ -85,10 +85,20 @@ class DatabaseOperationProvider constructor(
         createUserTable(database)
         createUserVotesTable(database)
         createUserSuggestionTable(database)
+        createLoginDataTables(database)
     }
 
     private fun createSettingsTables(database: SQLiteDatabase){
         createCurrencySettingsTable(database)
+    }
+
+    private fun createLoginDataTables(database: SQLiteDatabase){
+        createFacebookLoginDataTable(database)
+    }
+
+    private fun createFacebookLoginDataTable(database: SQLiteDatabase){
+        database.execSQL("Create table IF NOT EXISTS facebook_login_data(id varchar primary key ON CONFLICT REPLACE,access_token varchar, user_id varchar not null, foreign key(user_id) references user(user_id))")
+
     }
 
     private fun createCurrencySettingsTable(database: SQLiteDatabase){

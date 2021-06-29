@@ -1,10 +1,13 @@
 package cz.city.honest.application.model.repository
 
 import android.content.Context
+import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.Vote
 import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
+import cz.city.honest.application.model.repository.autorization.FacebookLoginDataRepository
+import cz.city.honest.application.model.repository.autorization.LoginDataRepository
 import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangePointRepository
@@ -48,15 +51,24 @@ class RepositoryModule() {
 
     @Provides
     @Singleton
-    fun getUserRepository(
-        databaseOperationProvider: DatabaseOperationProvider
-    ): UserRepository = UserRepository(databaseOperationProvider)
-
-    @Provides
-    @Singleton
     fun getCurrencySettingsRepository(
         databaseOperationProvider: DatabaseOperationProvider
     ): CurrencySettingsRepository = CurrencySettingsRepository(databaseOperationProvider)
+
+    @Provides
+    @Singleton
+    @IntoMap
+    @StringKey("FacebookLoginData")
+    fun getFacebookLoginDataRepository(
+        databaseOperationProvider: DatabaseOperationProvider
+    ): LoginDataRepository<out LoginData> = FacebookLoginDataRepository(databaseOperationProvider)
+
+    @Provides
+    @Singleton
+    fun getUserRepository(
+        databaseOperationProvider: DatabaseOperationProvider,
+        loginDataRepositories: Map<String, @JvmSuppressWildcards LoginDataRepository<out LoginData>>
+    ): UserRepository = UserRepository(databaseOperationProvider,loginDataRepositories)
 
     @Provides
     @Singleton

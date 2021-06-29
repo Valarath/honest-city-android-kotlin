@@ -32,7 +32,7 @@ class UserDetailViewModel @Inject constructor(
 
     private fun getUserData() =
         userService
-            .getUserData()
+            .getLoggedUser()
             .map { subscribeUserData(it) }
             .subscribe { userData.postClearValue(it) }
 

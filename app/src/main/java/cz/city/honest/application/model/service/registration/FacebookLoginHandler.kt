@@ -1,7 +1,6 @@
 package cz.city.honest.application.model.service.registration
 
 import cz.city.honest.application.model.dto.LoginData
-import cz.city.honest.application.model.dto.LoginDataUser
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.gateway.server.AuthorizationServerSource
 import cz.city.honest.application.model.gateway.server.PostLoginRequest
@@ -14,7 +13,7 @@ class FacebookLoginHandler(
     private val userService: UserService
 ) : LoginHandler<FacebookLoginData>() {
 
-    override fun login(user: LoginDataUser): Observable<User> = serverSource
+    override fun login(user: User): Observable<User> = serverSource
         .login(PostLoginRequest(user))
         .toObservable()
         .flatMap { logUser(it.user) }
@@ -24,14 +23,20 @@ class FacebookLoginHandler(
         .toObservable()
         .flatMap { registerUser(it.user) }
 
-    private fun logUser(user: User) = user.let { it.logged=true }
-            .run { userService.update(user) }
-            .map { user }
+    private fun logUser(user: User) = user.let { it.logged = true }
+        .run { userService.update(user) }
+        .map { user }
 
-    private fun registerUser(user: User) = user.let { it.logged=true }
-            .run { userService.insert(user) }
-            .map { user }
+    private fun registerUser(user: User) = user.let { it.logged = true }
+        .run { userService.insert(user) }
+        .map { user }
 
 }
 
-data class FacebookLoginData(val accessToken: String) : LoginData
+data class FacebookLoginData(
+    val accessToken: String,
+    val facebookUserId: String,
+    val userId:String
+) : LoginData {
+    override fun userId(): String = userId
+}

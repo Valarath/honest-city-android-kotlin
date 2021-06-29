@@ -89,9 +89,8 @@ class ServiceModule {
     fun getAuthorizationService(
         authorizationServerSource: AuthorizationServerSource,
         userService: UserService,
-        loginHandlers: Map<String, @JvmSuppressWildcards LoginHandler<out LoginData>>,
-        loginDataProviders: Map<LoginProvider, @JvmSuppressWildcards LoginDataProvider<out LoginData>>
-    ): AuthorizationService = AuthorizationService(authorizationServerSource, userService,loginHandlers,loginDataProviders)
+        loginHandlers: Map<String, @JvmSuppressWildcards LoginHandler<out LoginData>>
+    ): AuthorizationService = AuthorizationService(authorizationServerSource, userService,loginHandlers)
 
     @Provides
     @Singleton
