@@ -42,7 +42,7 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(LoginViewModel::class)
-    internal abstract fun loginViewModel(viewModel: LoginViewModel): LoginViewModel
+    internal abstract fun loginViewModel(loginViewModel: LoginViewModel): ViewModel
 
     @Binds
     @IntoMap
