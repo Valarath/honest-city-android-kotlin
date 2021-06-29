@@ -8,7 +8,7 @@ import retrofit2.http.Header
 
 interface UserServerSource : UserGateway {
 
-    @GET("/user-suggestions")
+    @GET(UserEndpointsUrl.USER_SUGGESTIONS)
     fun getUserSuggestions(request: GetUserSuggestionsRequest, @Header("Authorization") accessToken:String): Observable<GetUserSuggestionsResponse>
 
 }
@@ -21,3 +21,8 @@ data class GetUserSuggestionsResponse(
     val userSuggestions: Map<Class<out Suggestion?>, List<Suggestion?>>
 
 )
+
+object UserEndpointsUrl {
+    private const val USER_PREFIX = EndpointsUrl.PRIVATE + "/user"
+    const val USER_SUGGESTIONS = "$USER_PREFIX/user-suggestions"
+}

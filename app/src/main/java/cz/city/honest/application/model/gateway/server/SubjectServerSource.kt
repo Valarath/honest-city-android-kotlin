@@ -9,7 +9,7 @@ import retrofit2.http.GET
 
 interface SubjectServerSource : SubjectGateway {
 
-    @GET("/subjects-in-area")
+    @GET(SubjectEndpointsUrl.SUBJECT_IN_AREA)
     fun getSubjectsInArea(request: GetSubjectsRequest): Observable<GetSubjectsResponse>
 }
 
@@ -20,3 +20,8 @@ data class GetSubjectsRequest(
 data class GetSubjectsResponse(
     val subjects: MutableMap<Class<out WatchedSubject>, List<WatchedSubject>>
 )
+
+object SubjectEndpointsUrl {
+    private const val SUBJECT_PREFIX = EndpointsUrl.PUBLIC + "/subject"
+    const val SUBJECT_IN_AREA = "$SUBJECT_PREFIX/subject-in-area"
+}

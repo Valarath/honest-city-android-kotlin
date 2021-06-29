@@ -3,16 +3,15 @@ package cz.city.honest.application.model.gateway.server
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.gateway.SuggestionGateway
 import io.reactivex.rxjava3.core.Observable
-import reactor.core.publisher.Mono
 import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface SuggestionServerSource : SuggestionGateway {
 
-    @POST("/remove")
+    @POST(SuggestionEndpointsUrl.REMOVE)
     fun remove(request: RemoveSuggestionRequest,@Header("Authorization") accessToken:String): Observable<Unit>
 
-    @POST("/suggest")
+    @POST(SuggestionEndpointsUrl.SUGGEST)
     fun suggest(request: PostSuggestRequest, @Header("Authorization") accessToken:String): Observable<Unit>
 }
 
@@ -24,3 +23,9 @@ data class RemoveSuggestionRequest(
 data class PostSuggestRequest(
     val newExchangePointSuggestions: List<Suggestion>
 )
+
+object SuggestionEndpointsUrl {
+    private const val SUGGESTION_PREFIX = EndpointsUrl.PRIVATE + "/suggestion"
+    const val SUGGEST = "$SUGGESTION_PREFIX/suggest"
+    const val REMOVE = "$SUGGESTION_PREFIX/remove"
+}

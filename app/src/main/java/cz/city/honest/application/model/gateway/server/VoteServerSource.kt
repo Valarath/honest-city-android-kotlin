@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface VoteServerSource  {
 
-    @POST("/up-vote")
+    @POST(VoteEndpointsUrl.UP_VOTE)
     fun upVote(request: PostUpVoteRequest,@Header("Authorization") accessToken:String): Observable<Unit>
 
 }
@@ -17,3 +17,7 @@ data class PostUpVoteRequest(
     val userId: String
 )
 
+object VoteEndpointsUrl {
+    private const val VOTE_PREFIX = EndpointsUrl.PRIVATE + "/vote"
+    const val UP_VOTE = "$VOTE_PREFIX/up-vote"
+}

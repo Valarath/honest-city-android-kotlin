@@ -7,7 +7,7 @@ import retrofit2.http.GET
 
 interface AuthorityServerSource : AuthorityGateway {
 
-    @GET("/rate")
+    @GET(AuthorityEndpointsUrl.GET_RATE)
     fun getRate(): Observable<GetCentralAuthorityRateResponse>
 
 }
@@ -16,3 +16,10 @@ interface AuthorityServerSource : AuthorityGateway {
 data class GetCentralAuthorityRateResponse(
     val exchangeRate: ExchangeRate
 )
+
+object AuthorityEndpointsUrl{
+
+        private const val AUTHORITY_PREFIX: String = EndpointsUrl.PUBLIC + "/authority"
+        const val GET_RATE = "$AUTHORITY_PREFIX/rate"
+
+}
