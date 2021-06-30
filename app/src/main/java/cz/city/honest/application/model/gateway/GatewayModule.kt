@@ -8,6 +8,8 @@ import dagger.Provides
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
@@ -20,8 +22,8 @@ class GatewayModule (){
     fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
         .baseUrl(connectionProperties.baseUrl)
-        //.addConverterFactory(GsonConverterFactory.create())
-        //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
 
 

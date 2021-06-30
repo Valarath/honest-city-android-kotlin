@@ -9,6 +9,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <uses-feature android:name="android.hardware.camera.any" />
 
@@ -21,7 +24,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".view.user.UserDetailActivity"
             android:label="@string/title_activity_user_detail"
@@ -104,7 +108,13 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
+        
+        <provider
+            android:authorities="cz.city.honest.application"
+            android:syncable="true"
+            android:exported="false"
+            android:name="cz.city.honest.application.android.service.sync.SyncContentProvider"/>
+        
         <service android:name=".android.service.authentication.AccountAuthenticationService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -112,6 +122,16 @@
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator" />
+        </service>
+
+        <service android:name=".android.service.sync.SyncAdapterService"
+            android:exported="true"
+            android:process=":sync">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter" />
         </service>
 
         <service

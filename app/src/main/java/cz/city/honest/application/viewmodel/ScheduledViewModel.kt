@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 open class ScheduledViewModel : ViewModel() {
 
     protected fun schedule(schedule: () -> Unit) = Executors.newSingleThreadScheduledExecutor()
-        .scheduleAtFixedRate(schedule, 0, 5, TimeUnit.MINUTES)
+        .scheduleAtFixedRate(schedule, 0, 25, TimeUnit.MINUTES)
 }
 
 fun <DATA>MutableLiveData<DATA>.postClearValue(value: DATA) = this.apply {

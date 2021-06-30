@@ -5,11 +5,12 @@ import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
 import android.content.Context
 import android.os.Bundle
+import java.lang.UnsupportedOperationException
 
 class AccountAuthenticator(context: Context) :AbstractAccountAuthenticator(context) {
 
     override fun getAuthTokenLabel(authTokenType: String?): String {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     override fun confirmCredentials(
@@ -31,7 +32,7 @@ class AccountAuthenticator(context: Context) :AbstractAccountAuthenticator(conte
         authTokenType: String?,
         options: Bundle?
     ): Bundle {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     override fun hasFeatures(
@@ -39,7 +40,7 @@ class AccountAuthenticator(context: Context) :AbstractAccountAuthenticator(conte
         account: Account?,
         features: Array<out String>?
     ): Bundle {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 
     override fun editProperties(
@@ -54,6 +55,6 @@ class AccountAuthenticator(context: Context) :AbstractAccountAuthenticator(conte
         requiredFeatures: Array<out String>?,
         options: Bundle?
     ): Bundle {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException()
     }
 }

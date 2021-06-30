@@ -41,6 +41,9 @@
 
     <string name="facebook_app_id">147271464019967</string>
     <string name="fb_login_protocol_scheme">fb147271464019967</string>
+    <string name="sync_account_type">honest.city.cz</string>
+    <string name="content_authority">cz.city.honest.application</string>
+    <string name="sync_account">placeholderaccount</string>
     <string name="map_login_button">login</string>
 
 

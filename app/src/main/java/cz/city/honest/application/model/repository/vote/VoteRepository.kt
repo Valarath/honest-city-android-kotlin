@@ -16,8 +16,8 @@ import io.reactivex.rxjava3.core.Observable
 
 abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     operationProvider: DatabaseOperationProvider,
-    val suggestionTypeClass: Class<SUGGESTION_TYPE>,
-    val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+    private val suggestionTypeClass: Class<SUGGESTION_TYPE>,
+    private val suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
 ) :
     Repository<VOTE_ENTITY>(operationProvider) {
 

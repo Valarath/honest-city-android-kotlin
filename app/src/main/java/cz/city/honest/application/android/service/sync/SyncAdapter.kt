@@ -4,17 +4,15 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.*
 import android.os.Bundle
+import cz.city.honest.application.model.service.update.UpdateService
 import io.reactivex.rxjava3.core.Observable
 
 class SyncAdapter @JvmOverloads constructor(
     context: Context,
     autoInitialize: Boolean,
-    allowParallelSyncs: Boolean = false
+    allowParallelSyncs: Boolean = false,
+    private val updateService: UpdateService
 ) : AbstractThreadedSyncAdapter(context, autoInitialize, allowParallelSyncs) {
-
-
-    private val accountManager = AccountManager.get(context)
-    private val contentResolver: ContentResolver = context.contentResolver
 
     override fun onPerformSync(
         account: Account?,
@@ -23,9 +21,7 @@ class SyncAdapter @JvmOverloads constructor(
         provider: ContentProviderClient?,
         syncResult: SyncResult?
     ) {
-        //TODO tady udelej veskerej sync
-        accountManager.blockingGetAuthToken(account,"access",false)
-        Observable.just(accountManager.blockingGetAuthToken(account,"access",false)).subscribe {}
+        updateService.update().subscribe()
     }
 
 

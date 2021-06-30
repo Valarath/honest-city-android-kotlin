@@ -4,19 +4,20 @@ import cz.city.honest.application.model.service.authorization.AuthorizationServi
 import io.reactivex.rxjava3.core.Observable
 
 class UpdateService(
-    private val privateUpdatableServices:List<PrivateUpdatable>,
+    private val privateUpdatableServices: List<PrivateUpdatable>,
     private val publicUpdatableServices: List<PublicUpdatable>,
     private val authorizationService: AuthorizationService
-){
+) {
 
     fun update(): Observable<Unit> =
-        authorizationService.getUserToken()
-            .doAfterSuccess { updatePrivate(it) }
-            .doFinally { updatePublic() }
-            .toObservable()
-            .map { }
+        Observable.merge(updatePublic(),updatePrivate())
 
-    private fun updatePrivate(accessToken:String) = Observable
+    private fun updatePrivate() = authorizationService
+        .getUserToken()
+        .toObservable()
+        .flatMap { updatePrivate(it) }
+
+    private fun updatePrivate(accessToken: String) = Observable
         .fromIterable(privateUpdatableServices)
         .flatMap { it.update(accessToken) }
 
@@ -26,14 +27,14 @@ class UpdateService(
 
 }
 
-interface PrivateUpdatable{
+interface PrivateUpdatable {
 
-    fun update(accessToken:String):Observable<Unit>
+    fun update(accessToken: String): Observable<Unit>
 
 }
 
-interface PublicUpdatable{
+interface PublicUpdatable {
 
-    fun update():Observable<Unit>
+    fun update(): Observable<Unit>
 
 }

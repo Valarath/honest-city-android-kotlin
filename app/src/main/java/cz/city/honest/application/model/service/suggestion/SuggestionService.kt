@@ -22,6 +22,8 @@ class SuggestionService(
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Observable.fromIterable(getMockSuggestions(id))
+        //Observable.fromIterable(suggestionRepositories.values).flatMap { it.get() }
+
 
     fun <SUGGESTION_TYPE : Suggestion> getSuggestions(clazz: Class<SUGGESTION_TYPE>): Flowable<out SUGGESTION_TYPE> =
         (RepositoryProvider.provide(

@@ -1,9 +1,12 @@
 package cz.city.honest.application.view
 
 import android.Manifest
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -100,7 +103,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         }
         //TODO you want these two
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
-        //scheduleJobs(this)
+        scheduleJobs(this)
     }
 
     /**
@@ -119,6 +122,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
     }
+
 
     private fun getLoggedUserObserver(): Observer<User> {
         return Observer {
@@ -145,6 +149,13 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun scheduleJobs(context: Context) =
         context.getSystemService(JobScheduler::class.java)
             .schedule(getJobInfoUpdateBuilder(context))
+
+    private fun setSyncAdapter() = ContentResolver.addPeriodicSync(
+        createSyncAccount(),
+        getString(R.string.content_authority),
+        Bundle.EMPTY,
+        1
+    )
 
 
     private fun getJobInfoUpdateBuilder(context: Context) =
@@ -183,6 +194,13 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
         MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)
     }
+
+    private fun createSyncAccount(): Account =
+        (getSystemService(Context.ACCOUNT_SERVICE) as AccountManager).run {
+            Account(getString(R.string.sync_account), getString(R.string.sync_account_type))
+                .also { this.addAccountExplicitly(it, null, null) }
+        }
+
 
     override fun onLocationChanged(location: Location) {
         map.moveCamera(CameraUpdateFactory.newLatLng(location.toLatLng()))
