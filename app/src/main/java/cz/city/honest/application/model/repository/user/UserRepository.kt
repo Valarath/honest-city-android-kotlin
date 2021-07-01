@@ -44,7 +44,7 @@ class UserRepository(
             .flatMap { it.update(entity.loginData) }
 
     private fun getLoginDataRepository(loginDataType: String) = RepositoryProvider
-        .provide(loginDataRepositories, loginDataType)
+        .provideLoginDataRepository(loginDataRepositories, loginDataType)
 
     private fun getContentValues(entity: User): ContentValues = ContentValues().apply {
         put("id", entity.id)

@@ -18,7 +18,7 @@ data class GetUserSuggestionsRequest(
 )
 
 data class GetUserSuggestionsResponse(
-    val userSuggestions: Map<Class<out Suggestion?>, List<Suggestion?>>
+    val userSuggestions: Map<String, List<Suggestion?>>
 
 )
 
