@@ -9,6 +9,7 @@ import cz.city.honest.application.model.repository.Repository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangePointRepository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangeRateRepository
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 
 class AuthorityRepository(
@@ -23,14 +24,14 @@ class AuthorityRepository(
             getContentValues(entity),
             SQLiteDatabase.CONFLICT_REPLACE
         )
-    )
+    ).flatMap { exchangeRateRepository.insert(entity) }
 
     override fun update(entity: ExchangeRate): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(entity),
             "where exchange_rates_id = ?",
-            arrayOf(entity.id.toString())
+            arrayOf(entity.id)
         )
     )
 
@@ -42,21 +43,29 @@ class AuthorityRepository(
         Flowable.just(findAuthorityExchangeRates())
             .flatMap { toEntities(it) { exchangeRateRepository.get(getAsIdsList(it)) } }
 
+    fun getOne(): Maybe<ExchangeRate> =
+        Maybe.just(findAuthorityExchangeRates())
+            .filter { cursorContainsData(it) }
+            .flatMap { exchangeRateRepository.get(it.getString(0))  }
+
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
-            ExchangePointRepository.TABLE_NAME,
+            TABLE_NAME,
             "where id = ?",
-            arrayOf(entity.id.toString())
+            arrayOf(entity.id)
         )
     )
 
-    fun delete(): Observable<Int> = Observable.just(
-        databaseOperationProvider.writableDatabase.delete(
-            ExchangePointRepository.TABLE_NAME,
-            null,
-            null
-        )
-    )
+    fun delete(): Observable<Int> = get()
+        .toObservable()
+        .flatMap { exchangeRateRepository.delete(it) }
+        .map {
+            databaseOperationProvider.writableDatabase.delete(
+                TABLE_NAME,
+                null,
+                null
+            )
+        }
 
     private fun getAsIdsList(cursor: Cursor) = listOf(cursor.getString(0))
 

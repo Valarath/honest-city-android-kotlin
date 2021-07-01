@@ -51,7 +51,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createAuthorityTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS authority(exchange_rates_id varchar not null,foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
+        database.execSQL("Create table IF NOT EXISTS authority(exchange_rates_id varchar primary key ON CONFLICT REPLACE not null,foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
     }
 
     private fun createSuggestionsTables(database: SQLiteDatabase) {

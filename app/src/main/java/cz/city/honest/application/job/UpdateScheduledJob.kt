@@ -18,9 +18,7 @@ class UpdateScheduledJob() : JobService() {
             .let { true }
 
 
-    override fun onStopJob(p0: JobParameters?): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun onStopJob(p0: JobParameters?): Boolean =true
 
     override fun onCreate() {
         super.onCreate()

@@ -7,6 +7,7 @@ import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
 
@@ -27,6 +28,12 @@ class ExchangeRateRepository (
     override fun get(id: List<String>): Flowable<ExchangeRate> = findExchangeRates(id)
     .flatMap { toEntities(it) { toExchangeRate(it) } }
 
+    fun get(id: String): Maybe<ExchangeRate> =
+        findExchangeRate(id)
+            .filter { cursorContainsData(it) }
+            .map { asExchangeRate(it) }
+
+
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.concat(
         deleteExchangeRates(entity.id),
         deleteExchangeRate(entity.id)
@@ -37,7 +44,7 @@ class ExchangeRateRepository (
             EXCHANGE_RATES_TABLE,
             getExchangeRatesContentValues(entity),
             "id = ?",
-            arrayOf(entity.id.toString())
+            arrayOf(entity.id)
     ))
 
     private fun updateExchangeRate(exchangeRatesId: String, rate: Rate)= Observable.just(
@@ -45,29 +52,35 @@ class ExchangeRateRepository (
             EXCHANGE_RATE_TABLE,
             getExchangeRateContentValues(exchangeRatesId,rate),
             "exchange_rates_id = ?",
-            arrayOf(exchangeRatesId.toString())
+            arrayOf(exchangeRatesId)
     ))
 
 
 
     private fun findExchangeRates(subjectIds: List<String>): Flowable<Cursor> =
-        Flowable.just(
-            databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, buy, currency from exchange_rate where exchange_rates.id in( ${
-                    mapToQueryParamSymbols(
-                        subjectIds
-                    )
-                })",
-                arrayOf(mapToQueryParamVariable(subjectIds))
-            )
+        Flowable.just(getFindExchangeRateCursor(subjectIds))
+
+    private fun findExchangeRate(id:String) = Maybe.just(getFindExchangeRateCursor(listOf(id)))
+
+    private fun getFindExchangeRateCursor(subjectIds: List<String>) =
+        databaseOperationProvider.readableDatabase.rawQuery(
+            "Select id, buy, currency from exchange_rate where exchange_rates_id in( ${
+                mapToQueryParamSymbols(
+                    subjectIds
+                )
+            })",
+            arrayOf(mapToQueryParamVariable(subjectIds))
         )
 
     private fun toExchangeRate(cursor: Cursor) = Flowable.just(
-        ExchangeRate(
-            id = cursor.getString(0),
-            watched = Watched(LocalDate.now(), LocalDate.now()),
-            rates = getExchangeRates(cursor)
-        ))
+        asExchangeRate(cursor)
+    )
+
+    private fun asExchangeRate(cursor: Cursor) = ExchangeRate(
+        id = cursor.getString(0),
+        watched = Watched(LocalDate.now(), LocalDate.now()),
+        rates = getExchangeRates(cursor)
+    )
 
 
     private fun addExchangeRates(exchangeRate: ExchangeRate) = Observable.just(
@@ -104,11 +117,23 @@ class ExchangeRateRepository (
 
     private fun getExchangeRateContentValues(exchangeRatesId: String, rate: Rate) =
         ContentValues().apply {
+            put("id",exchangeRatesId)
             put("exchange_rates_id", exchangeRatesId)
             put("buy", rate.rateValues.buy)
-            put("sell", (rate.rateValues as ExchangePointRateValues).sell)
             put("currency", rate.currency)
+        }.also {
+            setSellProperty(rate, it, rate.rateValues)
         }
+
+    private fun setSellProperty(
+        rate: Rate,
+        it: ContentValues,
+        rateValues: ExchangeRateValues
+    ) {
+        if (rate.rateValues is ExchangePointRateValues)
+            it.put("sell", (rateValues as ExchangePointRateValues).sell)
+    }
+
 
     private fun getExchangeRatesContentValues(entity: ExchangeRate) =
         ContentValues().apply {
