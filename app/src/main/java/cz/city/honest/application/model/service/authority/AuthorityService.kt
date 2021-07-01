@@ -37,5 +37,6 @@ class AuthorityService(
         authorityRepository.delete()
             .flatMap { authorityServerSource.getRate()}
             .flatMap { authorityRepository.insert(it.exchangeRate)}
+            .onErrorComplete()
             .map { }
 }

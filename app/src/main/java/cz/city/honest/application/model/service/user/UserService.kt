@@ -32,6 +32,7 @@ class UserService(
         getLoggedUser()
             .flatMap { getUserSuggestions(it, accessToken) }
             .flatMap { userSuggestionRepository.insertList(it) }
+            .onErrorComplete()
 
     private fun getUserSuggestions(user: User, accessToken: String) =
         userServerSource.getUserSuggestions(getGetUserSuggestionsRequest(user), accessToken)

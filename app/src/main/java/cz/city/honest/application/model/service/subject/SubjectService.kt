@@ -49,6 +49,7 @@ class SubjectService(
                 subjectRepositories,
                 it.key
             ).insertList(it.value)}
+            .onErrorComplete()
             .map {  }
 
 }

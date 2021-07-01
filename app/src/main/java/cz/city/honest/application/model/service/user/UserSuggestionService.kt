@@ -23,6 +23,7 @@ class UserSuggestionService(
     override fun update(accessToken:String): Observable<Unit> =
         userProvider.provide()
             .concatMap { removeSuggestions(it,accessToken);suggestSuggestions(it,accessToken) }
+            .onErrorComplete()
 
     fun getUserSuggestions(id: String): Flowable<UserSuggestion> =
         userSuggestionRepository.get(listOf(id))

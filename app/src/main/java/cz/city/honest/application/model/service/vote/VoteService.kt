@@ -25,6 +25,7 @@ class VoteService(
             .map { PostUpVoteRequest(it.toList(), "") }
             .toObservable()
             .flatMap { voteServerSource.upVote(it,accessToken) }
+            .onErrorComplete()
 
     fun vote(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)
