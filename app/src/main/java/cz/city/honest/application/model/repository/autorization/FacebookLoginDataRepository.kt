@@ -16,7 +16,12 @@ class FacebookLoginDataRepository(
     override fun getByUserId(userId: String): Maybe<FacebookLoginData> =
         findLoginDataByUserId(userId)
             .filter { cursorContainsData(it) }
-            .map {toLoginData(it) }
+            .map { toLoginData(it) }
+
+    override fun getById(id: String): Maybe<FacebookLoginData> =
+        findLoginDataById(id)
+            .filter { cursorContainsData(it) }
+            .map { toLoginData(it) }
 
     private fun toLoginData(cursor: Cursor) = FacebookLoginData(
         facebookUserId = cursor.getString(0),
@@ -29,6 +34,14 @@ class FacebookLoginDataRepository(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, user_id, access_token from facebook_login_data where user_id = ?",
                 arrayOf(userId)
+            )
+        )
+
+    private fun findLoginDataById(id: String): Maybe<Cursor> =
+        Maybe.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select id, user_id, access_token from facebook_login_data where id = ?",
+                arrayOf(id)
             )
         )
 

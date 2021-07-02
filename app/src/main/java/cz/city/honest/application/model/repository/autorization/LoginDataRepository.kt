@@ -12,4 +12,6 @@ abstract class LoginDataRepository<LOGIN_DATA : LoginData>(
 
     abstract fun getByUserId(userId:String): Maybe<LOGIN_DATA>
 
+    abstract fun getById(Id:String): Maybe<LOGIN_DATA>
+
 }

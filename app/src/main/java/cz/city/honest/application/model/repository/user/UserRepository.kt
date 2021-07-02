@@ -61,7 +61,7 @@ class UserRepository(
 
     fun get(providerUserId: String, providerDataType: Class<out LoginData>) =
         getLoginDataRepository(providerDataType.simpleName)
-            .getByUserId(providerUserId)
+            .getById(providerUserId)
             .map { it as LoginData }
             .flatMap { toUser(it) }
 
