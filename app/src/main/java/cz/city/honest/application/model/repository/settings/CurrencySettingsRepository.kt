@@ -3,7 +3,7 @@ package cz.city.honest.application.model.repository.settings
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import cz.city.honest.application.model.dto.CurrencySetting
+import cz.city.honest.application.model.dto.CurrencySettings
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
 import cz.city.honest.application.model.repository.subject.exchange.ExchangePointRepository
@@ -12,9 +12,9 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationProvider) :
-    Repository<CurrencySetting>(databaseOperationProvider) {
+    Repository<CurrencySettings>(databaseOperationProvider) {
 
-    override fun insert(entity: CurrencySetting): Observable<Long> = Observable.just(
+    override fun insert(entity: CurrencySettings): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
             TABLE_NAME,
             "",
@@ -23,7 +23,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         )
     )
 
-    override fun update(entity: CurrencySetting): Observable<Int> = Observable.just(
+    override fun update(entity: CurrencySettings): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(entity),
@@ -32,15 +32,15 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         )
     )
 
-    override fun get(ids: List<String>): Flowable<CurrencySetting> =
+    override fun get(ids: List<String>): Flowable<CurrencySettings> =
         Flowable.just(findCurrencySettings(ids))
             .flatMap { toEntities(it) { toCurrencySettings(it) } }
 
-    fun get(): Flowable<CurrencySetting> =
+    fun get(): Flowable<CurrencySettings> =
         Flowable.just(findCurrencySettings())
             .flatMap { toEntities(it) { toCurrencySettings(it) } }
 
-    override fun delete(entity: CurrencySetting): Observable<Int> = Observable.just(
+    override fun delete(entity: CurrencySettings): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             ExchangePointRepository.TABLE_NAME,
             "where id = ?",
@@ -58,7 +58,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
 
     private fun getAsIdsList(cursor: Cursor) = listOf(cursor.getString(0))
 
-    private fun getContentValues(entity: CurrencySetting) =
+    private fun getContentValues(entity: CurrencySettings) =
         ContentValues().apply {
             put("id", entity.id)
             put("currency", entity.currency)
@@ -66,7 +66,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         }
 
     private fun toCurrencySettings(cursor: Cursor) = Flowable.just(
-        CurrencySetting(
+        CurrencySettings(
             id = cursor.getString(0),
             currency = cursor.getString(1),
             mainCountryCurrency = cursor.getInt(2).toBoolean()

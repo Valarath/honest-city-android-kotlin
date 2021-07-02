@@ -29,7 +29,7 @@ class ImageExchangeRateProvider(
             .map { toExchangeRate(text, it) }!!
 
     private fun containsAllCurrencies(
-        currencySettings: MutableList<CurrencySetting>,
+        currencySettings: MutableList<CurrencySettings>,
         text: Text
     ) = currencySettings.isNotEmpty()
             && currencySettings.all { containsCurrency(text, it) }
@@ -37,38 +37,38 @@ class ImageExchangeRateProvider(
 
     private fun validateLines(
         text: Text,
-        currencySettings: MutableList<CurrencySetting>,
-        mainCurrency: CurrencySetting
+        currencySettings: MutableList<CurrencySettings>,
+        mainCurrency: CurrencySettings
     ) = currencySettings
         .filter { it != mainCurrency }
         .any { validateLines(text, it, mainCurrency) }
 
     private fun validateLines(
         text: Text,
-        currencySetting: CurrencySetting,
-        mainCurrency: CurrencySetting
+        currencySettings: CurrencySettings,
+        mainCurrency: CurrencySettings
     ) = text.textBlocks
         .flatMap { it.lines }
-        .any { validateLine(it, currencySetting, mainCurrency) }
+        .any { validateLine(it, currencySettings, mainCurrency) }
 
     private fun validateLine(
         line: Text.Line,
-        currencySetting: CurrencySetting,
-        mainCurrency: CurrencySetting
-    ) = containsLineLanguage(line, currencySetting)
-            && isDemand(line, mainCurrency, currencySetting)
+        currencySettings: CurrencySettings,
+        mainCurrency: CurrencySettings
+    ) = containsLineLanguage(line, currencySettings)
+            && isDemand(line, mainCurrency, currencySettings)
 
     private fun containsCurrency(
         text: Text,
-        currencySetting: CurrencySetting
+        currencySettings: CurrencySettings
     ) = text.text
         .toLowerCase(Locale.getDefault())
-        .contains(currencySetting.currency)
+        .contains(currencySettings.currency)
 
 
     private fun toExchangeRate(
         text: Text,
-        currencySettings: MutableList<CurrencySetting>
+        currencySettings: MutableList<CurrencySettings>
     ) = ExchangeRate(
         id = UUID.randomUUID().toString(),
         rates = toRates(text, currencySettings),
@@ -77,24 +77,24 @@ class ImageExchangeRateProvider(
 
     private fun toRates(
         text: Text,
-        currencySettings: MutableList<CurrencySetting>
+        currencySettings: MutableList<CurrencySettings>
     ): MutableSet<Rate> =
         currencySettings
             .filter { !it.mainCountryCurrency }
             .map { toRate(text, it, getMainCurrency(currencySettings)) }
             .toMutableSet()
 
-    private fun getMainCurrency(currencySettings: MutableList<CurrencySetting>) =
+    private fun getMainCurrency(currencySettings: MutableList<CurrencySettings>) =
         currencySettings.first { it.mainCountryCurrency }
 
     private fun toRate(
         text: Text,
-        currencySetting: CurrencySetting,
-        mainCurrency: CurrencySetting
+        currencySettings: CurrencySettings,
+        mainCurrency: CurrencySettings
     ) = text.textBlocks.flatMap { it.lines }
-        .filter { containsLineLanguage(it, currencySetting) }
-        .filter { isDemand(it, mainCurrency, currencySetting) }
-        .map { toRate(it, currencySetting.currency) }
+        .filter { containsLineLanguage(it, currencySettings) }
+        .filter { isDemand(it, mainCurrency, currencySettings) }
+        .map { toRate(it, currencySettings.currency) }
         .minBy { it.rateValues.buy }!!
 
 
@@ -114,25 +114,25 @@ class ImageExchangeRateProvider(
 
     private fun isDemand(
         it: Text.Line,
-        mainCurrency: CurrencySetting,
-        currencySetting: CurrencySetting
+        mainCurrency: CurrencySettings,
+        currencySettings: CurrencySettings
     ) = it.text.toLowerCase(Locale.getDefault())
         .run {
-            containsCurrency(this, mainCurrency, currencySetting)
+            containsCurrency(this, mainCurrency, currencySettings)
                     && containsPrice(this, mainCurrency)
         }
 
     private fun containsCurrency(
         currencyPart: String,
-        mainCurrency: CurrencySetting,
-        currencySetting: CurrencySetting
+        mainCurrency: CurrencySettings,
+        currencySettings: CurrencySettings
     ) = currencyPart
         .substringBefore(mainCurrency.currency)
-        .contains(currencySetting.currency.toLowerCase(Locale.getDefault()))
+        .contains(currencySettings.currency.toLowerCase(Locale.getDefault()))
 
     private fun containsPrice(
         currencyPart: String,
-        mainCurrency: CurrencySetting
+        mainCurrency: CurrencySettings
     ) = currencyPart
         .substringAfter(mainCurrency.currency)
         .contains(Regex(".*\\d.*\\d.*"))
@@ -141,8 +141,8 @@ class ImageExchangeRateProvider(
     //TODO check if this is not contains in isDemand?
     private fun containsLineLanguage(
         it: Text.Line,
-        currencySetting: CurrencySetting
-    ) = it.text.toLowerCase(Locale.getDefault()).contains(currencySetting.currency)
+        currencySettings: CurrencySettings
+    ) = it.text.toLowerCase(Locale.getDefault()).contains(currencySettings.currency)
 }
 
 class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())

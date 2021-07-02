@@ -55,6 +55,11 @@ class GatewayModule (){
 
     @Provides
     @Singleton
+    fun getCurrencyServerSource(retrofit: Retrofit): CurrencyServerSource =
+        getGateway(retrofit, CurrencyServerSource::class.java)
+
+    @Provides
+    @Singleton
     fun getAuthorizationServerSource(retrofit: Retrofit): AuthorizationServerSource =
         getGateway(retrofit, AuthorizationServerSource::class.java)
 

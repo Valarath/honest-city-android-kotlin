@@ -122,18 +122,18 @@ class ServiceModule {
     fun getPrivateUpdatableServices(
         voteService: VoteService,
         userService: UserService,
-        settingsService: CurrencySettingsService,
         userSuggestionService: UserSuggestionService
     ): List<PrivateUpdatable> =
-        listOf(voteService, userService, settingsService,userSuggestionService)
+        listOf(voteService, userService,userSuggestionService)
 
     @Provides
     @Singleton
     fun getPublicUpdatableServices(
         authorityService: AuthorityService,
-        subjectService: SubjectService
+        subjectService: SubjectService,
+        settingsService: CurrencySettingsService
     ): List<PublicUpdatable> =
-        listOf(authorityService, subjectService)
+        listOf(authorityService, subjectService,settingsService)
 
     @Provides
     @Singleton
@@ -146,8 +146,8 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    fun getCurrencySettingsService(currencySettingsRepository: CurrencySettingsRepository): CurrencySettingsService =
-        CurrencySettingsService(currencySettingsRepository)
+    fun getCurrencySettingsService(currencySettingsRepository: CurrencySettingsRepository, currencyServerSource: CurrencyServerSource): CurrencySettingsService =
+        CurrencySettingsService(currencySettingsRepository,currencyServerSource)
 
 }
 

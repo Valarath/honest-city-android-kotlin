@@ -11,9 +11,9 @@ import java.time.LocalDate
 
 
 class SubjectService(
-    val subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>,
-    val subjectServerSource: SubjectServerSource,
-    val positionProvider: PositionProvider
+    private val subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>,
+    private val subjectServerSource: SubjectServerSource,
+    private val positionProvider: PositionProvider
 ) : PublicUpdatable {
 
     fun getSubjects(): Flowable<out WatchedSubject> =
