@@ -21,6 +21,10 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
 ) :
     Repository<VOTE_ENTITY>(operationProvider) {
 
+    fun getBySubjectId(subjectId:String, userId:String):Flowable<VOTE_ENTITY> =
+        get(listOf(userId))
+            .filter { it.suggestion.id == subjectId }
+
     override fun insert(entity: VOTE_ENTITY): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
             TABLE_NAME,
@@ -55,7 +59,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
         .map { getAllSuggestionIds(it) }
         .concatMap { getSuggestionTypeRepository().get(it) }
 
-    private fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
+    protected fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
         suggestionRepositories[suggestionTypeClass.simpleName]
             .run {this as SuggestionRepository<SUGGESTION_TYPE> }
 

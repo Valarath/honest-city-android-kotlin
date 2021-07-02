@@ -21,8 +21,9 @@ class SuggestionService(
             .flatMap {voteService.vote(suggestion)  }
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
-        Observable.fromIterable(getMockSuggestions(id))
-        //Observable.fromIterable(suggestionRepositories.values).flatMap { it.get() }
+        Flowable.fromIterable(suggestionRepositories.values)
+            .flatMap { it.get(listOf(id)) }
+            .toObservable()
 
 
     fun <SUGGESTION_TYPE : Suggestion> getSuggestions(clazz: Class<SUGGESTION_TYPE>): Flowable<out SUGGESTION_TYPE> =

@@ -40,9 +40,14 @@ class VoteService(
         RepositoryProvider.provide(voteRepositories, vote::class.java)
             .delete(vote)
 
-    fun getVotesForSubject(id: String): Observable<Vote> =
-        userProvider.provide()
-            .flatMap { Observable.fromIterable(getMockSuggestions(it.id)) }
+    fun getVotesForSubject(id: String): Observable<Vote> = userProvider
+        .provide()
+        .flatMap { getUserSubjectVotes(id,it.id) }
+
+    private fun getUserSubjectVotes(subjectId:String, userId:String) =
+        Flowable.fromIterable(voteRepositories.values)
+            .flatMap { it.getBySubjectId(subjectId, userId) }
+            .toObservable()
 
     private fun getMockSuggestions(id: String): List<Vote> {
         return listOf(
