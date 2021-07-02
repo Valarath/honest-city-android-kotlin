@@ -34,7 +34,7 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
 
     override fun delete(suggestion: SUGGESTION_TYPE): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
-            ExchangeRateSuggestionRepository.TABLE_NAME,
+            TABLE_NAME,
             "id = ?",
             arrayOf(suggestion.id)
         )

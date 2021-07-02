@@ -51,7 +51,7 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     override fun delete(suggestion: ClosedExchangePointSuggestion): Observable<Int> =
         super.delete(suggestion).map {
             databaseOperationProvider.writableDatabase.delete(
-                ExchangeRateSuggestionRepository.TABLE_NAME,
+                TABLE_NAME,
                 "id = ?",
                 arrayOf(suggestion.id)
             )

@@ -9,6 +9,7 @@ import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
 import cz.city.honest.application.model.repository.autorization.LoginDataRepository
 import cz.city.honest.application.model.repository.toBoolean
+import cz.city.honest.application.model.repository.toInt
 import cz.city.honest.application.model.service.RepositoryProvider
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
@@ -36,7 +37,7 @@ class UserRepository(
             databaseOperationProvider.writableDatabase.update(
                 TABLE_NAME,
                 getContentValues(entity),
-                "where id = ?",
+                "id = ?",
                 arrayOf(entity.id)
             )
         )
@@ -50,7 +51,7 @@ class UserRepository(
         put("id", entity.id)
         put("score", entity.score)
         put("username", entity.username)
-        put("logged", entity.logged)
+        put("logged", entity.logged.toInt())
         put("login_data_class", entity.loginData.javaClass.simpleName)
     }
 

@@ -53,7 +53,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     override fun delete(suggestion: NewExchangePointSuggestion): Observable<Int> =
         super.delete(suggestion).map {
             databaseOperationProvider.writableDatabase.delete(
-                ExchangeRateSuggestionRepository.TABLE_NAME,
+                TABLE_NAME,
                 "id = ?",
                 arrayOf(suggestion.id)
             )

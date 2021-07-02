@@ -43,7 +43,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     override fun update(entity: VOTE_ENTITY): Observable<Int> =
         Observable.just(
             databaseOperationProvider.writableDatabase.update(
-                ExchangePointRepository.TABLE_NAME,
+                TABLE_NAME,
                 getContentValues(entity),
                 "user_id = ? && suggestion_id = ?",
                 arrayOf(entity.userId, entity.suggestion.id)
@@ -85,7 +85,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
 
     override fun delete(entity: VOTE_ENTITY): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
-            SubjectRepository.TABLE_NAME,
+            TABLE_NAME,
             "user_id = ? && suggestion_id = ?",
             arrayOf(entity.userId, entity.suggestion.id)
         )

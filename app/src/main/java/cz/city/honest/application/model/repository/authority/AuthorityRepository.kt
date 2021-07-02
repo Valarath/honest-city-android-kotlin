@@ -30,7 +30,7 @@ class AuthorityRepository(
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(entity),
-            "where exchange_rates_id = ?",
+            "exchange_rates_id = ?",
             arrayOf(entity.id)
         )
     )
@@ -51,7 +51,7 @@ class AuthorityRepository(
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,
-            "where id = ?",
+            "id = ?",
             arrayOf(entity.id)
         )
     )

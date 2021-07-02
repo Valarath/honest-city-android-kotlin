@@ -9,6 +9,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,14 +28,23 @@ class GatewayModule (){
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
         .baseUrl(connectionProperties.baseUrl)
         .addConverterFactory(getConverterFactory())
+        .client(getHttpClient())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
 
+    private fun getLoggingInterceptor() = HttpLoggingInterceptor()
+        .apply { this.level = HttpLoggingInterceptor.Level.BODY }
+
+    private fun getHttpClient(interceptor: Interceptor = getLoggingInterceptor()) =
+        OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+
     private fun getConverterFactory() = GsonBuilder()
-        .registerTypeAdapter(LoginData::class.java,LoginDataDeserializer<LoginData>())
+        .registerTypeAdapter(LoginData::class.java,LoginDataSerializer())
         .run { this.create() }
         .run { GsonConverterFactory.create(this) }
-    
+
     @Provides
     @Singleton
     fun getAuthorityGateway(retrofit: Retrofit): AuthorityServerSource =

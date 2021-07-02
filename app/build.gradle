@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation group: 'com.squareup.retrofit2', name: 'adapter-rxjava3', version: '2.9.0'
     implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'com.jakewharton.retrofit:retrofit2-reactor-adapter:2.1.0'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation "io.reactivex.rxjava3:rxjava:3.0.3"

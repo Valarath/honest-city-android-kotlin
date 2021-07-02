@@ -4,12 +4,10 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
-import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.service.registration.FacebookLoginData
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
 
 class FacebookLoginDataRepository(
     databaseOperationProvider: DatabaseOperationProvider
@@ -53,9 +51,9 @@ class FacebookLoginDataRepository(
     override fun update(entity: FacebookLoginData): Observable<Int> =
         Observable.just(
             databaseOperationProvider.writableDatabase.update(
-                UserRepository.TABLE_NAME,
+                TABLE_NAME,
                 getContentValues(entity),
-                "where id = ?",
+                "id = ?",
                 arrayOf(entity.facebookUserId)
             )
         )

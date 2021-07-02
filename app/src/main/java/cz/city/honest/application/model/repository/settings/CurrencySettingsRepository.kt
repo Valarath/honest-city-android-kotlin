@@ -27,7 +27,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(entity),
-            "where id = ?",
+            "id = ?",
             arrayOf(entity.id)
         )
     )
@@ -42,15 +42,15 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
 
     override fun delete(entity: CurrencySettings): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
-            ExchangePointRepository.TABLE_NAME,
-            "where id = ?",
+            TABLE_NAME,
+            "id = ?",
             arrayOf(entity.id)
         )
     )
 
     fun delete(): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
-            ExchangePointRepository.TABLE_NAME,
+            TABLE_NAME,
             null,
             null
         )

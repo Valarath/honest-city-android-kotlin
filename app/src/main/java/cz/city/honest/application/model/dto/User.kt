@@ -6,7 +6,7 @@ data class User(
     val id: String,
     val username: String,
     val score: Int,
-    var logged: Boolean,
+    var logged: Boolean = false,
     val loginData: LoginData
 ) : Serializable
 

@@ -97,7 +97,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createFacebookLoginDataTable(database: SQLiteDatabase){
-        database.execSQL("Create table IF NOT EXISTS facebook_login_data(id varchar primary key ON CONFLICT REPLACE,access_token varchar, user_id varchar not null, foreign key(user_id) references user(user_id))")
+        database.execSQL("Create table IF NOT EXISTS facebook_login_data(id varchar primary key ON CONFLICT REPLACE, access_token varchar, user_id varchar not null, foreign key(user_id) references user(user_id))")
 
     }
 
