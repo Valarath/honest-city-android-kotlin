@@ -2,6 +2,7 @@ package cz.city.honest.application.model.service.subject
 
 import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.gateway.server.GetSubjectsRequest
+import cz.city.honest.application.model.gateway.server.GetSubjectsResponse
 import cz.city.honest.application.model.gateway.server.SubjectServerSource
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.service.update.PublicUpdatable
@@ -9,6 +10,7 @@ import cz.city.honest.application.model.service.RepositoryProvider
 
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import java.time.LocalDate
 
 
@@ -43,14 +45,14 @@ class SubjectService(
     override fun update(): Observable<Unit> =
         positionProvider.provide()
             .firstOrError()
-            .flatMapObservable { subjectServerSource.getSubjectsInArea(GetSubjectsRequest(it))}
-            .flatMap {Observable.fromIterable( it.subjects.entries)}
-            .map { RepositoryProvider.provide(
+            .flatMapObservable { subjectServerSource.getSubjectsInArea(it.longitude,it.latitude)}
+            .flatMap { Observable.fromIterable(it.subjects.entries)}
+            .flatMap { RepositoryProvider.provide(
                 subjectRepositories,
                 it.key
             ).insertList(it.value)}
             .onErrorComplete()
-            .map {  }
+
 
 }
 

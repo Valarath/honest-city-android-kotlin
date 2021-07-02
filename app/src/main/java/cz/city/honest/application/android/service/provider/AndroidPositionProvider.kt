@@ -8,6 +8,7 @@ import android.os.Bundle
 import cz.city.honest.application.model.dto.Position
 import cz.city.honest.application.model.service.subject.PositionProvider
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 

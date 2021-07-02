@@ -5,12 +5,13 @@ import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.gateway.SubjectGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 
 interface SubjectServerSource : SubjectGateway {
 
     @GET(SubjectEndpointsUrl.SUBJECT_IN_AREA)
-    fun getSubjectsInArea(request: GetSubjectsRequest): Observable<GetSubjectsResponse>
+    fun getSubjectsInArea(@Query("longitude")longitude:Double,@Query("latitude") latitude: Double): Observable<GetSubjectsResponse>
 }
 
 data class GetSubjectsRequest(
