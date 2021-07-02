@@ -11,6 +11,7 @@ data class User(
 ) : Serializable
 
 interface LoginData{
+    fun getClassName():String = javaClass.simpleName
     fun userId():String
 }
 

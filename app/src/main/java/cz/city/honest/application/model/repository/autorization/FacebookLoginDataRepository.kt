@@ -7,6 +7,7 @@ import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.service.registration.FacebookLoginData
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
@@ -14,8 +15,9 @@ class FacebookLoginDataRepository(
     databaseOperationProvider: DatabaseOperationProvider
 ) : LoginDataRepository<FacebookLoginData>(databaseOperationProvider) {
 
-    override fun getByUserId(userId: String): Single<FacebookLoginData> =
+    override fun getByUserId(userId: String): Maybe<FacebookLoginData> =
         findLoginDataByUserId(userId)
+            .filter { cursorContainsData(it) }
             .map {toLoginData(it) }
 
     private fun toLoginData(cursor: Cursor) = FacebookLoginData(
@@ -24,8 +26,8 @@ class FacebookLoginDataRepository(
         userId = cursor.getString(1)
     )
 
-    private fun findLoginDataByUserId(userId: String): Single<Cursor> =
-        Single.just(
+    private fun findLoginDataByUserId(userId: String): Maybe<Cursor> =
+        Maybe.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, user_id, access_token from facebook_login_data where user_id = ?",
                 arrayOf(userId)

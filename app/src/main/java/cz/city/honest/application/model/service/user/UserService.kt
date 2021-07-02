@@ -1,7 +1,6 @@
 package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.dto.*
-import cz.city.honest.application.model.gateway.server.GetUserSuggestionsRequest
 import cz.city.honest.application.model.gateway.server.UserServerSource
 import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
@@ -22,7 +21,6 @@ class UserService(
     fun getUser(providerUserId: String, providerDataType: Class<out LoginData>) =
         userRepository
             .get(providerUserId, providerDataType)
-            .toMaybe()
 
     fun update(user: User) = userRepository.update(user)
 
@@ -46,7 +44,7 @@ class UserService(
     private fun getUserSuggestionMetadata() =
         UserSuggestionMetadata(processed = true, markAs = UserSuggestionStateMarking.NEW)
 
-    private fun getGetUserSuggestionsRequest(user: User) = GetUserSuggestionsRequest(user.id)
+    private fun getGetUserSuggestionsRequest(user: User) = mapOf("userId" to user.id)
 
 }
 

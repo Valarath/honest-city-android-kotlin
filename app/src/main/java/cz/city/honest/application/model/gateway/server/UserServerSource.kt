@@ -5,17 +5,14 @@ import cz.city.honest.application.model.gateway.UserGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.QueryMap
 
 interface UserServerSource : UserGateway {
 
     @GET(UserEndpointsUrl.USER_SUGGESTIONS)
-    fun getUserSuggestions(request: GetUserSuggestionsRequest, @Header("Authorization") accessToken:String): Observable<GetUserSuggestionsResponse>
+    fun getUserSuggestions(@QueryMap request: Map<String, String>, @Header("Authorization") accessToken:String): Observable<GetUserSuggestionsResponse>
 
 }
-
-data class GetUserSuggestionsRequest(
-    val userId: String
-)
 
 data class GetUserSuggestionsResponse(
     val userSuggestions: Map<String, List<Suggestion?>>

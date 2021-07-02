@@ -1,6 +1,8 @@
 package cz.city.honest.application.model.gateway
 
+import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
+import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.property.ConnectionProperties
 import dagger.Module
@@ -22,11 +24,15 @@ class GatewayModule (){
     fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
         .baseUrl(connectionProperties.baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(getConverterFactory())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
 
-
+    private fun getConverterFactory() = GsonBuilder()
+        .registerTypeAdapter(LoginData::class.java,LoginDataDeserializer<LoginData>())
+        .run { this.create() }
+        .run { GsonConverterFactory.create(this) }
+    
     @Provides
     @Singleton
     fun getAuthorityGateway(retrofit: Retrofit): AuthorityServerSource =

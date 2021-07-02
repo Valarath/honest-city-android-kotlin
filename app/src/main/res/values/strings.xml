@@ -39,8 +39,9 @@
     <string name="facebook_login_cancelled">Facebook login was cancelled</string>
     <string name="facebook_login_error">Error occurred during facebook login, retry login later</string>
 
-    <string name="facebook_app_id">147271464019967</string>
-    <string name="fb_login_protocol_scheme">fb147271464019967</string>
+    <string name="facebook_app_id">588054412223462</string>
+    <string name="fb_login_protocol_scheme">fb588054412223462</string>
+
     <string name="sync_account_type">honest.city.cz</string>
     <string name="content_authority">cz.city.honest.application</string>
     <string name="sync_account">placeholderaccount</string>

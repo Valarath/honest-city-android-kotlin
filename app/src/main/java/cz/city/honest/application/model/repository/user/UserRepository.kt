@@ -60,14 +60,13 @@ class UserRepository(
 
     fun get(providerUserId: String, providerDataType: Class<out LoginData>) =
         getLoginDataRepository(providerDataType.simpleName)
-            .get(listOf(providerUserId))
+            .getByUserId(providerUserId)
             .map { it as LoginData }
             .flatMap { toUser(it) }
-            .toList()
-            .map { it.first() }
 
     private fun toUser(loginData: LoginData) =
         findUser(loginData.userId())
+            .filter { cursorContainsData(it) }
             .map { toUser(it,loginData) }
 
     fun getLoggedUser(): Maybe<User> =
@@ -78,7 +77,6 @@ class UserRepository(
     private fun toUser(cursor: Cursor) = getLoginDataRepository(cursor.getString(4))
         .getByUserId(cursor.getString(0))
         .map { toUser(cursor, it as LoginData) }
-        .toMaybe()
 
     private fun toUser(cursor: Cursor, loginData: LoginData): User {
         return User(
@@ -98,8 +96,8 @@ class UserRepository(
             )
         )
 
-    private fun findUser(subjectId: String): Flowable<Cursor> =
-        Flowable.just(
+    private fun findUser(subjectId: String): Maybe<Cursor> =
+        Maybe.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, score, username, logged, login_data_class from user where id = ?",
                 arrayOf(subjectId)

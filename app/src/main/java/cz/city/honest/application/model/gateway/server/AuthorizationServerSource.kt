@@ -3,15 +3,16 @@ package cz.city.honest.application.model.gateway.server
 import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.dto.User
 import io.reactivex.rxjava3.core.Single
+import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthorizationServerSource {
 
     @POST(AuthorizationEndpointsUrl.REGISTER)
-    fun register(request:PostRegisterRequest): Single<PostRegisterResponse>
+    fun register(@Body request:PostRegisterRequest): Single<PostRegisterResponse>
 
     @POST(AuthorizationEndpointsUrl.LOGIN)
-    fun login(request:PostLoginRequest): Single<PostLoginResponse>
+    fun login(@Body request:PostLoginRequest): Single<PostLoginResponse>
 
 }
 

@@ -65,12 +65,14 @@ class LoginActivity : DaggerAppCompatActivity() {
         resultCode: Int,
         data: Intent?
     ) {
-        super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {
-        val FACEBOOK_PERMISSIONS = listOf("name,email")
+        val FACEBOOK_PERMISSIONS = listOf("email")
+        //val FACEBOOK_PERMISSIONS = listOf("name","email")
+        //val FACEBOOK_PERMISSIONS = listOf("name", "email", "public_profile")
     }
 
 }
@@ -95,7 +97,7 @@ class LoginResultFacebookCallback(
 
     private fun getLoginUserSubscribeHandler(accessToken: AccessToken) = LoginUserSubscribeHandler(
         loginUser = { user -> loginUser(user, accessToken) },
-        exceptionHandler = {},
+        exceptionHandler = {exception ->  handleError(exception)},
         registerUser = { registerUser(accessToken) }
     )
 
@@ -114,6 +116,10 @@ class LoginResultFacebookCallback(
     }
 
     override fun onError(error: FacebookException) {
+        showMessage(activity.getString(R.string.facebook_login_error))
+    }
+
+    fun handleError(error: Throwable) {
         showMessage(activity.getString(R.string.facebook_login_error))
     }
 

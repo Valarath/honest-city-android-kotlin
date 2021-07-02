@@ -9,7 +9,7 @@ import retrofit2.http.POST
 interface VoteServerSource  {
 
     @POST(VoteEndpointsUrl.UP_VOTE)
-    fun upVote(request: PostUpVoteRequest,@Header("Authorization") accessToken:String): Observable<Unit>
+    fun upVote(@Body request: PostUpVoteRequest,@Header("Authorization") accessToken:String): Observable<Unit>
 
 }
 
