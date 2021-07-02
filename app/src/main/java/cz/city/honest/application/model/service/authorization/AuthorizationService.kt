@@ -41,10 +41,14 @@ class AuthorizationService(
             .toMaybe()
 
     private fun updateUserData(response: PostLoginResponse) = userService
-        .update(response.user)
+        .update(getUser(response))
         .map { response }
         .toList()
         .map { it.first() }
+
+    private fun getUser(response: PostLoginResponse) =
+        response.user
+            .apply { this.logged = true }
 
     private fun toPostLoginRequest(user: User) =
         PostLoginRequest(user)

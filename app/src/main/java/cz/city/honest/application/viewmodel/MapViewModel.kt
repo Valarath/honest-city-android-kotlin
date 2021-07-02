@@ -28,7 +28,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    private fun getUser() = userService.getLoggedUser()
+    private fun getUser() = userService.getUserDataAsMaybe()
 
     fun suggestNewSubject() =
         positionProvider.provide()
