@@ -55,9 +55,9 @@ class UserRepository(
         put("login_data_class", entity.loginData.javaClass.simpleName)
     }
 
-    override fun get(id: List<String>): Flowable<User> {
-        TODO("Not yet implemented")
-    }
+    override fun get(ids: List<String>): Flowable<User> = findUsers(ids)
+        .flatMap { toEntities(it) { toUser(it).toFlowable() } }
+
 
     fun get(providerUserId: String, providerDataType: Class<out LoginData>) =
         getLoginDataRepository(providerDataType.simpleName)
@@ -102,6 +102,18 @@ class UserRepository(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, score, username, logged, login_data_class from user where id = ?",
                 arrayOf(subjectId)
+            )
+        )
+
+    private fun findUsers(userIds: List<String>): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select id, score, username, logged, login_data_class from user where id in( ${
+                    mapToQueryParamSymbols(
+                        userIds
+                    )
+                })",
+                arrayOf(mapToQueryParamVariable(userIds))
             )
         )
 
