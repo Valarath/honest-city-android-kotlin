@@ -97,6 +97,14 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     )
         .flatMap { updateSuggestion(entity) }
 
+    fun delete(suggestionId:String,userId:String): Observable<Int> = Observable.just(
+        databaseOperationProvider.writableDatabase.delete(
+            TABLE_NAME,
+            "user_id = ? && suggestion_id = ?",
+            arrayOf(userId, suggestionId)
+        )
+    )
+
     private fun getContentValues(entity: VOTE_ENTITY): ContentValues = ContentValues().apply {
         put("user_id", entity.userId)
         put("suggestion_id", entity.suggestion.id)

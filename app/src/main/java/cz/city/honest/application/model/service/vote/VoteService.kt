@@ -56,10 +56,13 @@ class VoteService(
         userProvider.provide()
             .flatMap { vote(suggestion.toVote(it.id, false)) }
 
-
     fun delete(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)
             .delete(vote)
+
+    fun delete(suggestion: Suggestion, user: User): Observable<Int> =
+        Observable.just(voteRepositories.values.first())
+            .flatMap { it.delete(suggestion.id,user.id) }
 
     fun getVotesForSubject(id: String): Observable<Vote> = userProvider
         .provide()

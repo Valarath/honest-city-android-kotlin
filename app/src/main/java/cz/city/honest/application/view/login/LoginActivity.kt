@@ -71,8 +71,6 @@ class LoginActivity : DaggerAppCompatActivity() {
 
     companion object {
         val FACEBOOK_PERMISSIONS = listOf("email")
-        //val FACEBOOK_PERMISSIONS = listOf("name","email")
-        //val FACEBOOK_PERMISSIONS = listOf("name", "email", "public_profile")
     }
 
 }

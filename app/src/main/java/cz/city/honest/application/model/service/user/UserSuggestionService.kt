@@ -11,13 +11,15 @@ import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.service.update.PrivateUpdatable
 import cz.city.honest.application.model.service.UserProvider
+import cz.city.honest.application.model.service.vote.VoteService
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class UserSuggestionService(
-    val suggestionServerSource: SuggestionServerSource,
-    val userSuggestionRepository: UserSuggestionRepository,
-    val userProvider: UserProvider
+    private val suggestionServerSource: SuggestionServerSource,
+    private val userSuggestionRepository: UserSuggestionRepository,
+    private val voteService: VoteService,
+    private val userProvider: UserProvider
 ) : PrivateUpdatable {
 
     override fun update(accessToken: String): Observable<Unit> =
@@ -29,7 +31,8 @@ class UserSuggestionService(
         userSuggestionRepository.get(listOf(id))
 
     fun delete(userSuggestion: UserSuggestion) =
-        userSuggestionRepository.update(toDeleteStateSuggestion(userSuggestion))
+        voteService.delete(userSuggestion.suggestion, userSuggestion.user)
+            .flatMap { userSuggestionRepository.update(toDeleteStateSuggestion(userSuggestion)) }
 
     fun suggest(userSuggestion: UserSuggestion) =
         userSuggestionRepository.insert(userSuggestion)
