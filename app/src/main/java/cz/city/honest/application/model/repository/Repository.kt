@@ -46,7 +46,22 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
 
     protected fun mapToQueryParamSymbols(objects:List<*>) = objects.joinToString { "?" }
 
+    protected fun mapToQueryParamSymbols(objects:List<*>, prefix:String) = prefixByWhere(prefix,
+        objects.joinToString { "?" })
+
+    private fun prefixByWhere(prefix:String, value:String ) =
+        if(!value.isNullOrBlank())
+            "$prefix($value)"
+        else
+            value
+
     protected fun mapToQueryParamVariable(objects:List<*>) = objects.joinToString()
+
+    protected fun getMapParameterArray(objects:List<*>): Array<out String>? =
+        if(objects.isNullOrEmpty())
+            null
+        else
+            arrayOf(mapToQueryParamVariable(objects))
 }
 
 fun Boolean.toInt() = if (this) 1 else 0

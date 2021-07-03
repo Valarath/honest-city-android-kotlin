@@ -71,7 +71,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
-                arrayOf(mapToQueryParamVariable(subjectId))
+                getMapParameterArray(subjectId)
             )
         )
 

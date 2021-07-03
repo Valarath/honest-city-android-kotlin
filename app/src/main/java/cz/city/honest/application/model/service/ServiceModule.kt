@@ -124,7 +124,7 @@ class ServiceModule {
         userService: UserService,
         userSuggestionService: UserSuggestionService
     ): List<PrivateUpdatable> =
-        listOf(voteService, userService,userSuggestionService)
+        listOf( userService,userSuggestionService,voteService)
 
     @Provides
     @Singleton

@@ -67,8 +67,8 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select closed_exchange_point_suggestion.id, status, votes, watched_subject_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
-                arrayOf(mapToQueryParamVariable(subjectId))
+                "Select closed_exchange_point_suggestion.id, status, votes, watched_subject_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id ${mapToQueryParamSymbols(subjectId,"where suggestion.id in")}",
+                getMapParameterArray(subjectId)
             )
         )
 

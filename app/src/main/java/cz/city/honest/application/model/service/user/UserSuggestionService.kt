@@ -20,10 +20,10 @@ class UserSuggestionService(
     val userProvider: UserProvider
 ) : PrivateUpdatable {
 
-    override fun update(accessToken:String): Observable<Unit> =
+    override fun update(accessToken: String): Observable<Unit> =
         userProvider.provide()
-            .concatMap { removeSuggestions(it,accessToken);suggestSuggestions(it,accessToken) }
-            //.onErrorComplete()
+            .concatMap { removeSuggestions(it, accessToken);suggestSuggestions(it, accessToken) }
+    //.onErrorComplete()
 
     fun getUserSuggestions(id: String): Flowable<UserSuggestion> =
         userSuggestionRepository.get(listOf(id))
@@ -34,11 +34,11 @@ class UserSuggestionService(
     fun suggest(userSuggestion: UserSuggestion) =
         userSuggestionRepository.insert(userSuggestion)
 
-    fun suggest(suggestion: Suggestion,markAs:UserSuggestionStateMarking) =
-        toUserSuggestion(suggestion,markAs)
+    fun suggest(suggestion: Suggestion, markAs: UserSuggestionStateMarking) =
+        toUserSuggestion(suggestion, markAs)
             .flatMap { suggest(it) }
 
-    private fun toUserSuggestion(suggestion: Suggestion, markAs:UserSuggestionStateMarking) =
+    private fun toUserSuggestion(suggestion: Suggestion, markAs: UserSuggestionStateMarking) =
         userProvider.provide()
             .map { toUserSuggestion(it, suggestion, markAs) }
 
@@ -71,38 +71,50 @@ class UserSuggestionService(
             markAs = markAs
         )
 
-    private fun removeSuggestions(user: User,accessToken:String): Observable<Unit> =
+    private fun removeSuggestions(user: User, accessToken: String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
-            .filter { isSuggestion(it,UserSuggestionStateMarking.DELETE) }
+            .filter { isDeleteSuggestion(it) }
             .toList()
             .toObservable()
-            .flatMap { removeSuggestions(it,accessToken) }
+            .flatMap { removeSuggestions(it, accessToken) }
             .map {}
 
-    private fun removeSuggestions(userSuggestions: MutableList<UserSuggestion>,accessToken:String) =
+    private fun removeSuggestions(
+        userSuggestions: MutableList<UserSuggestion>,
+        accessToken: String
+    ) =
         Flowable.fromIterable(userSuggestions)
             .map { it.suggestion }
             .toList()
             .toObservable()
-            .flatMap { suggestionServerSource.remove(RemoveSuggestionRequest(it),accessToken) }
+            .flatMap { suggestionServerSource.remove(RemoveSuggestionRequest(it), accessToken) }
             .flatMap { userSuggestionRepository.deleteList(userSuggestions) }
 
-    private fun suggestSuggestions(user: User,accessToken:String): Observable<Unit> =
+    private fun suggestSuggestions(user: User, accessToken: String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
-            .filter { isSuggestion(it,UserSuggestionStateMarking.NEW) }
+            .filter { isNewSuggestion(it) }
             .toList()
             .toObservable()
-            .flatMap { suggestSuggestions(it,accessToken) }
+            .flatMap { suggestSuggestions(it, accessToken) }
             .map {}
 
-    private fun isSuggestion(userSuggestion: UserSuggestion, markedAs:UserSuggestionStateMarking) =
+    private fun isDeleteSuggestion(userSuggestion: UserSuggestion) =
+        isSuggestion(userSuggestion, UserSuggestionStateMarking.DELETE)
+
+    private fun isNewSuggestion(userSuggestion: UserSuggestion) =
+        isSuggestion(userSuggestion, UserSuggestionStateMarking.NEW)
+
+    private fun isSuggestion(userSuggestion: UserSuggestion, markedAs: UserSuggestionStateMarking) =
         userSuggestion.metadata.markAs == markedAs && !userSuggestion.metadata.processed
 
-    private fun suggestSuggestions(userSuggestions: MutableList<UserSuggestion>,accessToken:String) =
+    private fun suggestSuggestions(
+        userSuggestions: MutableList<UserSuggestion>,
+        accessToken: String
+    ) =
         Flowable.fromIterable(userSuggestions)
             .map { it.suggestion }
             .toList()
             .toObservable()
-            .flatMap { suggestionServerSource.suggest(PostSuggestRequest(it),accessToken) }
+            .flatMap { suggestionServerSource.suggest(PostSuggestRequest(it), accessToken) }
             .flatMap { userSuggestionRepository.updateList(userSuggestions) }
 }

@@ -96,7 +96,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
             MENU_ACTIONS[item.itemId]!!.invoke()
 
     private fun suggestNonExistingSubject() = showSubjectSuggestionsViewModel
-        .suggest(createClosedExchangePointSuggestion(), UserSuggestionStateMarking.DELETE)
+        .suggest(createClosedExchangePointSuggestion(), UserSuggestionStateMarking.NEW)
         .let { true }
 
     private fun createClosedExchangePointSuggestion() = ClosedExchangePointSuggestion(

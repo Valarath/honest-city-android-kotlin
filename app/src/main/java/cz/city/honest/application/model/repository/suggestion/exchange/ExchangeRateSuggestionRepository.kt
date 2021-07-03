@@ -78,7 +78,7 @@ class ExchangeRateSuggestionRepository(
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
-                arrayOf(mapToQueryParamVariable(subjectId))
+                getMapParameterArray(subjectId)
             )
         )
 
