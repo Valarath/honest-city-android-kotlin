@@ -6,7 +6,7 @@ abstract class Suggestion(
     open val votes: Int
 ) : HonestCitySerializable {
     fun increaseVotes() = votes.apply { this + 1 }
-    abstract fun toVote(userId:String): Vote
+    abstract fun toVote(userId: String, processed: Boolean): Vote
 }
 
 enum class State : HonestCitySerializable {
@@ -19,7 +19,8 @@ data class NewExchangePointSuggestion(
     override val votes: Int,
     val position: Position
 ) : Suggestion(id, state, votes) {
-    override fun toVote(userId: String): Vote = VoteForNewExchangePoint(this,userId)
+    override fun toVote(userId: String, processed: Boolean): Vote =
+        VoteForNewExchangePoint(this, userId, processed)
 }
 
 class ExchangeRateSuggestion(
@@ -29,7 +30,8 @@ class ExchangeRateSuggestion(
     val watchedSubjectId: String,
     val suggestedExchangeRate: ExchangeRate
 ) : Suggestion(id, state, votes) {
-    override fun toVote(userId: String): Vote = VoteForExchangePointRateChange(this,userId)
+    override fun toVote(userId: String, processed: Boolean): Vote =
+        VoteForExchangePointRateChange(this, userId, processed)
 }
 
 class ClosedExchangePointSuggestion(
@@ -38,7 +40,8 @@ class ClosedExchangePointSuggestion(
     override val votes: Int,
     val watchedSubjectId: String
 ) : Suggestion(id, state, votes) {
-    override fun toVote(userId: String): Vote = VoteForExchangePointDelete(this,userId)
+    override fun toVote(userId: String, processed: Boolean): Vote =
+        VoteForExchangePointDelete(this, userId, processed)
 }
 
 data class UserSuggestion(

@@ -57,14 +57,21 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
         .map { getAllSuggestionIds(it) }
         .concatMap { getSuggestionTypeRepository().get(it) }
 
+    protected fun getVoteUserSuggestions(
+        userIds: List<String>,
+        cursor: Cursor
+    ): Flowable<SUGGESTION_TYPE> = Flowable.just(cursor)
+        .map { getAllSuggestionIds(it) }
+        .concatMap { getSuggestionTypeRepository().get(it) }
+
     protected fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
         suggestionRepositories[suggestionTypeClass.simpleName]
             .run {this as SuggestionRepository<SUGGESTION_TYPE> }
 
-    private fun findVotes(userIds: List<String>): Flowable<Cursor> =
+    protected fun findVotes(userIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select user_id, suggestion_id from user_vote where user_id in( ${
+                "Select user_id, suggestion_id, processed from user_vote where user_id in( ${
                     mapToQueryParamSymbols(
                         userIds
                     )
@@ -93,6 +100,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     private fun getContentValues(entity: VOTE_ENTITY): ContentValues = ContentValues().apply {
         put("user_id", entity.userId)
         put("suggestion_id", entity.suggestion.id)
+        put("processed",entity.processed)
     }
 
 

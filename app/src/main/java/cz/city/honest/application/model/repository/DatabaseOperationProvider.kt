@@ -38,7 +38,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createUserVotesTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS user_vote(user_id varchar not null,suggestion_id varchar not null, foreign key(suggestion_id) references suggestion(suggestion_id), foreign key(user_id) references user(user_id))")
+        database.execSQL("Create table IF NOT EXISTS user_vote(user_id varchar not null,suggestion_id varchar not null, processed integer not null, foreign key(suggestion_id) references suggestion(suggestion_id), foreign key(user_id) references user(user_id))")
     }
 
     private fun createUserTable(database: SQLiteDatabase) {

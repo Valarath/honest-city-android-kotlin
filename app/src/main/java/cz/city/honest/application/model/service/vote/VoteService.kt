@@ -20,19 +20,33 @@ class VoteService(
 
     override fun update(accessToken: String): Observable<Unit> =
         userProvider.provide()
-            .flatMap { updateVotes(it,accessToken) }
+            .flatMap { updateVotes(it, accessToken) }
 
 
     //.onErrorComplete()
 
-    private fun updateVotes(user: User,accessToken: String) =
+    private fun updateVotes(user: User, accessToken: String) =
         Flowable.fromIterable(voteRepositories.values)
             .flatMap { it.get(listOf(user.id)) }
+            .map { setAsProcessed(it) }
             .toList()
-            .map { PostUpVoteRequest(it.toList(), user.id) }
             .toObservable()
-            .flatMap { voteServerSource.upVote(it, accessToken) }
+            .flatMap { updateVotes(it,user,accessToken) }
 
+    private fun updateVotes(votes: List<Vote>, user: User, accessToken: String) =
+        Observable.just(PostUpVoteRequest(votes, user.id))
+            .map { PostUpVoteRequest(votes, user.id) }
+            .flatMap { voteServerSource.upVote(it, accessToken) }
+            .flatMap { Observable.fromIterable(votes) }
+            .flatMap { update(it) }
+            .map {  }
+
+    private fun setAsProcessed(vote: Vote) =
+        vote.apply { this.processed = true }
+
+    private fun update(vote: Vote) =
+        RepositoryProvider.provide(voteRepositories, vote::class.java)
+            .update(vote)
 
     fun vote(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)
@@ -40,7 +54,7 @@ class VoteService(
 
     fun vote(suggestion: Suggestion) =
         userProvider.provide()
-            .flatMap { vote(suggestion.toVote(it.id)) }
+            .flatMap { vote(suggestion.toVote(it.id, false)) }
 
 
     fun delete(vote: Vote) =
@@ -67,7 +81,7 @@ class VoteService(
                      UUID.randomUUID().toString()
                  ), id
              ),*/
-            VoteForNewExchangePoint(
+            /*VoteForNewExchangePoint(
                 NewExchangePointSuggestion(
                     UUID.randomUUID().toString(),
                     state = State.DECLINED,
@@ -90,7 +104,7 @@ class VoteService(
                         )
                     )
                 ), id
-            )
+            )*/
         )
     }
 
