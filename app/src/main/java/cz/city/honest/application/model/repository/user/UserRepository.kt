@@ -18,7 +18,7 @@ import io.reactivex.rxjava3.core.Single
 
 class UserRepository(
     operationProvider: DatabaseOperationProvider,
-    val loginDataRepositories: Map<String, LoginDataRepository<out LoginData>>
+    private val loginDataRepositories: Map<String, LoginDataRepository<out LoginData>>
 ) : Repository<User>(operationProvider) {
 
     override fun insert(entity: User): Observable<Long> = Observable.just(

@@ -16,9 +16,9 @@ class SuggestionService(
     val voteService: VoteService
 ) {
 
-    fun suggest(suggestion: Suggestion,markAs:UserSuggestionStateMarking) =
-        userSuggestionService.suggest(suggestion,markAs)
-            .flatMap {voteService.vote(suggestion)  }
+    fun createSuggestion(suggestion: Suggestion, markAs: UserSuggestionStateMarking) =
+        userSuggestionService.suggest(suggestion, markAs)
+            .flatMap { voteService.vote(suggestion) }
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Flowable.fromIterable(suggestionRepositories.values)
@@ -35,7 +35,7 @@ class SuggestionService(
     private fun getMockSuggestions(id: String): List<Suggestion> {
         return listOf(
             ClosedExchangePointSuggestion(
-                id =UUID.randomUUID().toString(),
+                id = UUID.randomUUID().toString(),
                 state = State.IN_PROGRESS,
                 votes = 5,
                 watchedSubjectId = UUID.randomUUID().toString()
@@ -63,13 +63,19 @@ class SuggestionService(
         )
     }
 
-    fun suggest(suggestion: Suggestion) =
+    fun createSuggestion(suggestion: Suggestion) =
         RepositoryProvider.provide(
             suggestionRepositories,
             suggestion::class.java
         )
             .insert(suggestion)
             .flatMap { voteService.vote(suggestion) }
+
+    fun suggest(suggestion: Suggestion) =
+        RepositoryProvider.provide(
+            suggestionRepositories,
+            suggestion::class.java
+        ).insert(suggestion)
 
     fun update(suggestion: Suggestion) =
         RepositoryProvider.provide(

@@ -34,7 +34,7 @@ class FacebookLoginHandler(
 }
 
 data class FacebookLoginData(
-    val accessToken: String,
+    val accessToken: String = "",
     val facebookUserId: String,
     val userId:String
 ) : LoginData {

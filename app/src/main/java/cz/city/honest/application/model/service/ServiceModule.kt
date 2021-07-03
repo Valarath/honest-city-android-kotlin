@@ -46,11 +46,13 @@ class ServiceModule {
     fun getSubjectService(
         subjectRepositories: Map<String, @JvmSuppressWildcards SubjectRepository<out WatchedSubject>>,
         subjectServerSource: SubjectServerSource,
+        suggestionService: SuggestionService,
         positionProvider: PositionProvider
     ): SubjectService =
         SubjectService(
             subjectRepositories,
             subjectServerSource,
+            suggestionService,
             positionProvider
         )
 

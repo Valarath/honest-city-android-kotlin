@@ -50,7 +50,7 @@ class MapViewModel @Inject constructor(
 
     private fun suggestNewSubject(suggestion: NewExchangePointSuggestion) =
         suggestionService
-            .suggest(suggestion, UserSuggestionStateMarking.NEW)
+            .createSuggestion(suggestion, UserSuggestionStateMarking.NEW)
             .map { suggestion }
 
     private fun getNewExchangePointSuggestion(position: Position) =

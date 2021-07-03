@@ -1,5 +1,6 @@
 package cz.city.honest.application.model.gateway.server
 
+import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.gateway.SubjectGateway
 import io.reactivex.rxjava3.core.Observable
@@ -14,7 +15,8 @@ interface SubjectServerSource : SubjectGateway {
 }
 
 data class GetSubjectsResponse(
-    val subjects: MutableMap<String, List<WatchedSubject>>
+    val subjects: MutableMap<String, List<WatchedSubject>>,
+    val newSubjectSuggestions: MutableMap<String, List<Suggestion>>
 )
 
 object SubjectEndpointsUrl {
