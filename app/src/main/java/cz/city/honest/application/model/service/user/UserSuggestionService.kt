@@ -74,6 +74,7 @@ class UserSuggestionService(
     private fun removeSuggestions(user: User, accessToken: String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
             .filter { isDeleteSuggestion(it) }
+            .map { toProcessedSuggestion(it) }
             .toList()
             .toObservable()
             .flatMap { removeSuggestions(it, accessToken) }
@@ -93,10 +94,14 @@ class UserSuggestionService(
     private fun suggestSuggestions(user: User, accessToken: String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
             .filter { isNewSuggestion(it) }
+            .map { toProcessedSuggestion(it) }
             .toList()
             .toObservable()
             .flatMap { suggestSuggestions(it, accessToken) }
             .map {}
+
+    private fun toProcessedSuggestion(userSuggestion: UserSuggestion) =
+        userSuggestion.copy(metadata = userSuggestion.metadata.copy(processed = true))
 
     private fun isDeleteSuggestion(userSuggestion: UserSuggestion) =
         isSuggestion(userSuggestion, UserSuggestionStateMarking.DELETE)

@@ -57,7 +57,7 @@ class ExchangePointRepository(
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,
             "id = ?",
-            arrayOf(entity.id.toString())
+            arrayOf(entity.id)
         )
     }
 
