@@ -1,14 +1,12 @@
 package cz.city.honest.application.model.dto
 
-import java.io.Serializable
-
 data class User(
     val id: String,
     val username: String,
     val score: Int,
     var logged: Boolean = false,
     val loginData: LoginData
-) : Serializable
+) : HonestCitySerializable
 
 interface LoginData{
     fun getClassName():String = javaClass.simpleName

@@ -7,8 +7,6 @@ import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.Vote
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
-import cz.city.honest.application.model.repository.subject.SubjectRepository
-import cz.city.honest.application.model.repository.subject.exchange.ExchangePointRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import cz.city.honest.application.model.service.RepositoryProvider
 import io.reactivex.rxjava3.core.Flowable

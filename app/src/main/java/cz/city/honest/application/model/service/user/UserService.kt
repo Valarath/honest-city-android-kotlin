@@ -5,6 +5,7 @@ import cz.city.honest.application.model.gateway.server.UserServerSource
 import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.service.update.PrivateUpdatable
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 
@@ -30,7 +31,7 @@ class UserService(
         getLoggedUser()
             .flatMap { getUserSuggestions(it, accessToken) }
             .flatMap { userSuggestionRepository.insertList(it) }
-            .onErrorComplete()
+            //.onErrorComplete()
 
     private fun getUserSuggestions(user: User, accessToken: String) =
         userServerSource.getUserSuggestions(getGetUserSuggestionsRequest(user), accessToken)

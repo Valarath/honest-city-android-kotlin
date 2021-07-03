@@ -3,7 +3,7 @@ package cz.city.honest.application.model.dto
 import java.io.Serializable
 import java.time.LocalDate
 
-enum class HonestyStatus(private val nextLevelOfHonesty: HonestyStatus?) : Serializable {
+enum class HonestyStatus(private val nextLevelOfHonesty: HonestyStatus?) : HonestCitySerializable {
     HONEST(null),
     HONEST_WITH_RESERVE(HONEST),
     BE_CAUTION(HONEST_WITH_RESERVE),
@@ -16,9 +16,9 @@ open class WatchedSubject(
     open val watchedTo: LocalDate,
     open val honestyStatus: HonestyStatus,
     open val suggestions: List<Suggestion>
-) : Serializable
+) : HonestCitySerializable
 
-data class Position(val longitude: Double, val latitude: Double) : Serializable
+data class Position(val longitude: Double, val latitude: Double) : HonestCitySerializable
 
 open class ImmobileWatchedSubject(
     override val id: String,

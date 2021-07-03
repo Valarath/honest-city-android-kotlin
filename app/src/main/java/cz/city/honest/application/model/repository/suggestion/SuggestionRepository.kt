@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
-import cz.city.honest.application.model.repository.suggestion.exchange.ExchangeRateSuggestionRepository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 

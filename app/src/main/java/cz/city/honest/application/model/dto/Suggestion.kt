@@ -1,17 +1,15 @@
 package cz.city.honest.application.model.dto
 
-import java.io.Serializable
-
 abstract class Suggestion(
     open val id: String,
     open val state: State,
     open val votes: Int
-) : Serializable {
+) : HonestCitySerializable {
     fun increaseVotes() = votes.apply { this + 1 }
     abstract fun toVote(userId:String): Vote
 }
 
-enum class State : Serializable {
+enum class State : HonestCitySerializable {
     ACCEPTED, DECLINED, IN_PROGRESS
 }
 

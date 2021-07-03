@@ -23,7 +23,7 @@ class UserSuggestionService(
     override fun update(accessToken:String): Observable<Unit> =
         userProvider.provide()
             .concatMap { removeSuggestions(it,accessToken);suggestSuggestions(it,accessToken) }
-            .onErrorComplete()
+            //.onErrorComplete()
 
     fun getUserSuggestions(id: String): Flowable<UserSuggestion> =
         userSuggestionRepository.get(listOf(id))
@@ -73,7 +73,7 @@ class UserSuggestionService(
 
     private fun removeSuggestions(user: User,accessToken:String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
-            .filter { it.metadata.markAs == UserSuggestionStateMarking.DELETE }
+            .filter { isSuggestion(it,UserSuggestionStateMarking.DELETE) }
             .toList()
             .toObservable()
             .flatMap { removeSuggestions(it,accessToken) }
@@ -89,14 +89,14 @@ class UserSuggestionService(
 
     private fun suggestSuggestions(user: User,accessToken:String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
-            .filter { isSuggestionNew(it) }
+            .filter { isSuggestion(it,UserSuggestionStateMarking.NEW) }
             .toList()
             .toObservable()
             .flatMap { suggestSuggestions(it,accessToken) }
             .map {}
 
-    private fun isSuggestionNew(userSuggestion: UserSuggestion) =
-        userSuggestion.metadata.markAs == UserSuggestionStateMarking.NEW && !userSuggestion.metadata.processed
+    private fun isSuggestion(userSuggestion: UserSuggestion, markedAs:UserSuggestionStateMarking) =
+        userSuggestion.metadata.markAs == markedAs && !userSuggestion.metadata.processed
 
     private fun suggestSuggestions(userSuggestions: MutableList<UserSuggestion>,accessToken:String) =
         Flowable.fromIterable(userSuggestions)

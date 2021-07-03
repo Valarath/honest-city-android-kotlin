@@ -1,8 +1,16 @@
 package cz.city.honest.application.model.gateway
 
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
 import cz.city.honest.application.model.dto.LoginData
+import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.Vote
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.property.ConnectionProperties
 import dagger.Module
@@ -14,12 +22,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 import javax.inject.Singleton
 
 
 @Module
-class GatewayModule (){
+class GatewayModule() {
 
     //TODO relocate this
     @Provides
@@ -27,7 +35,8 @@ class GatewayModule (){
     fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
         .baseUrl(connectionProperties.baseUrl)
-        .addConverterFactory(getConverterFactory())
+        //.addConverterFactory(getConverterFactory())
+        .addConverterFactory(JacksonConverterFactory.create(getObjectMapper()))
         .client(getHttpClient())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .build()
@@ -40,10 +49,24 @@ class GatewayModule (){
             .addInterceptor(interceptor)
             .build()
 
-    private fun getConverterFactory() = GsonBuilder()
+    private fun getObjectMapper() = getBaseObjectMapper()
+        .also { it.registerModule(getModule(it)) }
+
+    private fun getModule(objectMapper: ObjectMapper) = SimpleModule()
+        .apply { setDeserializers(this,objectMapper) }
+
+    private fun setDeserializers(module: SimpleModule,objectMapper: ObjectMapper) =
+        module.apply {
+            this.addDeserializer(LoginData::class.java, LoginDataSerializer(objectMapper))
+            this.addDeserializer(WatchedSubject::class.java, WatchedSubjectSerializer(objectMapper))
+            this.addDeserializer(Suggestion::class.java, SuggestionSerializer(objectMapper))
+            this.addDeserializer(Vote::class.java, VoteSerializer(objectMapper))
+        }
+
+    /*private fun getConverterFactory() = GsonBuilder()
         .registerTypeAdapter(LoginData::class.java,LoginDataSerializer())
         .run { this.create() }
-        .run { GsonConverterFactory.create(this) }
+        .run { GsonConverterFactory.create(this) }*/
 
     @Provides
     @Singleton
@@ -83,6 +106,15 @@ class GatewayModule (){
 
     private fun <T> getGateway(retrofit: Retrofit, gateway: Class<T>) = retrofit.create(gateway)
 
+    companion object {
+
+        fun getBaseObjectMapper() = ObjectMapper()
+            .also { it.registerModule(KotlinModule()) }
+            .also { it.registerModule(JavaTimeModule()) }
+            .also { it.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) }
+            .also { it.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) }
+
+    }
 }
 
 abstract class BaseGatewayModule {

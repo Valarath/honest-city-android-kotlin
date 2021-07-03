@@ -7,7 +7,6 @@ import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
-import cz.city.honest.application.model.repository.toBoolean
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 

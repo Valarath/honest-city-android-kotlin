@@ -18,14 +18,21 @@ class VoteService(
     val userProvider: UserProvider
 ) : PrivateUpdatable {
 
-    override fun update(accessToken:String): Observable<Unit> =
+    override fun update(accessToken: String): Observable<Unit> =
+        userProvider.provide()
+            .flatMap { updateVotes(it,accessToken) }
+
+
+    //.onErrorComplete()
+
+    private fun updateVotes(user: User,accessToken: String) =
         Flowable.fromIterable(voteRepositories.values)
-            .flatMap { it.get(listOf()) }
+            .flatMap { it.get(listOf(user.id)) }
             .toList()
-            .map { PostUpVoteRequest(it.toList(), "") }
+            .map { PostUpVoteRequest(it.toList(), user.id) }
             .toObservable()
-            .flatMap { voteServerSource.upVote(it,accessToken) }
-            .onErrorComplete()
+            .flatMap { voteServerSource.upVote(it, accessToken) }
+
 
     fun vote(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)
@@ -42,24 +49,24 @@ class VoteService(
 
     fun getVotesForSubject(id: String): Observable<Vote> = userProvider
         .provide()
-        .flatMap { getUserSubjectVotes(id,it.id) }
+        .flatMap { getUserSubjectVotes(id, it.id) }
 
-    private fun getUserSubjectVotes(subjectId:String, userId:String) =
+    private fun getUserSubjectVotes(subjectId: String, userId: String) =
         Flowable.fromIterable(voteRepositories.values)
             .flatMap { it.getBySubjectId(subjectId, userId) }
             .toObservable()
 
     private fun getMockSuggestions(id: String): List<Vote> {
         return listOf(
-           /* VoteForExchangePointDelete(
-                ClosedExchangePointSuggestion(
-                    UUID.randomUUID().toString(),
-                    State.IN_PROGRESS,
-                    5,
-                    UUID.randomUUID().toString(),
-                    UUID.randomUUID().toString()
-                ), id
-            ),*/
+            /* VoteForExchangePointDelete(
+                 ClosedExchangePointSuggestion(
+                     UUID.randomUUID().toString(),
+                     State.IN_PROGRESS,
+                     5,
+                     UUID.randomUUID().toString(),
+                     UUID.randomUUID().toString()
+                 ), id
+             ),*/
             VoteForNewExchangePoint(
                 NewExchangePointSuggestion(
                     UUID.randomUUID().toString(),

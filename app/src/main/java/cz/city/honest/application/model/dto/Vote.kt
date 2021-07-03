@@ -2,7 +2,7 @@ package cz.city.honest.application.model.dto
 
 import java.io.Serializable
 
-abstract class Vote(open val suggestion: Suggestion, open val userId: String) : Serializable
+abstract class Vote(open val suggestion: Suggestion, open val userId: String) : HonestCitySerializable
 
 data class VoteForExchangePointDelete(
     override val suggestion: ClosedExchangePointSuggestion,

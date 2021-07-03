@@ -3,14 +3,14 @@ package cz.city.honest.application.model.dto
 import java.io.Serializable
 import java.time.LocalDate
 
-data class Watched(val from: LocalDate, val to: LocalDate?) : Serializable
+data class Watched(val from: LocalDate, val to: LocalDate?) : HonestCitySerializable
 
-open class ExchangeRateValues(open val buy: Double) : Serializable
+open class ExchangeRateValues(open val buy: Double) : HonestCitySerializable
 
-data class Rate(val currency: String, val rateValues: ExchangeRateValues) : Serializable
+data class Rate(val currency: String, val rateValues: ExchangeRateValues) : HonestCitySerializable
 
 data class ExchangeRate(val id: String, val watched: Watched, val rates: MutableSet<Rate>) :
-    Serializable
+    HonestCitySerializable
 
 data class ExchangePointRateValues(override val buy: Double, val sell: Double) :
     ExchangeRateValues(buy)
