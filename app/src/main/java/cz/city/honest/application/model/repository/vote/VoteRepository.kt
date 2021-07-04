@@ -49,20 +49,10 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
         )
             .flatMap { updateSuggestion(entity) }
 
-    protected fun getUserId(userIds: List<String>):String = userIds.first()
-
     protected fun getVoteUserSuggestions(
-        userIds: List<String>
-    ): Flowable<SUGGESTION_TYPE> = findVotes(userIds)
-        .map { getAllSuggestionIds(it) }
-        .concatMap { getSuggestionTypeRepository().get(it) }
-
-    protected fun getVoteUserSuggestions(
-        userIds: List<String>,
-        cursor: Cursor
-    ): Flowable<SUGGESTION_TYPE> = Flowable.just(cursor)
-        .map { getAllSuggestionIds(it) }
-        .concatMap { getSuggestionTypeRepository().get(it) }
+        suggestionId:String
+    ): Flowable<SUGGESTION_TYPE> = Flowable.just(suggestionId)
+        .flatMap { getSuggestionTypeRepository().get(listOf(it)) }
 
     protected fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
         suggestionRepositories[suggestionTypeClass.simpleName]
@@ -83,7 +73,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     protected fun getAllSuggestionIds(cursor: Cursor): List<String> =
         mutableListOf<String>()
             .apply {
-                while (cursor.moveToNext())
+                while (cursorContainsData(cursor))
                     add(cursor.getString(1))
             }
             .run { this.toList() }

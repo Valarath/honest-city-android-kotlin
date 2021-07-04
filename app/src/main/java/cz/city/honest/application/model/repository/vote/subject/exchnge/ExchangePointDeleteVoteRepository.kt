@@ -18,13 +18,13 @@ class ExchangePointDeleteVoteRepository(
 ) {
     override fun get(userIds: List<String>): Flowable<VoteForExchangePointDelete> =
         findVotes(userIds)
-            .flatMap { get(userIds, it) }
+            .flatMap { toEntities(it) { get(it) } }
 
-    private fun get(userIds: List<String>, cursor: Cursor) = getVoteUserSuggestions(userIds, cursor)
+    private fun get(cursor: Cursor) = getVoteUserSuggestions(cursor.getString(1))
         .map {
             VoteForExchangePointDelete(
                 suggestion = it,
-                userId = getUserId(userIds),
+                userId = cursor.getString(0),
                 processed = cursor.getInt(2).toBoolean()
             )
         }

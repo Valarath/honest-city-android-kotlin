@@ -8,10 +8,10 @@ import cz.city.honest.application.model.repository.Repository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
-abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperationProvider: DatabaseOperationProvider):
+abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperationProvider: DatabaseOperationProvider) :
     Repository<SUGGESTION_TYPE>(databaseOperationProvider) {
 
-    abstract fun get():Flowable<SUGGESTION_TYPE>
+    abstract fun get(): Flowable<SUGGESTION_TYPE>
 
     override fun insert(suggestion: SUGGESTION_TYPE): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
@@ -22,14 +22,15 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
         )
     )
 
-    override fun update(suggestion: SUGGESTION_TYPE): Observable<Int> = Observable.just(
-        databaseOperationProvider.writableDatabase.update(
-            TABLE_NAME,
-            getContentValues(suggestion),
-            "id = ?",
-            arrayOf(suggestion.id)
+    override fun update(suggestion: SUGGESTION_TYPE): Observable<Int> =
+        Observable.just(
+            databaseOperationProvider.writableDatabase.update(
+                TABLE_NAME,
+                getContentValues(suggestion),
+                "id = ?",
+                arrayOf(suggestion.id)
+            )
         )
-    )
 
     override fun delete(suggestion: SUGGESTION_TYPE): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(

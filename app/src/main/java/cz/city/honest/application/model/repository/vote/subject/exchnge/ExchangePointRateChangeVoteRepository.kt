@@ -11,7 +11,7 @@ import cz.city.honest.application.model.repository.toBoolean
 import cz.city.honest.application.model.repository.vote.VoteRepository
 import io.reactivex.rxjava3.core.Flowable
 
-class ExchangePointRateChangeRepository (
+class ExchangePointRateChangeVoteRepository (
     operationProvider: DatabaseOperationProvider,
     suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
 ) : VoteRepository<VoteForExchangePointRateChange, ExchangeRateSuggestion>(
@@ -19,13 +19,13 @@ class ExchangePointRateChangeRepository (
 ) {
     override fun get(userIds: List<String>): Flowable<VoteForExchangePointRateChange> =
         findVotes(userIds)
-            .flatMap { get(userIds, it) }
+            .flatMap { toEntities(it) { get(it) } }
 
-    private fun get(userIds: List<String>, cursor: Cursor) = getVoteUserSuggestions(userIds, cursor)
+    private fun get(cursor: Cursor) = getVoteUserSuggestions(cursor.getString(1))
         .map {
             VoteForExchangePointRateChange(
                 suggestion = it,
-                userId = getUserId(userIds),
+                userId = cursor.getString(0),
                 processed = cursor.getInt(2).toBoolean()
             )
         }

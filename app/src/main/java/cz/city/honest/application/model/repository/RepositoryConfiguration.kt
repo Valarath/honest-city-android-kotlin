@@ -20,7 +20,7 @@ import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
 import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointDeleteVoteRepository
-import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointRateChangeRepository
+import cz.city.honest.application.model.repository.vote.subject.exchnge.ExchangePointRateChangeVoteRepository
 import cz.city.honest.application.model.repository.vote.subject.exchnge.NewExchangePointVoteRepository
 import dagger.Module
 import dagger.Provides
@@ -143,7 +143,7 @@ class RepositoryModule() {
         operationProvider: DatabaseOperationProvider,
         suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
     ): VoteRepository<out Vote, out Suggestion> =
-        ExchangePointRateChangeRepository(operationProvider, suggestionRepositories)
+        ExchangePointRateChangeVoteRepository(operationProvider, suggestionRepositories)
 
     @Provides
     @Singleton

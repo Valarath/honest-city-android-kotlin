@@ -20,14 +20,14 @@ class NewExchangePointVoteRepository(
 
     override fun get(userIds: List<String>): Flowable<VoteForNewExchangePoint> =
         findVotes(userIds)
-            .filter { cursorContainsData(it) }
-            .flatMap { get(userIds, it) }
+            .flatMap { toEntities(it) { get(it) } }
 
-    private fun get(userIds: List<String>, cursor: Cursor) = getVoteUserSuggestions(userIds, cursor)
+
+    private fun get(cursor: Cursor) = getVoteUserSuggestions(cursor.getString(1))
         .map {
             VoteForNewExchangePoint(
                 suggestion = it,
-                userId = getUserId(userIds),
+                userId = cursor.getString(0),
                 processed = cursor.getInt(2).toBoolean()
             )
         }
