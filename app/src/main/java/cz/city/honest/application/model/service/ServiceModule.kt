@@ -74,9 +74,10 @@ class ServiceModule {
     fun getUserSuggestionService(
         userSuggestionRepository: UserSuggestionRepository,
         userProvider: UserProvider,
+        voteService: VoteService,
         suggestionServerSource: SuggestionServerSource
     ): UserSuggestionService =
-        UserSuggestionService(suggestionServerSource, userSuggestionRepository, userProvider)
+        UserSuggestionService(suggestionServerSource, userSuggestionRepository, voteService, userProvider)
 
     @Provides
     @Singleton
