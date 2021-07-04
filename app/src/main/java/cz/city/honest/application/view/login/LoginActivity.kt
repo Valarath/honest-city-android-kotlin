@@ -101,10 +101,12 @@ class LoginResultFacebookCallback(
 
     private fun registerUser(accessToken: AccessToken) {
         loginViewModel.registerUser(getFacebookLoginData(accessToken, NEW_USER_ID))
+            .also { activity.startActivity(Intent(activity, UserDetailActivity::class.java)) }
     }
 
     private fun loginUser(user: User, accessToken: AccessToken) =
         loginViewModel.loginUser(user.copy(loginData = getFacebookLoginData(accessToken, user.id)))
+            .also { activity.startActivity(Intent(activity, UserDetailActivity::class.java)) }
 
     private fun getFacebookLoginData(accessToken: AccessToken, userId: String) =
         FacebookLoginData(accessToken.token, accessToken.userId, userId)
