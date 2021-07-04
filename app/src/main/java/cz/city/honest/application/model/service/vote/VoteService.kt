@@ -73,42 +73,4 @@ class VoteService(
             .flatMap { it.getBySubjectId(subjectId, userId) }
             .toObservable()
 
-    private fun getMockSuggestions(id: String): List<Vote> {
-        return listOf(
-            /* VoteForExchangePointDelete(
-                 ClosedExchangePointSuggestion(
-                     UUID.randomUUID().toString(),
-                     State.IN_PROGRESS,
-                     5,
-                     UUID.randomUUID().toString(),
-                     UUID.randomUUID().toString()
-                 ), id
-             ),*/
-            /*VoteForNewExchangePoint(
-                NewExchangePointSuggestion(
-                    UUID.randomUUID().toString(),
-                    state = State.DECLINED,
-                    votes = 6,
-                    position = Position(55.0, 77.0)
-                ), id
-            ),
-            VoteForExchangePointRateChange(
-                ExchangeRateSuggestion(
-                    UUID.randomUUID().toString(),
-                    state = State.ACCEPTED,
-                    votes = 10,
-                    watchedSubjectId = UUID.randomUUID().toString(),
-                    suggestedExchangeRate = ExchangeRate(
-                        "",
-                        Watched(LocalDate.now(), LocalDate.now()),
-                        mutableSetOf(
-                            Rate("CZK", ExchangeRateValues(22.0)),
-                            Rate("USD", ExchangeRateValues(22.0))
-                        )
-                    )
-                ), id
-            )*/
-        )
-    }
-
 }

@@ -1,6 +1,5 @@
 package cz.city.honest.application.model.dto
 
-import java.io.Serializable
 import java.time.LocalDate
 
 data class Watched(val from: LocalDate, val to: LocalDate?) : HonestCitySerializable

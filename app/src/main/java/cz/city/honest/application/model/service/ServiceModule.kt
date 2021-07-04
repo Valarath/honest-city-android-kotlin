@@ -136,8 +136,7 @@ class ServiceModule {
         subjectService: SubjectService,
         settingsService: CurrencySettingsService
     ): List<PublicUpdatable> =
-        //listOf(authorityService, subjectService,settingsService)
-        listOf(subjectService,settingsService)
+        listOf(authorityService, subjectService,settingsService)
 
     @Provides
     @Singleton
