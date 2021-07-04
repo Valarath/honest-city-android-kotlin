@@ -37,16 +37,17 @@ class UserSuggestionRepository(
     )
 
     override fun update(userSuggestion: UserSuggestion): Observable<Int> =
-        RepositoryProvider.provide(suggestionRepositories,userSuggestion.suggestion::class.java)
-            .update(userSuggestion.suggestion)
-            .map {
-                databaseOperationProvider.writableDatabase.update(
-                    TABLE_NAME,
-                    getContentValues(userSuggestion),
-                    "suggestion_id = ? AND user_id = ? ",
-                    arrayOf(userSuggestion.suggestion.id,userSuggestion.user.id)
-                )
-            }
+        Observable.just(
+            databaseOperationProvider.writableDatabase.update(
+                TABLE_NAME,
+                getContentValues(userSuggestion),
+                "suggestion_id = ? AND user_id = ? ",
+                arrayOf(userSuggestion.suggestion.id, userSuggestion.user.id)
+            )
+        ).flatMap {
+            RepositoryProvider.provide(suggestionRepositories, userSuggestion.suggestion::class.java)
+                .update(userSuggestion.suggestion)
+        }
 
     override fun get(userIds: List<String>): Flowable<UserSuggestion> = findUserSuggestions(userIds)
         .flatMap { toEntities(it) { toUserSuggestion(it) } }
@@ -65,7 +66,7 @@ class UserSuggestionRepository(
 
     private fun toUserSuggestion(cursor: Cursor) =
         suggestionRepositories[cursor.getString(3)]!!.get(listOf(cursor.getString(0)))
-            .flatMap {toUserSuggestion(cursor,it)}
+            .flatMap { toUserSuggestion(cursor, it) }
 
     private fun toUserSuggestion(cursor: Cursor, suggestion: Suggestion) =
         userRepository.get(listOf(cursor.getString(1)))
@@ -81,15 +82,15 @@ class UserSuggestionRepository(
             }
 
     override fun delete(userSuggestion: UserSuggestion): Observable<Int> =
-        RepositoryProvider.provide(suggestionRepositories,userSuggestion.suggestion::class.java)
+        RepositoryProvider.provide(suggestionRepositories, userSuggestion.suggestion::class.java)
             .delete(userSuggestion.suggestion)
             .map {
-            databaseOperationProvider.writableDatabase.delete(
-                TABLE_NAME,
-                "user_id = ? AND suggestion_id = ?",
-                arrayOf(userSuggestion.user.id,userSuggestion.suggestion.id)
-            )
-        }
+                databaseOperationProvider.writableDatabase.delete(
+                    TABLE_NAME,
+                    "user_id = ? AND suggestion_id = ?",
+                    arrayOf(userSuggestion.user.id, userSuggestion.suggestion.id)
+                )
+            }
 
     private fun getContentValues(userSuggestion: UserSuggestion) =
         ContentValues().apply {
