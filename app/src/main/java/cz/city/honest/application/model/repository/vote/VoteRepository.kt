@@ -42,7 +42,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
             databaseOperationProvider.writableDatabase.update(
                 TABLE_NAME,
                 getContentValues(entity),
-                "user_id = ? && suggestion_id = ?",
+                "user_id = ? AND suggestion_id = ?",
                 arrayOf(entity.userId, entity.suggestion.id)
             )
         )
@@ -60,7 +60,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     override fun delete(entity: VOTE_ENTITY): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,
-            "user_id = ? && suggestion_id = ?",
+            "user_id = ? AND suggestion_id = ?",
             arrayOf(entity.userId, entity.suggestion.id)
         )
     )
@@ -69,7 +69,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     fun delete(suggestionId:String,userId:String): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,
-            "user_id = ? && suggestion_id = ?",
+            "user_id = ? AND  suggestion_id = ?",
             arrayOf(userId, suggestionId)
         )
     )
