@@ -1,7 +1,6 @@
 package cz.city.honest.application.model.repository.vote
 
 import android.content.ContentValues
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.Vote
@@ -57,26 +56,6 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
     protected fun getSuggestionTypeRepository(): SuggestionRepository<SUGGESTION_TYPE> =
         suggestionRepositories[suggestionTypeClass.simpleName]
             .run {this as SuggestionRepository<SUGGESTION_TYPE> }
-
-    protected fun findVotes(userIds: List<String>): Flowable<Cursor> =
-        Flowable.just(
-            databaseOperationProvider.readableDatabase.rawQuery(
-                "Select user_id, suggestion_id, processed from user_vote where user_id in( ${
-                    mapToQueryParamSymbols(
-                        userIds
-                    )
-                })",
-                arrayOf(mapToQueryParamVariable(userIds))
-            )
-        )
-
-    protected fun getAllSuggestionIds(cursor: Cursor): List<String> =
-        mutableListOf<String>()
-            .apply {
-                while (cursorContainsData(cursor))
-                    add(cursor.getString(1))
-            }
-            .run { this.toList() }
 
     override fun delete(entity: VOTE_ENTITY): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(

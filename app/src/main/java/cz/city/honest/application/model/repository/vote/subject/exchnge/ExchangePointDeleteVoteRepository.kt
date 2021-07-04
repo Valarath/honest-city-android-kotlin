@@ -28,4 +28,16 @@ class ExchangePointDeleteVoteRepository(
                 processed = cursor.getInt(2).toBoolean()
             )
         }
+
+    private fun findVotes(userIds: List<String>): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select user_id, suggestion_id, processed from user_vote join closed_exchange_point_suggestion on suggestion_id = id where user_id in( ${
+                    mapToQueryParamSymbols(
+                        userIds
+                    )
+                })",
+                arrayOf(mapToQueryParamVariable(userIds))
+            )
+        )
 }
