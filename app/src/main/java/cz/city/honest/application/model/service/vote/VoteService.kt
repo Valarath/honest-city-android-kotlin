@@ -59,8 +59,7 @@ class VoteService(
     private fun toVote(
         suggestion: Suggestion,
         it: User
-    ) = suggestion.apply { this.increaseVotes() }
-        .toVote(it.id, false)
+    ) = suggestion.toVote(it.id, false)
 
     fun delete(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)

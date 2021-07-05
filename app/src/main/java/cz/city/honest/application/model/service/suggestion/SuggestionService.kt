@@ -38,13 +38,5 @@ class SuggestionService(
             suggestion::class.java
         ).insert(suggestion)
 
-    fun update(suggestion: Suggestion) =
-        RepositoryProvider.provide(
-            suggestionRepositories,
-            suggestion::class.java
-        )
-            .update(updateSuggestion(suggestion))
-
-    private fun updateSuggestion(suggestion: Suggestion) = suggestion.apply { this.increaseVotes() }
 
 }
