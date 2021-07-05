@@ -44,7 +44,7 @@
         </activity>
         <activity
             android:name=".view.login.LoginActivity"
-            android:label="@string/title_activity_camera_result"
+            android:label="@string/title_activity_login"
             android:parentActivityName=".view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

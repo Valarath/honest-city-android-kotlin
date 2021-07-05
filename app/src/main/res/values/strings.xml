@@ -34,6 +34,7 @@
     -->
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_camera_result">Is rate good?</string>
+    <string name="title_activity_login">Login</string>
     <string name="suggest_new_rate_text">Suggest</string>
     <string name="suggest_rate_button">Suggest rate</string>
 
