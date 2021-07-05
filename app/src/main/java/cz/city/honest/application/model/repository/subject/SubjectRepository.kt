@@ -27,14 +27,13 @@ abstract class SubjectRepository<WATCHED_SUBJECT: WatchedSubject>(
             SQLiteDatabase.CONFLICT_REPLACE
         )
     )
-        .map { insertSuggestions(entity.suggestions).run { it } }
+        .flatMap { Observable.fromIterable(entity.suggestions) }
+        .flatMap { insertSuggestion(it) }
 
     abstract fun get():Flowable<WATCHED_SUBJECT>
 
-    private fun insertSuggestions(suggestions:List<Suggestion>)=suggestions.forEach { insertSuggestion(it) }
-
     private fun insertSuggestion(suggestion: Suggestion) =
-        RepositoryProvider.provide(suggestionRepositories,suggestion.javaClass)?.insert(suggestion)
+        RepositoryProvider.provide(suggestionRepositories,suggestion.javaClass).insert(suggestion)
 
     override fun update(entity: WATCHED_SUBJECT): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.update(
