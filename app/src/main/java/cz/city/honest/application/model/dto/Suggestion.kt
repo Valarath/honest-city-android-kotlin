@@ -3,9 +3,10 @@ package cz.city.honest.application.model.dto
 abstract class Suggestion(
     open val id: String,
     open val state: State,
-    open val votes: Int
+    open val subjectId: String,
+    open var votes: Int
 ) : HonestCitySerializable {
-    fun increaseVotes() = votes.apply { this + 1 }
+    fun increaseVotes() = votes++
     abstract fun toVote(userId: String, processed: Boolean): Vote
 }
 
@@ -16,9 +17,10 @@ enum class State : HonestCitySerializable {
 data class NewExchangePointSuggestion(
     override val id: String,
     override val state: State,
-    override val votes: Int,
+    override val subjectId: String,
+    override var votes: Int,
     val position: Position
-) : Suggestion(id, state, votes) {
+) : Suggestion(id, state, subjectId, votes) {
     override fun toVote(userId: String, processed: Boolean): Vote =
         VoteForNewExchangePoint(this, userId, processed)
 }
@@ -26,10 +28,10 @@ data class NewExchangePointSuggestion(
 class ExchangeRateSuggestion(
     override val id: String,
     override val state: State,
-    override val votes: Int,
-    val watchedSubjectId: String,
+    override val subjectId: String,
+    override var votes: Int,
     val suggestedExchangeRate: ExchangeRate
-) : Suggestion(id, state, votes) {
+) : Suggestion(id, state, subjectId, votes) {
     override fun toVote(userId: String, processed: Boolean): Vote =
         VoteForExchangePointRateChange(this, userId, processed)
 }
@@ -37,9 +39,9 @@ class ExchangeRateSuggestion(
 class ClosedExchangePointSuggestion(
     override val id: String,
     override val state: State,
-    override val votes: Int,
-    val watchedSubjectId: String
-) : Suggestion(id, state, votes) {
+    override val subjectId: String,
+    override var votes: Int
+) : Suggestion(id, state, subjectId, votes) {
     override fun toVote(userId: String, processed: Boolean): Vote =
         VoteForExchangePointDelete(this, userId, processed)
 }

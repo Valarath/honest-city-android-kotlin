@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Application</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_subject_detail">SubjectDetailActivity</string>
-    <string name="title_camera_activity">CameraActivity</string>
+    <string name="title_activity_subject_detail"></string>
+    <string name="title_camera_activity"></string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="first_fragment_label"> </string>
+    <string name="second_fragment_label"></string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -25,16 +25,17 @@
     <string name="analyze_actual_rate">Analyze rate</string>
 
     <!-- SUBJECT MENU -->
-    <string name="watched_subject_suggest_change_exchange_rate">Exchange rate</string>
+    <string name="watched_subject_suggest_change_exchange_rate">Suggest exchange rate</string>
     <string name="watched_subject_suggest_non_existence">Delete subject</string>
-    <string name="title_activity_camera_result_fragment">CameraResultFragment</string>
+    <string name="vote_for_new_subject_suggestion">Vote for</string>
+    <string name="title_activity_camera_result_fragment"></string>
     <!--
 
     -->
     <string name="hello_world">Hello Square World!</string>
-    <string name="title_activity_camera_result">CameraResultActivity</string>
+    <string name="title_activity_camera_result">Is rate good?</string>
     <string name="suggest_new_rate_text">Suggest</string>
-    <string name="suggest_rate_button">suggest rate</string>
+    <string name="suggest_rate_button">Suggest rate</string>
 
     <string name="facebook_login_cancelled">Facebook login was cancelled</string>
     <string name="facebook_login_error">Error occurred during facebook login, retry login later</string>

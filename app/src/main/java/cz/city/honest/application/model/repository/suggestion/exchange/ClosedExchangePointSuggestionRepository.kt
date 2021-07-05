@@ -86,14 +86,14 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
                 id = cursor.getString(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
-                watchedSubjectId = cursor.getString(3)
+                subjectId = cursor.getString(3)
             )
         )
 
     private fun getContentValues(suggestion: ClosedExchangePointSuggestion) =
         ContentValues().apply {
             put("id",suggestion.id)
-            put("watched_subject_id", suggestion.watchedSubjectId)
+            put("watched_subject_id", suggestion.subjectId)
         }
 
     companion object {

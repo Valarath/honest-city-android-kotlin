@@ -98,14 +98,14 @@ class ExchangeRateSuggestionRepository(
                     state = State.valueOf(cursor.getString(1)),
                     votes = cursor.getInt(2),
                     suggestedExchangeRate = it,
-                    watchedSubjectId = cursor.getString(4)
+                    subjectId = cursor.getString(4)
                 )
             }
 
     private fun getContentValues(suggestion: ExchangeRateSuggestion) =
         ContentValues().apply {
             put("id",suggestion.id)
-            put("exchange_point_id", suggestion.watchedSubjectId)
+            put("exchange_point_id", suggestion.subjectId)
             put("exchange_rates_id", suggestion.suggestedExchangeRate.id)
         }
 

@@ -54,7 +54,13 @@ class VoteService(
 
     fun vote(suggestion: Suggestion) =
         userProvider.provide()
-            .flatMap { vote(suggestion.toVote(it.id, false)) }
+            .flatMap { vote(toVote(suggestion, it)) }
+
+    private fun toVote(
+        suggestion: Suggestion,
+        it: User
+    ) = suggestion.apply { this.increaseVotes() }
+        .toVote(it.id, false)
 
     fun delete(vote: Vote) =
         RepositoryProvider.provide(voteRepositories, vote::class.java)

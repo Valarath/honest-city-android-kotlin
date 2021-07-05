@@ -19,6 +19,7 @@ import cz.city.honest.application.view.component.rate.ExchangeRateTable
 import cz.city.honest.application.view.component.rate.ExchangeRateTableData
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.viewmodel.SubjectDetailViewModel
+import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
 
@@ -88,8 +89,15 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
 
     private fun setSuggestNewRateButton(root: View) =
         getSuggestRateButton(root)
+            .apply { setButtonText() }
             .apply { this.visibility = View.GONE }
             .apply { this.setOnClickListener { suggestExchangeRateChange() } }
+
+    private fun Button.setButtonText() =
+        if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId())
+            this.text = getString(R.string.analyze_actual_rate)
+        else
+            this.text = getString(R.string.suggest_rate_button)
 
     private fun suggestExchangeRateChange() =
         Intent(activity, CameraActivity::class.java)

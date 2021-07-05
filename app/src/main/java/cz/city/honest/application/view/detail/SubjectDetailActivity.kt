@@ -28,7 +28,8 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
     private val MENU_ACTIONS: Map<Int, () -> Boolean> = mapOf(
         R.id.suggest_non_existing_subject to ::suggestNonExistingSubject,
-        R.id.suggest_different_rate to ::suggestExchangeRateChange
+        R.id.suggest_different_rate to ::suggestExchangeRateChange,
+        R.id.vote_for_new_subject_suggestion to ::voteFor
     )
 
     private lateinit var showSubjectSuggestionsViewModel: ShowSubjectSuggestionsViewModel
@@ -52,12 +53,19 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         menuInflater.inflate(R.menu.subject_menu, menu)
         setReportClosedSubjectButton(menu)
         setSuggestDifferentRateButton(menu)
+        setVoteFor(menu)
         return true
     }
 
     private fun setReportClosedSubjectButton(menu: Menu) {
         if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested() || showSubjectSuggestionsViewModel.loggedUser == null)
             menu.findItem(R.id.suggest_non_existing_subject)
+                .apply { disableMenuItem(this) }
+    }
+
+    private fun setVoteFor(menu: Menu) {
+        if (!isNewSubjectSuggestion()  || showSubjectSuggestionsViewModel.loggedUser == null)
+            menu.findItem(R.id.vote_for_new_subject_suggestion)
                 .apply { disableMenuItem(this) }
     }
 
@@ -69,7 +77,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
             }
             .apply {
                 if (isNewSubjectSuggestion())
-                    this.title = R.string.analyze_actual_rate.toString()
+                    this.title = getString(R.string.analyze_actual_rate)
             }
 
     private fun disableMenuItem(menuItem: MenuItem) = menuItem.apply {
@@ -103,8 +111,12 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         id = UUID.randomUUID().toString(),
         state = State.IN_PROGRESS,
         votes = 1,
-        watchedSubjectId = getWatchedSubjectId()
+        subjectId = getWatchedSubjectId()
     )
+
+    private fun voteFor() = getWatchedSubject().suggestions
+        .forEach { showSubjectSuggestionsViewModel.voteFor(it,getWatchedSubject().id) }
+        .let { true }
 
     private fun suggestExchangeRateChange() =
         Intent(this, CameraActivity::class.java)

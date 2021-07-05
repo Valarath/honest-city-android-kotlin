@@ -20,7 +20,7 @@ data class ExchangePoint(
     override val honestyStatus: HonestyStatus,
     override val position: Position,
     override val suggestions: MutableList<Suggestion>,
-    val exchangePointRate: ExchangeRate,
+    val exchangePointRate: ExchangeRate?,
     val image: ByteArray
 ) : ImmobileWatchedSubject(id, watchedTo, honestyStatus, position, suggestions) {
     override fun equals(other: Any?): Boolean {

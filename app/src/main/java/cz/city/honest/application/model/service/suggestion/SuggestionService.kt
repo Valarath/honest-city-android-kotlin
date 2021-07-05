@@ -32,37 +32,6 @@ class SuggestionService(
             clazz
         ) as SuggestionRepository<SUGGESTION_TYPE>).get()
 
-    private fun getMockSuggestions(id: String): List<Suggestion> {
-        return listOf(
-            ClosedExchangePointSuggestion(
-                id = UUID.randomUUID().toString(),
-                state = State.IN_PROGRESS,
-                votes = 5,
-                watchedSubjectId = UUID.randomUUID().toString()
-            ),
-            NewExchangePointSuggestion(
-                UUID.randomUUID().toString(),
-                state = State.DECLINED,
-                votes = 6,
-                position = Position(55.0, 77.0)
-            ),
-            ExchangeRateSuggestion(
-                UUID.randomUUID().toString(),
-                state = State.ACCEPTED,
-                votes = 10,
-                watchedSubjectId = UUID.randomUUID().toString(),
-                suggestedExchangeRate = ExchangeRate(
-                    "",
-                    Watched(LocalDate.now(), LocalDate.now()),
-                    mutableSetOf(
-                        Rate("CZK", ExchangeRateValues(22.0)),
-                        Rate("USD", ExchangeRateValues(22.0))
-                    )
-                )
-            )
-        )
-    }
-
     fun createSuggestion(suggestion: Suggestion) =
         RepositoryProvider.provide(
             suggestionRepositories,
