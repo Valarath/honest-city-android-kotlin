@@ -50,6 +50,13 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             }
         }
 
+    override fun getBySubjectId(id: String): Flowable<NewExchangePointSuggestion> =
+        findNewExchangePointSuggestions(id).flatMap {
+            toEntities(it) {
+                toNewExchangePointSuggestion(it)
+            }
+        }
+
     override fun delete(suggestion: NewExchangePointSuggestion): Observable<Int> =
         super.delete(suggestion).map {
             databaseOperationProvider.writableDatabase.delete(
@@ -62,7 +69,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findNewExchangePointSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id = 'null'",
                 arrayOf()
             )
         )
@@ -72,6 +79,14 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
                 getMapParameterArray(subjectId)
+            )
+        )
+
+    private fun findNewExchangePointSuggestions(subjectId: String): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id = ?",
+                getMapParameterArray(listOf(subjectId))
             )
         )
 

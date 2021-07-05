@@ -2,6 +2,7 @@ package cz.city.honest.application.model.repository.suggestion
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.Repository
@@ -12,6 +13,7 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
     Repository<SUGGESTION_TYPE>(databaseOperationProvider) {
 
     abstract fun get(): Flowable<SUGGESTION_TYPE>
+
 
     override fun insert(suggestion: SUGGESTION_TYPE): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
@@ -50,6 +52,7 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
         const val TABLE_NAME: String = "suggestion"
     }
 
+    abstract fun getBySubjectId(id: String): Flowable<SUGGESTION_TYPE>
 }
 
 

@@ -32,14 +32,6 @@ class SuggestionService(
             clazz
         ) as SuggestionRepository<SUGGESTION_TYPE>).get()
 
-    fun createSuggestion(suggestion: Suggestion) =
-        RepositoryProvider.provide(
-            suggestionRepositories,
-            suggestion::class.java
-        )
-            .insert(suggestion)
-            .flatMap { voteService.vote(suggestion) }
-
     fun suggest(suggestion: Suggestion) =
         RepositoryProvider.provide(
             suggestionRepositories,

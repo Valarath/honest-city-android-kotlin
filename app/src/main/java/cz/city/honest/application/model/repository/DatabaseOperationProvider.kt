@@ -34,7 +34,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createExchangePointTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS exchange_point(id varchar primary key on conflict replace,exchange_rates_id varchar not null,latitude float,longitude float, watched_subject_id varchar not null,foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id), foreign key(watched_subject_id) references watched_subject(watched_subject_id) ) ")
+        database.execSQL("Create table IF NOT EXISTS exchange_point(id varchar primary key on conflict replace,exchange_rates_id varchar,latitude float,longitude float, watched_subject_id varchar not null,foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id), foreign key(watched_subject_id) references watched_subject(watched_subject_id) ) ")
     }
 
     private fun createUserVotesTable(database: SQLiteDatabase) {

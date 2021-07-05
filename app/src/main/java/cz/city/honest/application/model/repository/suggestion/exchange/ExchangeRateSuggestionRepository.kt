@@ -53,6 +53,10 @@ class ExchangeRateSuggestionRepository(
             }
         }
 
+    override fun getBySubjectId(id: String): Flowable<ExchangeRateSuggestion> =
+        findExchangeRateSuggestionsForWatchedSubjects(listOf(id))
+            .flatMap { toEntities(it) { toExchangeRateSuggestion(it) } }
+
     fun getForWatchedSubjects(id: List<String>): Flowable<ExchangeRateSuggestion> =
         findExchangeRateSuggestionsForWatchedSubjects(id)
             .flatMap { toEntities(it) { toExchangeRateSuggestion(it) } }

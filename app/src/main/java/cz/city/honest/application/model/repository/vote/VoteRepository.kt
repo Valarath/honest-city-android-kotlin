@@ -20,7 +20,7 @@ abstract class VoteRepository<VOTE_ENTITY : Vote, SUGGESTION_TYPE : Suggestion>(
 
     fun getBySubjectId(subjectId:String, userId:String):Flowable<VOTE_ENTITY> =
         get(listOf(userId))
-            .filter { it.suggestion.id == subjectId }
+            .filter { it.suggestion.subjectId == subjectId }
 
     override fun insert(entity: VOTE_ENTITY): Observable<Long> = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(

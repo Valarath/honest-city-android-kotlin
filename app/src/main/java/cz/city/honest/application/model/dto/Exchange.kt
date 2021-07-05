@@ -16,12 +16,12 @@ data class ExchangePointRateValues(override val buy: Double, val sell: Double) :
 
 data class ExchangePoint(
     override val id: String,
-    override val watchedTo: LocalDate,
+    override val watchedTo: LocalDate?,
     override val honestyStatus: HonestyStatus,
     override val position: Position,
     override val suggestions: MutableList<Suggestion>,
     val exchangePointRate: ExchangeRate?,
-    val image: ByteArray
+    val image: ByteArray = "aaa".toByteArray()
 ) : ImmobileWatchedSubject(id, watchedTo, honestyStatus, position, suggestions) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

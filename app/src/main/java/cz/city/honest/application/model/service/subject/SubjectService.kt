@@ -45,7 +45,6 @@ class SubjectService(
         positionProvider.provide()
             .firstOrError()
             .flatMapObservable { subjectServerSource.getSubjectsInArea(toRequest(it)) }
-                //TODO tady to concatni podle parametru a moc se s tim nemaz
             .flatMap { update(it) }
     //.onErrorComplete()
 

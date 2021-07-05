@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
+import cz.city.honest.application.model.dto.NewExchangePointSuggestion
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
@@ -41,6 +42,10 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
 
     override fun get(id: List<String>): Flowable<ClosedExchangePointSuggestion> =
         findClosedExchangePointSuggestions(id)
+            .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
+
+    override fun getBySubjectId(id: String): Flowable<ClosedExchangePointSuggestion> =
+        findClosedExchangePointSuggestions(listOf(id))
             .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
 
     fun getForWatchedSubjects(id: List<String>): Flowable<ClosedExchangePointSuggestion> =
