@@ -62,7 +62,7 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
         it: ExchangeRate
     ) {
         val subjectRate = getExchangePointRate()
-        if (subjectRate.rates.isEmpty())
+        if (subjectRate == null || subjectRate.rates.isEmpty())
             showSuggestRateButtonOnly(root)
         else
             showExchangeRateTableOnly(root, it, subjectRate)

@@ -70,7 +70,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createNewExchangePointSuggestionTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS new_exchange_point_suggestion(id varchar primary key,latitude float,longitude float, foreign key(id) references suggestion(id))")
+        database.execSQL("Create table IF NOT EXISTS new_exchange_point_suggestion(id varchar primary key,latitude float,exchange_point_id varchar,longitude float, foreign key(id) references suggestion(id))")
     }
 
     private fun createSuggestionTable(database: SQLiteDatabase) {

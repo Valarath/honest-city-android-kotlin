@@ -62,7 +62,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findNewExchangePointSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id",
                 arrayOf()
             )
         )
@@ -70,7 +70,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findNewExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
                 getMapParameterArray(subjectId)
             )
         )
@@ -81,7 +81,8 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
                 id = cursor.getString(0),
                 state = State.valueOf(cursor.getString(1)),
                 votes = cursor.getInt(2),
-                position = Position(cursor.getDouble(3), cursor.getDouble(4))
+                position = Position(cursor.getDouble(3), cursor.getDouble(4)),
+                subjectId = cursor.getString(5)
             )
         )
 

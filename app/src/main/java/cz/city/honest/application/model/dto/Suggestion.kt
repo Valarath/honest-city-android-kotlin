@@ -3,7 +3,7 @@ package cz.city.honest.application.model.dto
 abstract class Suggestion(
     open val id: String,
     open val state: State,
-    open val subjectId: String,
+    open val subjectId: String?,
     open var votes: Int
 ) : HonestCitySerializable {
     fun increaseVotes() = votes++
@@ -17,7 +17,7 @@ enum class State : HonestCitySerializable {
 data class NewExchangePointSuggestion(
     override val id: String,
     override val state: State,
-    override val subjectId: String,
+    override val subjectId: String?,
     override var votes: Int,
     val position: Position
 ) : Suggestion(id, state, subjectId, votes) {

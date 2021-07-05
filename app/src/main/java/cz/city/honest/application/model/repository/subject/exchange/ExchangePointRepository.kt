@@ -31,7 +31,8 @@ class ExchangePointRepository(
                 SQLiteDatabase.CONFLICT_REPLACE
             )
         }
-        .flatMap { exchangeRateRepository.insert(entity.exchangePointRate) }
+        .filter { entity.exchangePointRate != null }
+        .flatMap { exchangeRateRepository.insert(entity.exchangePointRate!!) }
 
     override fun update(entity: ExchangePoint): Observable<Int> =
         super.update(entity)
@@ -40,10 +41,11 @@ class ExchangePointRepository(
                     TABLE_NAME,
                     getContentValues(entity),
                     "id = ?",
-                    arrayOf(entity.id.toString())
+                    arrayOf(entity.id)
                 )
             }
-            .flatMap { exchangeRateRepository.update(entity.exchangePointRate) }
+            .filter { entity.exchangePointRate != null }
+            .flatMap { exchangeRateRepository.update(entity.exchangePointRate!!) }
 
     override fun get(id: List<String>): Flowable<ExchangePoint> =
         findExchangePoint(id)
@@ -120,7 +122,7 @@ class ExchangePointRepository(
         put("watched_subject_id", entity.id)
         put("latitude", entity.position.latitude)
         put("longitude", entity.position.longitude)
-        put("exchange_rates_id", entity.exchangePointRate.id)
+        put("exchange_rates_id", entity.exchangePointRate?.id)
     }
 
     companion object {
