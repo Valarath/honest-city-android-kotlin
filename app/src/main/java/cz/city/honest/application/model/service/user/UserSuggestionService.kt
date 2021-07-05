@@ -89,7 +89,11 @@ class UserSuggestionService(
     ) =
         Observable.just(getSuggestions(userSuggestions))
             .flatMap { suggestionServerSource.remove(RemoveSuggestionRequest(it), accessToken) }
-            .flatMap { userSuggestionRepository.deleteList(userSuggestions) }
+            .flatMap { deleteUserSuggestions(userSuggestions) }
+
+    private fun deleteUserSuggestions(userSuggestions: MutableList<UserSuggestion>) =
+        Observable.fromIterable(userSuggestions)
+            .flatMap { userSuggestionRepository.delete(it) }
 
     private fun suggestSuggestions(user: User, accessToken: String): Observable<Unit> =
         userSuggestionRepository.get(listOf(user.id))
@@ -117,7 +121,11 @@ class UserSuggestionService(
         accessToken: String
     ) = Observable.just(getSuggestions(userSuggestions))
         .flatMap { suggestionServerSource.suggest(PostSuggestRequest(it), accessToken) }
-        .flatMap { userSuggestionRepository.updateList(userSuggestions) }
+        .flatMap { updateUserSuggestions(userSuggestions) }
+
+    private fun updateUserSuggestions(userSuggestions: MutableList<UserSuggestion>) =
+        Observable.fromIterable(userSuggestions)
+            .flatMap { userSuggestionRepository.update(it)}
 
     private fun getSuggestions(userSuggestions: MutableList<UserSuggestion>): List<Suggestion> =
         userSuggestions.map { it.suggestion }

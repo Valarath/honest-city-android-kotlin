@@ -78,7 +78,7 @@ class ExchangePointRepository(
     private fun findExchangePoint(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select exchange_point.id,watched_subject_id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id",
+                "Select exchange_point.id,watched_subject_id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where watched_to ='null'",
                 arrayOf()
             )
         )

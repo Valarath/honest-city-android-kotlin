@@ -55,12 +55,12 @@ class SubjectService(
 
     private fun updateSubjects(subjects: MutableMap<String, List<WatchedSubject>>) =
         Observable.fromIterable(subjects.entries)
-            .flatMap {
-                RepositoryProvider.provide(
-                    subjectRepositories,
-                    it.key
-                ).insertList(it.value)
-            }
+            .flatMap { updateSubjects(it.value) }
+
+    private fun updateSubjects(subjects:List<WatchedSubject>) =
+        Observable.fromIterable(subjects)
+            .flatMap { RepositoryProvider.provide(subjectRepositories, it.getClassName()).insert(it) }
+
 
     private fun updateNewSubjectSuggestion(newSubjectSuggestions: MutableMap<String, List<Suggestion>>) =
         Observable.fromIterable(newSubjectSuggestions.values)

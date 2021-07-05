@@ -30,8 +30,13 @@ class UserService(
     override fun update(accessToken: String): Observable<Unit> =
         getLoggedUser()
             .flatMap { getUserSuggestions(it, accessToken) }
-            .flatMap { userSuggestionRepository.insertList(it) }
+            .flatMap { insertUserSuggestions(it) }
             //.onErrorComplete()
+
+    private fun insertUserSuggestions(userSuggestions:List<UserSuggestion>) =
+        Observable.fromIterable(userSuggestions)
+            .flatMap {userSuggestionRepository.insert(it)  }
+            .map {  }
 
     private fun getUserSuggestions(user: User, accessToken: String) =
         userServerSource.getUserSuggestions(getGetUserSuggestionsRequest(user), accessToken)

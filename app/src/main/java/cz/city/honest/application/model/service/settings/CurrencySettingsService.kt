@@ -17,15 +17,19 @@ class CurrencySettingsService(
     override fun update(): Observable<Unit> = currencySettingsRepository.delete()
         .doOnTerminate { getNewData() }
         .onErrorComplete()
-        .map {  }
+        .map { }
 
     private fun getNewData() = currencyServerSource
         .getCurrenciesSettings()
-        .flatMap { currencySettingsRepository.insertList(it.currencySettings) }
+        .flatMap { insert(it.currencySettings) }
         .subscribe()
 
-    fun update(settings: List<CurrencySettings>) = currencySettingsRepository.updateList(settings)
+    fun update(settings: List<CurrencySettings>) =
+        Observable.fromIterable(settings)
+            .flatMap { currencySettingsRepository.update(it) }
 
-    fun insert(settings: List<CurrencySettings>) = currencySettingsRepository.insertList(settings)
+    fun insert(settings: List<CurrencySettings>) =
+        Observable.fromIterable(settings)
+            .flatMap { currencySettingsRepository.insert(it) }
 
 }

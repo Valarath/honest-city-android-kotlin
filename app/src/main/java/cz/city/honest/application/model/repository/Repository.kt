@@ -12,15 +12,6 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
     abstract fun get(id:List<String>):Flowable<ENTITY>
     abstract fun delete(entity: ENTITY): Observable<Int>
 
-    fun insertList(entities: List<ENTITY>) =
-        processListInTransaction(entities, ::insert)
-
-    fun updateList(entities: List<ENTITY>) =
-        processListInTransaction(entities, ::update)
-
-    fun deleteList(entities: List<ENTITY>) =
-        processListInTransaction(entities, ::delete)
-
     protected fun toEntities(
         cursor: Cursor, toEntity: (cursor: Cursor) -> Flowable<ENTITY>
     ): Flowable<ENTITY> =
@@ -36,13 +27,6 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
 
     protected fun isCursorNotEmpty(it: Cursor) =
         it.count > 0
-
-    protected fun processListInTransaction(
-        list: List<ENTITY>,
-        process: (listMember: ENTITY) -> Observable<*>
-    ) = Observable.just(databaseOperationProvider.writableDatabase.transaction {
-        list.forEach { process.invoke(it) }
-    })
 
     protected fun mapToQueryParamSymbols(objects:List<*>) = objects.joinToString { "?" }
 
