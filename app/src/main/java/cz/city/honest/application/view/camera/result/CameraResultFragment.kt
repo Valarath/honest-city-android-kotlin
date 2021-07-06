@@ -49,9 +49,11 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         root: View
     ) = root.findViewById<Button>(R.id.suggest_new_rate)
         .apply { setSuggestButtonVisibility() }
-        .apply {
-            //TODO create new suggestion
-             }
+        .apply {this.setOnClickListener { suggestNewResult() } }
+
+    private fun suggestNewResult() {
+        cameraResultViewModel.suggest(getWatchedSubject()!!.id, getExchangeRateResult())
+    }
 
     private fun Button.setSuggestButtonVisibility() {
         if (getWatchedSubject() == null)
@@ -59,7 +61,6 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         else
             this.visibility = View.VISIBLE
     }
-
 
     private fun getWatchedSubject() = activity!!.intent.extras[CameraResultActivity.WATCHED_SUBJECT]
         .run { if (this != null) this as WatchedSubject else null }
@@ -69,8 +70,11 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         root: View
     ) = ExchangeRateTableData(
         authorityRate = authorityRate,
-        exchangePointRate = activity!!.intent.extras[CameraResultActivity.EXCHANGE_RATE_RESULT] as ExchangeRate,
+        exchangePointRate = getExchangeRateResult(),
         root = root
     )
+
+    private fun getExchangeRateResult() =
+        activity!!.intent.extras[CameraResultActivity.EXCHANGE_RATE_RESULT] as ExchangeRate
 
 }
