@@ -27,7 +27,7 @@ class FacebookLoginDataRepository(
         facebookUserId = cursor.getString(0),
         accessToken = cursor.getString(2),
         userId = cursor.getString(1)
-    )
+    ).apply { cursor.close() }
 
     private fun findLoginDataByUserId(userId: String): Maybe<Cursor> =
         Maybe.just(

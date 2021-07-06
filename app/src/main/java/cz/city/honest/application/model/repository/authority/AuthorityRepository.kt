@@ -43,11 +43,6 @@ class AuthorityRepository(
         Flowable.just(findAuthorityExchangeRates())
             .flatMap { toEntities(it) { exchangeRateRepository.get(getAsIdsList(it)) } }
 
-    fun getOne(): Maybe<ExchangeRate> =
-        Maybe.just(findAuthorityExchangeRates())
-            .filter { cursorContainsData(it) }
-            .flatMap { exchangeRateRepository.get(it.getString(0))  }
-
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
             TABLE_NAME,

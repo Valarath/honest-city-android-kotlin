@@ -76,7 +76,7 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findNewExchangePointSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id = 'null'",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id is null",
                 arrayOf()
             )
         )

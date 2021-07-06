@@ -32,7 +32,7 @@ class ExchangeRateRepository (
     fun get(id: String): Maybe<ExchangeRate> =
         findExchangeRate(id)
             .filter { cursorContainsData(it) }
-            .map { asExchangeRate(it) }
+            .map { asExchangeRate(it).apply { it.close() } }
 
 
     override fun delete(entity: ExchangeRate): Observable<Int> = Observable.concat(
@@ -66,10 +66,7 @@ class ExchangeRateRepository (
     private fun getFindExchangeRateCursor(subjectIds: List<String>) =
         databaseOperationProvider.readableDatabase.rawQuery(
             "Select id, buy, currency from exchange_rate where exchange_rates_id in( ${
-                mapToQueryParamSymbols(
-                    subjectIds
-                )
-            })",
+                mapToQueryParamSymbols(subjectIds)})",
             arrayOf(mapToQueryParamVariable(subjectIds))
         )
 

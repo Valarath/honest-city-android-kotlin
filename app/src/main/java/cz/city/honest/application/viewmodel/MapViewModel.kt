@@ -20,13 +20,12 @@ class MapViewModel @Inject constructor(
     private var userService: UserService
 ) : ScheduledViewModel() {
 
-    //val watchedSubjects: MutableLiveData<List<WatchedSubject>> = MutableLiveData()
-    val watchedSubjects: LiveData<List<WatchedSubject>> = LiveDataReactiveStreams.fromPublisher<List<WatchedSubject>> { getSubjects() }
+    val watchedSubjects: MutableLiveData<List<WatchedSubject>> = MutableLiveData()
     val loggedUser: MutableLiveData<User> = MutableLiveData()
 
     init {
         schedule {
-            //getSubjects().subscribe { watchedSubjects.postClearValue(it) }
+            getSubjects().subscribe { watchedSubjects.postClearValue(it) }
             getUser().subscribe { loggedUser.postClearValue(it) }
         }
     }
@@ -38,13 +37,13 @@ class MapViewModel @Inject constructor(
             .firstOrError()
             .map { getNewExchangePointSuggestion(it) }
             .flatMapObservable { suggestNewSubject(it) }
-            //.map { addWatchedSubject(it) }
+            .map { addWatchedSubject(it) }
             .subscribe { it }
 
-   /* private fun addWatchedSubject(suggestion: NewExchangePointSuggestion) =
+    private fun addWatchedSubject(suggestion: NewExchangePointSuggestion) =
         toExchangePoint(suggestion)
             .apply { watchedSubjects.postClearValue(addWatchedSubject(this)) }
-*/
+
     private fun addWatchedSubject(watchedSubject: WatchedSubject) =
         watchedSubjects.value!!
             .toMutableList()

@@ -12,6 +12,7 @@ import cz.city.honest.application.model.repository.suggestion.SuggestionReposito
 import cz.city.honest.application.model.repository.suggestion.exchange.NewExchangePointSuggestionRepository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
+import org.intellij.lang.annotations.Flow
 import java.time.LocalDate
 
 class ExchangePointRepository(
@@ -85,17 +86,18 @@ class ExchangePointRepository(
         )
 
     private fun toExchangePoint(cursor: Cursor): Flowable<ExchangePoint> =
-        Flowable.just(cursor)
-            .map {toExchangePointOnly(it)  }
+        Flowable.just(toExchangePointOnly(cursor))
             .flatMap { addSuggestions(it) }
-            //.flatMap { addExchangeRate(cursor,it) }
+            .flatMap { addExchangeRate(cursor.getString(5),it) }
 
 
-    private fun addExchangeRate(cursor: Cursor,subject: ExchangePoint) =
-        exchangeRateRepository.get(listOf(cursor.getString(5)))
-            .map { subject.exchangePointRate = it }
-            .map { subject }
-
+    private fun addExchangeRate(exchangeRatesId: String?,subject: ExchangePoint) =
+        if(exchangeRatesId !=null)
+            exchangeRateRepository.get(listOf(exchangeRatesId))
+                .map { subject.exchangePointRate = it }
+                .map { subject }
+        else
+            Flowable.just(subject)
 
     private fun toExchangePointOnly(
         cursor: Cursor

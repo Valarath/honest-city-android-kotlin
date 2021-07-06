@@ -2,14 +2,16 @@ package cz.city.honest.application.model.repository
 
 import android.database.Cursor
 import androidx.core.database.sqlite.transaction
+import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
-abstract class Repository <ENTITY>(protected val databaseOperationProvider: DatabaseOperationProvider){
+abstract class Repository<ENTITY>(protected val databaseOperationProvider: DatabaseOperationProvider) {
 
     abstract fun insert(entity: ENTITY): Observable<Long>
     abstract fun update(entity: ENTITY): Observable<Int>
-    abstract fun get(id:List<String>):Flowable<ENTITY>
+    abstract fun get(id: List<String>): Flowable<ENTITY>
     abstract fun delete(entity: ENTITY): Observable<Int>
 
     protected fun toEntities(
@@ -29,25 +31,25 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
     protected fun isCursorNotEmpty(it: Cursor) =
         it.count > 0
 
-    protected fun mapToQueryParamSymbols(objects:List<*>) = objects.joinToString { "?" }
+    protected fun mapToQueryParamSymbols(objects: List<*>) = objects.joinToString { "?" }
 
-    protected fun mapToQueryParamSymbols(objects:List<*>, prefix:String) = prefixByWhere(prefix,
+    protected fun mapToQueryParamSymbols(objects: List<*>, prefix: String) = prefixByWhere(prefix,
         objects.joinToString { "?" })
 
-    private fun prefixByWhere(prefix:String, value:String ) =
-        if(!value.isNullOrBlank())
+    private fun prefixByWhere(prefix: String, value: String) =
+        if (!value.isNullOrBlank())
             "$prefix($value)"
         else
             value
 
-    protected fun mapToQueryParamVariable(objects:List<*>) = objects.joinToString()
+    protected fun mapToQueryParamVariable(objects: List<*>) = objects.joinToString()
 
-    protected fun getMapParameterArray(objects:List<*>): Array<out String>? =
-        if(objects.isNullOrEmpty())
+    protected fun getMapParameterArray(objects: List<*>): Array<out String>? =
+        if (objects.isNullOrEmpty())
             null
         else
             arrayOf(mapToQueryParamVariable(objects))
 }
 
 fun Boolean.toInt() = if (this) 1 else 0
-fun Int.toBoolean():Boolean= this==1
+fun Int.toBoolean(): Boolean = this == 1

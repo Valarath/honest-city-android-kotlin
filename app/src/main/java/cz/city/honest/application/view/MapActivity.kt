@@ -55,6 +55,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private lateinit var map: GoogleMap
     private lateinit var mapViewModel: MapViewModel
     private lateinit var locationManager: LocationManager
+    var user: User? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -129,6 +130,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             setLoginButton(visibility = View.GONE)
             setUserDetailButton(it)
             setCreateSubjectButtonBehaviour()
+            user = it
         }
     }
 
@@ -149,13 +151,6 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun scheduleJobs(context: Context) =
         context.getSystemService(JobScheduler::class.java)
             .schedule(getJobInfoUpdateBuilder(context))
-
-    private fun setSyncAdapter() = ContentResolver.addPeriodicSync(
-        createSyncAccount(),
-        getString(R.string.content_authority),
-        Bundle.EMPTY,
-        1
-    )
 
 
     private fun getJobInfoUpdateBuilder(context: Context) =
@@ -194,13 +189,6 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
         MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)
     }
-
-    private fun createSyncAccount(): Account =
-        (getSystemService(Context.ACCOUNT_SERVICE) as AccountManager).run {
-            Account(getString(R.string.sync_account), getString(R.string.sync_account_type))
-                .also { this.addAccountExplicitly(it, null, null) }
-        }
-
 
     override fun onLocationChanged(location: Location) {
         map.moveCamera(CameraUpdateFactory.newLatLng(location.toLatLng()))
