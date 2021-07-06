@@ -26,7 +26,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val MENU_ACTIONS: Map<Int, () -> Boolean> = mapOf(
+    private val MENU_ACTIONS: Map<Int, (menuItem:MenuItem) -> Boolean> = mapOf(
         R.id.suggest_non_existing_subject to ::suggestNonExistingSubject,
         R.id.suggest_different_rate to ::suggestExchangeRateChange,
         R.id.vote_for_new_subject_suggestion to ::voteFor
@@ -101,10 +101,11 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         if (item.itemId == android.R.id.home)
             finish().run { true }
         else
-            MENU_ACTIONS[item.itemId]!!.invoke()
+            MENU_ACTIONS[item.itemId]!!.invoke(item)
 
-    private fun suggestNonExistingSubject() = showSubjectSuggestionsViewModel
-        .suggest(createClosedExchangePointSuggestion(), UserSuggestionStateMarking.NEW)
+    private fun suggestNonExistingSubject(menuItem:MenuItem) = showSubjectSuggestionsViewModel
+        .suggest(createClosedExchangePointSuggestion(), UserSuggestionStateMarking.NEW,getWatchedSubjectId())
+        .also { disableMenuItem(menuItem) }
         .let { true }
 
     private fun createClosedExchangePointSuggestion() = ClosedExchangePointSuggestion(
@@ -114,11 +115,11 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
         subjectId = getWatchedSubjectId()
     )
 
-    private fun voteFor() = getWatchedSubject().suggestions
+    private fun voteFor(menuItem:MenuItem) = getWatchedSubject().suggestions
         .forEach { showSubjectSuggestionsViewModel.voteFor(it,getWatchedSubject().id) }
         .let { true }
 
-    private fun suggestExchangeRateChange() =
+    private fun suggestExchangeRateChange(menuItem:MenuItem) =
         Intent(this, CameraActivity::class.java)
             .apply { this.putExtra(CameraActivity.WATCHED_SUBJECT, getWatchedSubject()) }
             .let { this.startActivity(it) }

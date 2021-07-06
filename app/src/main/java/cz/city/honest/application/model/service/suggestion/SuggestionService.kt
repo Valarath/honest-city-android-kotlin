@@ -22,7 +22,12 @@ class SuggestionService(
 
     fun getSuggestionsForSubject(id: String): Observable<Suggestion> =
         Flowable.fromIterable(suggestionRepositories.values)
-            .flatMap { it.get(listOf(id)) }
+            .flatMap { it.getBySubjectId(id) }
+            .toObservable()
+
+    fun getUnvotedSuggestionsForSubject(id: String): Observable<Suggestion> =
+        Flowable.fromIterable(suggestionRepositories.values)
+            .flatMap { it.getUnvotedBySubjectId(id) }
             .toObservable()
 
 

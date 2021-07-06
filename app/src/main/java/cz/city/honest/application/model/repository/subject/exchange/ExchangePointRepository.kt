@@ -9,6 +9,7 @@ import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.subject.SubjectRepository
 import cz.city.honest.application.model.repository.suggestion.exchange.ExchangeRateSuggestionRepository
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
+import cz.city.honest.application.model.repository.suggestion.exchange.NewExchangePointSuggestionRepository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
@@ -66,7 +67,7 @@ class ExchangePointRepository(
     private fun findExchangePoint(subjectIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select exchange_point.id,watched_subject_id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where id in( ${
+                "Select exchange_point.id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where id in( ${
                     mapToQueryParamSymbols(
                         subjectIds
                     )
@@ -78,39 +79,46 @@ class ExchangePointRepository(
     private fun findExchangePoint(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select exchange_point.id,watched_subject_id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where watched_to ='null'",
+                "Select exchange_point.id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where watched_to ='null'",
                 arrayOf()
             )
         )
 
     private fun toExchangePoint(cursor: Cursor): Flowable<ExchangePoint> =
-            exchangeRateRepository.get(listOf(cursor.getString(5)))
-            .map { toExchangePoint(cursor, it) }
+        Flowable.just(cursor)
+            .map {toExchangePointOnly(it)  }
             .flatMap { addSuggestions(it) }
+            //.flatMap { addExchangeRate(cursor,it) }
 
-    private fun toExchangePoint(
-        cursor: Cursor,
-        exchangeRate: ExchangeRate
+
+    private fun addExchangeRate(cursor: Cursor,subject: ExchangePoint) =
+        exchangeRateRepository.get(listOf(cursor.getString(5)))
+            .map { subject.exchangePointRate = it }
+            .map { subject }
+
+
+    private fun toExchangePointOnly(
+        cursor: Cursor
     ) = ExchangePoint(
         id = cursor.getString(0),
         position = Position(cursor.getDouble(2), cursor.getDouble(1)),
         honestyStatus = HonestyStatus.valueOf(cursor.getString(3)),
         image = "asfa".toByteArray(),
         suggestions = mutableListOf(),
-        exchangePointRate = exchangeRate,
-        watchedTo = LocalDate.parse(cursor.getString(4))
+        exchangePointRate = null,
+        watchedTo = getWatchedTo(cursor)
     )
 
-    private fun getClosedExchangePointSuggestion(id: String) =
-        getSuggestionRepository(ClosedExchangePointSuggestionRepository::class.java)
-            .getForWatchedSubjects(listOf(id))
-
-    private fun getExchangeRateSuggestion(id: String) =
-        getSuggestionRepository(ExchangeRateSuggestionRepository::class.java)
-            .getForWatchedSubjects(listOf(id))
+    private fun getWatchedTo(cursor: Cursor) = cursor.getString(4).let {
+        if(it == "null")
+            null
+        else
+            LocalDate.parse(it)
+    }
 
     private fun getSuggestions(id: String) =
-        Flowable.concat(getClosedExchangePointSuggestion(id), getExchangeRateSuggestion(id))
+        Flowable.fromIterable(suggestionRepositories.values)
+            .flatMap { it.getBySubjectId(id) }
 
     private fun addSuggestions(subject: ExchangePoint) =
         getSuggestions(subject.id)

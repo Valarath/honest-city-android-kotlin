@@ -57,8 +57,8 @@ class ExchangeRateSuggestionRepository(
         findExchangeRateSuggestionsForWatchedSubjects(listOf(id))
             .flatMap { toEntities(it) { toExchangeRateSuggestion(it) } }
 
-    fun getForWatchedSubjects(id: List<String>): Flowable<ExchangeRateSuggestion> =
-        findExchangeRateSuggestionsForWatchedSubjects(id)
+    override fun getUnvotedBySubjectId(id: String): Flowable<ExchangeRateSuggestion> =
+        findUnvotedExchangeRateSuggestionsForWatchedSubjects(listOf(id))
             .flatMap { toEntities(it) { toExchangeRateSuggestion(it) } }
 
     override fun delete(suggestion: ExchangeRateSuggestion): Observable<Int> =
@@ -90,6 +90,14 @@ class ExchangeRateSuggestionRepository(
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(ids)})",
+                arrayOf(mapToQueryParamVariable(ids))
+            )
+        )
+
+    private fun findUnvotedExchangeRateSuggestionsForWatchedSubjects(ids: List<String>): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "SELECT exchange_rate_change_suggestion.id, status, votes,exchange_rates_id, watched_subject_id from exchange_rate_change_suggestion join suggestion on suggestion.id = exchange_rate_change_suggestion.id left join user_vote on suggestion.id = user_vote.suggestion_id where watched_subject_id in( ${mapToQueryParamSymbols(ids)}) AND user_vote.suggestion_id IS NULL",
                 arrayOf(mapToQueryParamVariable(ids))
             )
         )

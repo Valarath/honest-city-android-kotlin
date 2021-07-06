@@ -57,6 +57,13 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             }
         }
 
+    override fun getUnvotedBySubjectId(id: String): Flowable<NewExchangePointSuggestion> =
+        findUnvotedNewExchangePointSuggestions(id).flatMap {
+            toEntities(it) {
+                toNewExchangePointSuggestion(it)
+            }
+        }
+
     override fun delete(suggestion: NewExchangePointSuggestion): Observable<Int> =
         super.delete(suggestion).map {
             databaseOperationProvider.writableDatabase.delete(
@@ -74,10 +81,18 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             )
         )
 
-    private fun findNewExchangePointSuggestions(subjectId: List<String>): Flowable<Cursor> =
+    private fun findNewExchangePointSuggestions(suggestionsId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(subjectId)})",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(suggestionsId)})",
+                getMapParameterArray(suggestionsId)
+            )
+        )
+
+    private fun findNewExchangePointSuggestionsForSubject(subjectId: List<String>): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(subjectId)})",
                 getMapParameterArray(subjectId)
             )
         )
@@ -86,6 +101,14 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id = ?",
+                getMapParameterArray(listOf(subjectId))
+            )
+        )
+
+    private fun findUnvotedNewExchangePointSuggestions(subjectId: String): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id left join user_vote on suggestion.id = user_vote.suggestion_id where exchange_point_id = ? AND user_vote.suggestion_id IS NULL",
                 getMapParameterArray(listOf(subjectId))
             )
         )
@@ -106,7 +129,12 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             put("id",suggestion.id)
             put("latitude", suggestion.position.latitude)
             put("longitude", suggestion.position.longitude)
+            put("exchange_point_id", suggestion.subjectId)
         }
+
+    fun getForWatchedSubjects(id: List<String>): Flowable<NewExchangePointSuggestion> =
+        findNewExchangePointSuggestionsForSubject(id)
+            .flatMap { toEntities(it) { toNewExchangePointSuggestion(it) } }
 
     companion object {
         const val TABLE_NAME: String = "new_exchange_point_suggestion"

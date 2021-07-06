@@ -73,6 +73,7 @@ abstract class SubjectRepository<WATCHED_SUBJECT: WatchedSubject>(
     protected fun <SUGGESTION_REPOSITORY> getSuggestionRepository(
         repositoryType: Class<SUGGESTION_REPOSITORY>
     ): SUGGESTION_REPOSITORY = suggestionRepositories
+        .map { it.value }
         .filter { it.javaClass == repositoryType }
         .map { it as SUGGESTION_REPOSITORY }
         .first()

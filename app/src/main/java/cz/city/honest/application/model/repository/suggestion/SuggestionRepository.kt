@@ -53,6 +53,8 @@ abstract class SuggestionRepository<SUGGESTION_TYPE : Suggestion>(databaseOperat
     }
 
     abstract fun getBySubjectId(id: String): Flowable<SUGGESTION_TYPE>
+
+    abstract fun getUnvotedBySubjectId(id: String): Flowable<SUGGESTION_TYPE>
 }
 
 

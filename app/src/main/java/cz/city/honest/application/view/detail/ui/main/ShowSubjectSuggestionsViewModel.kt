@@ -31,7 +31,6 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
             .map { getSuggestionsForSubject(subjectId) }
             .subscribe()
 
-    //TODO ADD this  as mutableList liveData - it is possible to do!!
     fun getSuggestionsForSubject(subjectId: String) =
         Observable.merge(
             getVotedSuggestionsForSubject(subjectId),
@@ -40,8 +39,9 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
             .toList()
             .blockingGet()
 
-    fun suggest(suggestion: Suggestion, markAs: UserSuggestionStateMarking) =
+    fun suggest(suggestion: Suggestion, markAs: UserSuggestionStateMarking, subjectId: String) =
         suggestionService.createSuggestion(suggestion, markAs)
+            .map { getSuggestionsForSubject(subjectId) }
             .subscribe()
 
     private fun getVotedSuggestionsForSubject(subjectId: String) =
@@ -50,7 +50,7 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
 
 
     private fun getUnvotedSuggestionsForSubject(subjectId: String) =
-        suggestionService.getSuggestionsForSubject(subjectId)
+        suggestionService.getUnvotedSuggestionsForSubject(subjectId)
             .map { VotedSuggestion(it, false) }
 
 }

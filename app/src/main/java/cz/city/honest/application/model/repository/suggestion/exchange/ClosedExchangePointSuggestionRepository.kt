@@ -45,11 +45,11 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
             .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
 
     override fun getBySubjectId(id: String): Flowable<ClosedExchangePointSuggestion> =
-        findClosedExchangePointSuggestions(listOf(id))
+        findClosedExchangePointSuggestionsForWatchedSubjects(listOf(id))
             .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
 
-    fun getForWatchedSubjects(id: List<String>): Flowable<ClosedExchangePointSuggestion> =
-        findClosedExchangePointSuggestionsForWatchedSubjects(id)
+    override fun getUnvotedBySubjectId(id: String): Flowable<ClosedExchangePointSuggestion> =
+        findUnvotedClosedExchangePointSuggestionsForWatchedSubjects(listOf(id))
             .flatMap { toEntities(it) { toCloseExchangePointSuggestion(it) } }
 
     override fun delete(suggestion: ClosedExchangePointSuggestion): Observable<Int> =
@@ -80,7 +80,15 @@ class ClosedExchangePointSuggestionRepository(databaseOperationProvider: Databas
     private fun findClosedExchangePointSuggestionsForWatchedSubjects(exchangePointIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select closed_exchange_point_suggestion.id, status, votes, exchange_point_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(exchangePointIds)})",
+                "Select closed_exchange_point_suggestion.id, status, votes, watched_subject_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id where watched_subject_id in( ${mapToQueryParamSymbols(exchangePointIds)})",
+                arrayOf(mapToQueryParamVariable(exchangePointIds))
+            )
+        )
+
+    private fun findUnvotedClosedExchangePointSuggestionsForWatchedSubjects(exchangePointIds: List<String>): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select closed_exchange_point_suggestion.id, status, votes, watched_subject_id from closed_exchange_point_suggestion join suggestion on closed_exchange_point_suggestion.id = suggestion.id left join user_vote on suggestion.id = user_vote.suggestion_id where watched_subject_id in( ${mapToQueryParamSymbols(exchangePointIds)}) AND user_vote.suggestion_id IS NULL",
                 arrayOf(mapToQueryParamVariable(exchangePointIds))
             )
         )

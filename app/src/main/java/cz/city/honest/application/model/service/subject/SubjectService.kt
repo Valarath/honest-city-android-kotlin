@@ -21,25 +21,7 @@ class SubjectService(
 
     fun getSubjects(): Flowable<out WatchedSubject> =
         Flowable.fromIterable(subjectRepositories.values)
-            .map { addFakeSubject() }
-    //.flatMap { it.get() }
-
-    private fun addFakeSubject() =
-        ExchangePoint(
-            "21", LocalDate.now(), HonestyStatus.DISHONEST,
-            Position(14.423777, 50.084344),
-            mutableListOf(),
-            ExchangeRate(
-                "", Watched(LocalDate.now(), LocalDate.now()), mutableSetOf(
-                    Rate("cze", ExchangeRateValues(1.0)),
-                    Rate("eur", ExchangeRateValues(17.0)),
-                    Rate("usd", ExchangeRateValues(25.0)),
-                    Rate("trr", ExchangeRateValues(22.0))
-
-                )
-            ),
-            "aaa".toByteArray()
-        )
+            .flatMap { it.get() }
 
     override fun update(): Observable<Unit> =
         positionProvider.provide()
@@ -57,15 +39,17 @@ class SubjectService(
         Observable.fromIterable(subjects.entries)
             .flatMap { updateSubjects(it.value) }
 
-    private fun updateSubjects(subjects:List<WatchedSubject>) =
+    private fun updateSubjects(subjects: List<WatchedSubject>) =
         Observable.fromIterable(subjects)
-            .flatMap { RepositoryProvider.provide(subjectRepositories, it.getClassName()).insert(it) }
+            .flatMap {
+                RepositoryProvider.provide(subjectRepositories, it.getClassName()).insert(it)
+            }
 
 
     private fun updateNewSubjectSuggestion(newSubjectSuggestions: MutableMap<String, List<Suggestion>>) =
         Observable.fromIterable(newSubjectSuggestions.values)
             .flatMap { Observable.fromIterable(it) }
-            .flatMap { suggestionService.suggest(it)  }
+            .flatMap { suggestionService.suggest(it) }
 
 
     private fun toRequest(position: Position) = mapOf(
