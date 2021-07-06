@@ -94,7 +94,7 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
             .apply { this.setOnClickListener { suggestExchangeRateChange() } }
 
     private fun Button.setButtonText() =
-        if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId())
+        if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId() || subjectDetailViewModel.loggedUser.value == null)
             this.text = getString(R.string.analyze_actual_rate)
         else
             this.text = getString(R.string.suggest_rate_button)

@@ -55,7 +55,7 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
     }
 
     private fun Button.setSuggestButtonVisibility() {
-        if (getWatchedSubject() == null && cameraResultViewModel.loggedUser.value !=null)
+        if (getWatchedSubject() == null || cameraResultViewModel.loggedUser.value == null)
             this.visibility = View.GONE
         else
             this.visibility = View.VISIBLE

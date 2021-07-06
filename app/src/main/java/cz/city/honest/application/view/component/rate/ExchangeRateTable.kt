@@ -52,8 +52,8 @@ class ExchangeRateTable: LinearLayout {
         exchangePointRates: Map<String, ExchangeRateValues>
     ): List<TableRow> =
         authorityRates.entries
-            .filter { exchangePointRates[it.getLowerCaseKey()] != null }
-            .map { getRow(it.value, exchangePointRates[it.getLowerCaseKey()]!!, it.key) }
+            .filter { exchangePointRates[it.key] != null }
+            .map { getRow(it.value, exchangePointRates[it.key]!!, it.key) }
 
     private fun getRow(
         authorityRate: ExchangeRateValues,
