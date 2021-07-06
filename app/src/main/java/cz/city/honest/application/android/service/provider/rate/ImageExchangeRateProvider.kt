@@ -62,7 +62,7 @@ class ImageExchangeRateProvider(
         text: Text,
         currencySettings: CurrencySettings
     ) = text.text
-        .toLowerCase(Locale.getDefault())
+        .toUpperCase(Locale.getDefault())
         .contains(currencySettings.currency)
 
 
@@ -116,7 +116,7 @@ class ImageExchangeRateProvider(
         it: Text.Line,
         mainCurrency: CurrencySettings,
         currencySettings: CurrencySettings
-    ) = it.text.toLowerCase(Locale.getDefault())
+    ) = it.text.toUpperCase(Locale.getDefault())
         .run {
             containsCurrency(this, mainCurrency, currencySettings)
                     && containsPrice(this, mainCurrency)
@@ -128,7 +128,7 @@ class ImageExchangeRateProvider(
         currencySettings: CurrencySettings
     ) = currencyPart
         .substringBefore(mainCurrency.currency)
-        .contains(currencySettings.currency.toLowerCase(Locale.getDefault()))
+        .contains(currencySettings.currency.toUpperCase(Locale.getDefault()))
 
     private fun containsPrice(
         currencyPart: String,
@@ -142,7 +142,7 @@ class ImageExchangeRateProvider(
     private fun containsLineLanguage(
         it: Text.Line,
         currencySettings: CurrencySettings
-    ) = it.text.toLowerCase(Locale.getDefault()).contains(currencySettings.currency)
+    ) = it.text.toUpperCase(Locale.getDefault()).contains(currencySettings.currency)
 }
 
 class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())

@@ -35,7 +35,6 @@ class GatewayModule() {
     fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()
         .addCallAdapterFactory(ReactorCallAdapterFactory.create())
         .baseUrl(connectionProperties.baseUrl)
-        //.addConverterFactory(getConverterFactory())
         .addConverterFactory(JacksonConverterFactory.create(getObjectMapper()))
         .client(getHttpClient())
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
@@ -62,11 +61,6 @@ class GatewayModule() {
             this.addDeserializer(Suggestion::class.java, SuggestionSerializer(objectMapper))
             this.addDeserializer(Vote::class.java, VoteSerializer(objectMapper))
         }
-
-    /*private fun getConverterFactory() = GsonBuilder()
-        .registerTypeAdapter(LoginData::class.java,LoginDataSerializer())
-        .run { this.create() }
-        .run { GsonConverterFactory.create(this) }*/
 
     @Provides
     @Singleton

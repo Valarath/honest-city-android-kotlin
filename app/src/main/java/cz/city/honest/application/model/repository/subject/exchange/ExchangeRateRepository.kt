@@ -10,6 +10,7 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import java.time.LocalDate
+import java.util.*
 
 class ExchangeRateRepository (
     databaseOperationProvider: DatabaseOperationProvider
@@ -159,9 +160,9 @@ class ExchangeRateRepository (
             )
         )
 
-
-    private fun getExchangeRates(cursor: Cursor): HashSet<Rate> {
-        val rates = HashSet<Rate>()
+    private fun getExchangeRates(cursor: Cursor): MutableSet<Rate> {
+        val rates = mutableSetOf<Rate>()
+        rates.add(toRate(cursor))
         while (cursor.moveToNext())
             rates.add(toRate(cursor))
         return rates;
@@ -169,9 +170,9 @@ class ExchangeRateRepository (
 
     private fun toRate(cursor: Cursor): Rate =
         Rate(
-            currency = cursor.getString(1),
+            currency = cursor.getString(2).toUpperCase(Locale.getDefault()),
             rateValues = ExchangeRateValues(
-                buy = cursor.getDouble(2)
+                buy = cursor.getDouble(1)
             )
         )
 

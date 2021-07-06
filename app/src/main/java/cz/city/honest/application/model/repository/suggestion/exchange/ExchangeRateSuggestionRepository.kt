@@ -27,6 +27,7 @@ class ExchangeRateSuggestionRepository(
                     SQLiteDatabase.CONFLICT_REPLACE
                 )
             }
+            .flatMap { exchangeRateRepository.insert(suggestion.suggestedExchangeRate) }
 
     override fun update(suggestion: ExchangeRateSuggestion): Observable<Int> =
         super.update(suggestion)
@@ -38,6 +39,7 @@ class ExchangeRateSuggestionRepository(
                     arrayOf(suggestion.id)
                 )
             }
+            .flatMap { exchangeRateRepository.update(suggestion.suggestedExchangeRate) }
 
     override fun get(): Flowable<ExchangeRateSuggestion> =
         findExchangeRateSuggestions().flatMap {
@@ -117,7 +119,7 @@ class ExchangeRateSuggestionRepository(
     private fun getContentValues(suggestion: ExchangeRateSuggestion) =
         ContentValues().apply {
             put("id",suggestion.id)
-            put("exchange_point_id", suggestion.subjectId)
+            put("watched_subject_id", suggestion.subjectId)
             put("exchange_rates_id", suggestion.suggestedExchangeRate.id)
         }
 

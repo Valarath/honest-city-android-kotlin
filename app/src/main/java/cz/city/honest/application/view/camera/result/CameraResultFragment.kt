@@ -43,20 +43,19 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         return root
     }
 
-
-
     private fun initSuggestNewRateButton(
         root: View
     ) = root.findViewById<Button>(R.id.suggest_new_rate)
         .apply { setSuggestButtonVisibility() }
-        .apply {this.setOnClickListener { suggestNewResult() } }
+        .apply {this.setOnClickListener { suggestNewResult(this) } }
 
-    private fun suggestNewResult() {
+    private fun suggestNewResult(button: Button) {
         cameraResultViewModel.suggest(getWatchedSubject()!!.id, getExchangeRateResult())
+        button.visibility = View.GONE
     }
 
     private fun Button.setSuggestButtonVisibility() {
-        if (getWatchedSubject() == null)
+        if (getWatchedSubject() == null && cameraResultViewModel.loggedUser.value !=null)
             this.visibility = View.GONE
         else
             this.visibility = View.VISIBLE

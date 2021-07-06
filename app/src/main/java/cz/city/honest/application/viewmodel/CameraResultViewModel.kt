@@ -1,10 +1,8 @@
 package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import cz.city.honest.application.model.dto.ExchangeRate
-import cz.city.honest.application.model.dto.ExchangeRateSuggestion
-import cz.city.honest.application.model.dto.State
-import cz.city.honest.application.model.dto.UserSuggestionStateMarking
+import cz.city.honest.application.model.dto.*
+import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.authority.AuthorityService
 import cz.city.honest.application.model.service.suggestion.SuggestionService
 import java.util.*
@@ -12,19 +10,24 @@ import javax.inject.Inject
 
 class CameraResultViewModel @Inject constructor(
     private val authorityService: AuthorityService,
-    private val suggestionService: SuggestionService
+    private val suggestionService: SuggestionService,
+    private val userService: UserService
 ) :
     ScheduledViewModel() {
 
     val authorityRate = MutableLiveData<ExchangeRate>()
+    val loggedUser: MutableLiveData<User> = MutableLiveData()
 
     init {
         schedule {
             authorityService.getAuthority().subscribe {
                 authorityRate.postClearValue(it)
             }
+            getUser().subscribe { loggedUser.postClearValue(it) }
         }
     }
+
+    private fun getUser() = userService.getUserDataAsMaybe()
 
     fun suggest(subjectId: String, exchangeRate: ExchangeRate) = suggestionService
         .createSuggestion(

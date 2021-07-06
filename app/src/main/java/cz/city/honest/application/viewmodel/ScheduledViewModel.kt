@@ -9,17 +9,10 @@ import java.util.concurrent.TimeUnit
 open class ScheduledViewModel : ViewModel() {
 
     protected fun schedule(schedule: () -> Unit) = Executors.newSingleThreadScheduledExecutor()
-        .scheduleAtFixedRate(schedule, 0, 25, TimeUnit.MINUTES)
+        .scheduleAtFixedRate(schedule, 0, 15, TimeUnit.MINUTES)
 }
 
 fun <DATA>MutableLiveData<DATA>.postClearValue(value: DATA) = this.apply {
     postValue(null)
     postValue(value!!)
-}
-
-class SingleTimeEventObserver<DATA>:Observer<DATA>{
-
-    override fun onChanged(data: DATA?) {
-        TODO("Not yet implemented")
-    }
 }
