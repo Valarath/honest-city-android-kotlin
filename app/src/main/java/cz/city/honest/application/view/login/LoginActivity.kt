@@ -16,6 +16,7 @@ import com.facebook.login.widget.LoginButton
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.service.registration.FacebookLoginData
+import cz.city.honest.application.view.MapActivity
 import cz.city.honest.application.view.user.UserDetailActivity
 import cz.city.honest.application.viewmodel.LoginUserSubscribeHandler
 import cz.city.honest.application.viewmodel.LoginViewModel
@@ -101,12 +102,12 @@ class LoginResultFacebookCallback(
 
     private fun registerUser(accessToken: AccessToken) {
         loginViewModel.registerUser(getFacebookLoginData(accessToken, NEW_USER_ID))
-            .also { activity.startActivity(Intent(activity, UserDetailActivity::class.java)) }
+            .also { activity.startActivity(Intent(activity, MapActivity::class.java)) }
     }
 
     private fun loginUser(user: User, accessToken: AccessToken) =
         loginViewModel.loginUser(user.copy(loginData = getFacebookLoginData(accessToken, user.id)))
-            .also { activity.startActivity(Intent(activity, UserDetailActivity::class.java)) }
+            .also { activity.startActivity(Intent(activity, MapActivity::class.java)) }
 
     private fun getFacebookLoginData(accessToken: AccessToken, userId: String) =
         FacebookLoginData(accessToken.token, accessToken.userId, userId)

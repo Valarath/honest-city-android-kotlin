@@ -11,16 +11,16 @@ class SubjectDetailViewModel @Inject constructor(authorityService: AuthorityServ
     ScheduledViewModel() {
 
     val authorityRate = MutableLiveData<ExchangeRate>()
-    val loggedUser: MutableLiveData<User> = MutableLiveData()
+    var loggedUser: User? = null
 
     init {
         schedule {
             authorityService.getAuthority().subscribe {
                 authorityRate.postClearValue(it)
             }
-            getUser().subscribe { loggedUser.postClearValue(it) }
+            getLoggedUser().subscribe({ loggedUser = it }, {}, { loggedUser = null })
         }
     }
 
-    private fun getUser() = userService.getUserDataAsMaybe()
+    private fun getLoggedUser() = userService.getUserDataAsMaybe()
 }

@@ -128,6 +128,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
     companion object {
         const val WATCHED_SUBJECT: String = "watchedSubject"
+        const val LOGGED_USER: String = "loggedUser"
     }
 }
 

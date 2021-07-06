@@ -5,6 +5,7 @@ import android.content.Intent
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import cz.city.honest.application.model.dto.WatchedSubject
+import cz.city.honest.application.view.MapActivity
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 
 class MapClickListener(val context: Context) : GoogleMap.OnMarkerClickListener {

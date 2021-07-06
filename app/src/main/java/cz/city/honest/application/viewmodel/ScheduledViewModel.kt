@@ -10,6 +10,9 @@ open class ScheduledViewModel : ViewModel() {
 
     protected fun schedule(schedule: () -> Unit) = Executors.newSingleThreadScheduledExecutor()
         .scheduleAtFixedRate(schedule, 0, 15, TimeUnit.MINUTES)
+
+    protected fun scheduleShort(schedule: () -> Unit) = Executors.newSingleThreadScheduledExecutor()
+        .scheduleAtFixedRate(schedule, 0, 5, TimeUnit.NANOSECONDS)
 }
 
 fun <DATA>MutableLiveData<DATA>.postClearValue(value: DATA) = this.apply {

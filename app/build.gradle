@@ -82,6 +82,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-reactivestreams-ktx', version: '2.3.1'
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation 'com.google.android.material:material:1.0.0'
 

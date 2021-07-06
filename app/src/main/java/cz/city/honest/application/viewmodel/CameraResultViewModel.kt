@@ -16,14 +16,15 @@ class CameraResultViewModel @Inject constructor(
     ScheduledViewModel() {
 
     val authorityRate = MutableLiveData<ExchangeRate>()
-    val loggedUser: MutableLiveData<User> = MutableLiveData()
-
+    //val loggedUser: MutableLiveData<User> = MutableLiveData()
+    var loggedUser: User? = null
     init {
         schedule {
             authorityService.getAuthority().subscribe {
                 authorityRate.postClearValue(it)
             }
-            getUser().subscribe { loggedUser.postClearValue(it) }
+            //getUser().subscribe { loggedUser.postClearValue(it) }
+            getUser().subscribe({ loggedUser = it }, {}, { loggedUser = null })
         }
     }
 

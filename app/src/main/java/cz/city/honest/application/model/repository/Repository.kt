@@ -20,6 +20,7 @@ abstract class Repository <ENTITY>(protected val databaseOperationProvider: Data
                 it.onNext(toEntity(cursor).blockingFirst())
             else
                 it.onComplete()
+                    .also { cursor.close() }
         }
 
     protected fun cursorContainsData(cursor: Cursor) =

@@ -79,15 +79,15 @@ class UserRepository(
         .getByUserId(cursor.getString(0))
         .map { toUser(cursor, it as LoginData) }
 
-    private fun toUser(cursor: Cursor, loginData: LoginData): User {
-        return User(
+    private fun toUser(cursor: Cursor, loginData: LoginData): User =
+        User(
             id = cursor.getString(0),
             username = cursor.getString(2),
             score = cursor.getInt(1),
             logged = cursor.getInt(3).toBoolean(),
             loginData = loginData
-        )
-    }
+        ).also { cursor.close() }
+
 
     private fun findLoggedUser(): Single<Cursor> =
         Single.just(

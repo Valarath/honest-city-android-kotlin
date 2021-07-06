@@ -10,10 +10,7 @@ import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
-import cz.city.honest.application.model.dto.ExchangePoint
-import cz.city.honest.application.model.dto.ExchangeRate
-import cz.city.honest.application.model.dto.ExchangeRateValues
-import cz.city.honest.application.model.dto.Rate
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.view.component.rate.ExchangeRateTable
 import cz.city.honest.application.view.component.rate.ExchangeRateTableData
@@ -94,7 +91,7 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
             .apply { this.setOnClickListener { suggestExchangeRateChange() } }
 
     private fun Button.setButtonText() =
-        if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId() || subjectDetailViewModel.loggedUser.value == null)
+        if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId() || subjectDetailViewModel.loggedUser == null)
             this.text = getString(R.string.analyze_actual_rate)
         else
             this.text = getString(R.string.suggest_rate_button)
