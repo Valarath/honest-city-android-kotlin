@@ -1,5 +1,6 @@
 package cz.city.honest.application.view.camera.result
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +47,7 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
     private fun initSuggestNewRateButton(
         root: View
     ) = root.findViewById<Button>(R.id.suggest_new_rate)
-        .apply { setSuggestButtonVisibility() }
+        .also { setSuggestButtonVisibility(it) }
         .apply {this.setOnClickListener { suggestNewResult(this) } }
 
     private fun suggestNewResult(button: Button) {
@@ -54,11 +55,12 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         button.visibility = View.GONE
     }
 
-    private fun Button.setSuggestButtonVisibility() {
-        if (getWatchedSubject() == null || cameraResultViewModel.loggedUser == null)
-            this.visibility = View.GONE
-        else
-            this.visibility = View.VISIBLE
+    @SuppressLint("FragmentLiveDataObserve")
+    private fun setSuggestButtonVisibility(button: Button) {
+        cameraResultViewModel.loggedUser.observe(this, Observer {
+            if (getWatchedSubject() != null)
+                button.visibility = View.VISIBLE
+        })
     }
 
     private fun getWatchedSubject() = activity!!.intent.extras[CameraResultActivity.WATCHED_SUBJECT]

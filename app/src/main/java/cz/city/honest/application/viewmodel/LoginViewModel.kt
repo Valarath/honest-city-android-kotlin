@@ -1,5 +1,7 @@
 package cz.city.honest.application.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.dto.User
@@ -12,13 +14,7 @@ class LoginViewModel @Inject constructor(
     private var authorizationService: AuthorizationService
 ) : ScheduledViewModel() {
 
-    val loggedUser: MutableLiveData<User> = MutableLiveData()
-
-    init {
-        schedule {
-            getLoggedUser().subscribe { loggedUser.postClearValue(it) }
-        }
-    }
+    val loggedUser: LiveData<User> = LiveDataReactiveStreams.fromPublisher<User> (getLoggedUser().toFlowable())
 
     fun registerUser(loginData: LoginData) =
         authorizationService.register(loginData)
@@ -40,7 +36,7 @@ class LoginViewModel @Inject constructor(
             { subscribeHandler.registerUser.invoke() }
         )
 
-    private fun getLoggedUser() = userService.getLoggedUser()
+    private fun getLoggedUser() = userService.getUserDataAsMaybe()
 
 }
 

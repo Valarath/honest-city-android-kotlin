@@ -9,7 +9,10 @@ import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.repository.DatabaseOperationProvider
 import cz.city.honest.application.model.repository.suggestion.SuggestionRepository
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.FlowableOnSubscribe
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider) :
     SuggestionRepository<NewExchangePointSuggestion>(
@@ -43,11 +46,10 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
             toEntities(it) { toNewExchangePointSuggestion(it) }
         }
 
+
     override fun get(id: List<String>): Flowable<NewExchangePointSuggestion> =
         findNewExchangePointSuggestions(id).flatMap {
-            toEntities(it) {
-                toNewExchangePointSuggestion(it)
-            }
+            toEntities(it) { toNewExchangePointSuggestion(it) }
         }
 
     override fun getBySubjectId(id: String): Flowable<NewExchangePointSuggestion> =
@@ -76,24 +78,21 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
     private fun findNewExchangePointSuggestions(): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id is null",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id is null group by longitude, latitude",
                 arrayOf()
             )
         )
 
+
     private fun findNewExchangePointSuggestions(suggestionsId: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${mapToQueryParamSymbols(suggestionsId)})",
+                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where suggestion.id in( ${
+                    mapToQueryParamSymbols(
+                        suggestionsId
+                    )
+                })",
                 getMapParameterArray(suggestionsId)
-            )
-        )
-
-    private fun findNewExchangePointSuggestionsForSubject(subjectId: List<String>): Flowable<Cursor> =
-        Flowable.just(
-            databaseOperationProvider.readableDatabase.rawQuery(
-                "Select new_exchange_point_suggestion.id, status, votes, longitude, latitude, exchange_point_id from new_exchange_point_suggestion join suggestion on new_exchange_point_suggestion.id = suggestion.id where exchange_point_id in( ${mapToQueryParamSymbols(subjectId)})",
-                getMapParameterArray(subjectId)
             )
         )
 
@@ -126,15 +125,12 @@ class NewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOp
 
     private fun getContentValues(suggestion: NewExchangePointSuggestion) =
         ContentValues().apply {
-            put("id",suggestion.id)
+            put("id", suggestion.id)
             put("latitude", suggestion.position.latitude)
             put("longitude", suggestion.position.longitude)
             put("exchange_point_id", suggestion.subjectId)
         }
 
-    fun getForWatchedSubjects(id: List<String>): Flowable<NewExchangePointSuggestion> =
-        findNewExchangePointSuggestionsForSubject(id)
-            .flatMap { toEntities(it) { toNewExchangePointSuggestion(it) } }
 
     companion object {
         const val TABLE_NAME: String = "new_exchange_point_suggestion"

@@ -1,10 +1,11 @@
 package cz.city.honest.application.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.authority.AuthorityService
 import cz.city.honest.application.model.service.suggestion.SuggestionService
+import io.reactivex.rxjava3.core.BackpressureStrategy
 import java.util.*
 import javax.inject.Inject
 
@@ -15,18 +16,8 @@ class CameraResultViewModel @Inject constructor(
 ) :
     ScheduledViewModel() {
 
-    val authorityRate = MutableLiveData<ExchangeRate>()
-    //val loggedUser: MutableLiveData<User> = MutableLiveData()
-    var loggedUser: User? = null
-    init {
-        schedule {
-            authorityService.getAuthority().subscribe {
-                authorityRate.postClearValue(it)
-            }
-            //getUser().subscribe { loggedUser.postClearValue(it) }
-            getUser().subscribe({ loggedUser = it }, {}, { loggedUser = null })
-        }
-    }
+    val authorityRate  = LiveDataReactiveStreams.fromPublisher<ExchangeRate> ( authorityService.getAuthority().toFlowable(BackpressureStrategy.LATEST))
+    val loggedUser = LiveDataReactiveStreams.fromPublisher<User> (getUser().toFlowable())
 
     private fun getUser() = userService.getUserDataAsMaybe()
 

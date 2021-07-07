@@ -12,6 +12,8 @@ import cz.city.honest.application.model.repository.suggestion.SuggestionReposito
 import cz.city.honest.application.model.repository.suggestion.exchange.NewExchangePointSuggestionRepository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.schedulers.Schedulers
 import org.intellij.lang.annotations.Flow
 import java.time.LocalDate
 

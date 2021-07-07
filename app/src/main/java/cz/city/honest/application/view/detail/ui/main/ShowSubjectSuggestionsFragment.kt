@@ -1,5 +1,6 @@
 package cz.city.honest.application.view.detail.ui.main
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +9,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TableLayout
 import android.widget.TableRow
+import androidx.activity.ComponentActivity
 import androidx.core.view.children
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.view.detail.SubjectDetailActivity
+import cz.city.honest.application.viewmodel.ShowSubjectSuggestionsViewModel
+import cz.city.honest.application.viewmodel.VotedSuggestion
 import dagger.android.support.DaggerAppCompatDialogFragment
 import javax.inject.Inject
 
@@ -21,7 +26,7 @@ import javax.inject.Inject
 class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
 
 
-    protected lateinit var showSubjectSuggestionsViewModel:ShowSubjectSuggestionsViewModel;
+    protected lateinit var showSubjectSuggestionsViewModel: ShowSubjectSuggestionsViewModel;
 
     @Inject
     protected lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -60,9 +65,9 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
             }
         }
 
-    private fun decorate(view: View, context: Context, suggestion: VotedSuggestion) =
+    private fun decorate(view: View, context: ComponentActivity, suggestion: VotedSuggestion) =
         ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass)
-            .decorate(view, ShowSubjectSuggestionRowDecoratorData(context,suggestion,showSubjectSuggestionsViewModel,getWatchedSubjectId()))
+            .decorate(view, ShowSubjectSuggestionRowDecoratorData(this,context,suggestion,showSubjectSuggestionsViewModel,getWatchedSubjectId()))
 
     private fun getWatchedSubjectId(): String =
         (activity!!.intent.extras[SubjectDetailActivity.WATCHED_SUBJECT] as WatchedSubject).id
@@ -109,8 +114,12 @@ sealed class ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View> {
 
 class ShowSubjectSuggestionTableRowDecorator : ShowSubjectSuggestionRowDecorator<TableRow>() {
     override fun decorate(view: TableRow, data:ShowSubjectSuggestionRowDecoratorData) = view.apply {
-        if (data.votedSuggestion.suggestion.state == State.IN_PROGRESS && data.viewModel.loggedUser !=null)
-            addView(getVoteButton(data))
+        data.viewModel.loggedUser.observe(data.fragment, Observer{
+            if (data.votedSuggestion.suggestion.state == State.IN_PROGRESS)
+                addView(getVoteButton(data))
+        })
+
+
     }
 }
 
@@ -129,4 +138,4 @@ class ShowSubjectSuggestionTableLayoutDecorator : ShowSubjectSuggestionRowDecora
     }
 }
 
-data class ShowSubjectSuggestionRowDecoratorData(val context: Context, val votedSuggestion: VotedSuggestion, val viewModel:ShowSubjectSuggestionsViewModel, val watchedSubjectId:String)
+data class ShowSubjectSuggestionRowDecoratorData(val fragment: DaggerAppCompatDialogFragment,val context: Context, val votedSuggestion: VotedSuggestion, val viewModel: ShowSubjectSuggestionsViewModel, val watchedSubjectId:String)

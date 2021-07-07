@@ -1,12 +1,13 @@
-package cz.city.honest.application.view.detail.ui.main
+package cz.city.honest.application.viewmodel
 
+import androidx.lifecycle.LiveDataReactiveStreams
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.suggestion.SuggestionService
 import cz.city.honest.application.model.service.vote.VoteService
-import cz.city.honest.application.viewmodel.ScheduledViewModel
+import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
@@ -16,13 +17,14 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
     private var userService: UserService
 ) : ScheduledViewModel() {
 
-    var loggedUser: User? = null
+    //var loggedUser: User? = null
+    var loggedUser= LiveDataReactiveStreams.fromPublisher<User> (getLoggedUser().toFlowable())
 
-    init {
-        schedule {
+    /*init {
+        scheduleFlowable {
             getLoggedUser().subscribe({ loggedUser = it }, {}, { loggedUser = null })
         }
-    }
+    }*/
 
     private fun getLoggedUser() = userService.getUserDataAsMaybe()
 

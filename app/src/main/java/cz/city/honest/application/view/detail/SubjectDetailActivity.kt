@@ -8,12 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import cz.city.honest.application.R
-import cz.city.honest.application.model.dto.ClosedExchangePointSuggestion
-import cz.city.honest.application.model.dto.State
-import cz.city.honest.application.model.dto.UserSuggestionStateMarking
-import cz.city.honest.application.model.dto.WatchedSubject
+import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.view.camera.CameraActivity
-import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsViewModel
+import cz.city.honest.application.viewmodel.ShowSubjectSuggestionsViewModel
 import cz.city.honest.application.view.detail.ui.main.SubjectPagerAdapter
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import dagger.android.support.DaggerAppCompatActivity
@@ -58,22 +55,28 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     }
 
     private fun setReportClosedSubjectButton(menu: Menu) {
-        if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested() || showSubjectSuggestionsViewModel.loggedUser == null)
-            menu.findItem(R.id.suggest_non_existing_subject)
-                .apply { disableMenuItem(this) }
+        showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
+            if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested())
+                menu.findItem(R.id.suggest_non_existing_subject)
+                    .apply { disableMenuItem(this) }
+        })
     }
 
     private fun setVoteFor(menu: Menu) {
-        if (!isNewSubjectSuggestion()  || showSubjectSuggestionsViewModel.loggedUser == null)
-            menu.findItem(R.id.vote_for_new_subject_suggestion)
-                .apply { disableMenuItem(this) }
+        showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
+            if (!isNewSubjectSuggestion())
+                menu.findItem(R.id.vote_for_new_subject_suggestion)
+                    .apply { disableMenuItem(this) }
+        })
     }
 
     private fun setSuggestDifferentRateButton(menu: Menu) =
         menu.findItem(R.id.suggest_different_rate)
-            .apply {
-                if (showSubjectSuggestionsViewModel.loggedUser == null && !isNewSubjectSuggestion())
-                    disableMenuItem(this)
+            .also {menuItem ->
+                showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
+                    if (isNewSubjectSuggestion())
+                        disableMenuItem(menuItem)
+                })
             }
             .apply {
                 if (isNewSubjectSuggestion())

@@ -14,6 +14,7 @@ import cz.city.honest.application.model.dto.NewExchangePointSuggestion;
 import cz.city.honest.application.model.dto.State;
 import cz.city.honest.application.model.dto.Suggestion;
 import cz.city.honest.application.model.dto.UserSuggestion;
+import cz.city.honest.application.viewmodel.VotedSuggestion;
 
 public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion> {
 

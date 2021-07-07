@@ -86,15 +86,15 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
 
     private fun setSuggestNewRateButton(root: View) =
         getSuggestRateButton(root)
-            .apply { setButtonText() }
+            .apply { setButtonText(this) }
             .apply { this.visibility = View.GONE }
             .apply { this.setOnClickListener { suggestExchangeRateChange() } }
 
-    private fun Button.setButtonText() =
-        if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId() || subjectDetailViewModel.loggedUser == null)
-            this.text = getString(R.string.analyze_actual_rate)
-        else
-            this.text = getString(R.string.suggest_rate_button)
+    private fun setButtonText(button:Button) =
+        subjectDetailViewModel.loggedUser.observe(this.viewLifecycleOwner, Observer {
+            if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId())
+                button.text = getString(R.string.analyze_actual_rate)
+        })
 
     private fun suggestExchangeRateChange() =
         Intent(activity, CameraActivity::class.java)

@@ -1,10 +1,13 @@
 package cz.city.honest.application.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.Transformations
+import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.user.UserSuggestionService
-import cz.city.honest.application.model.dto.User
+import io.reactivex.rxjava3.core.BackpressureStrategy
 import javax.inject.Inject
 
 class UserDetailViewModel @Inject constructor(
@@ -12,34 +15,23 @@ class UserDetailViewModel @Inject constructor(
     val userSuggestionService: UserSuggestionService
 ) : ScheduledViewModel() {
 
-    val userSuggestions: MutableLiveData<List<UserSuggestion>> =
-        MutableLiveData()
-    val userData: MutableLiveData<User> = MutableLiveData();
+    val userData =
+        LiveDataReactiveStreams.fromPublisher<User>(getUserData())
 
-    init {
-        schedule {
-            getUserData()
-        }
+    val userSuggestions = Transformations.switchMap(userData){
+        LiveDataReactiveStreams.fromPublisher<List<UserSuggestion>>(getUserSuggestions(it).toFlowable())
     }
 
     fun deleteSuggestion(suggestion: UserSuggestion) =
         userSuggestionService.delete(suggestion)
             .subscribe()
 
-    private fun getUserSuggestions(user: User) = userSuggestionService.getUserSuggestions(user.id)
+    private fun getUserSuggestions(
+        user: User
+    ) = userSuggestionService.getUserSuggestions(user.id)
         .toList()
-        .blockingSubscribe { userSuggestions.postClearValue(it) }
 
-    private fun getUserData() =
-        userService
-            .getLoggedUser()
-            .map { subscribeUserData(it) }
-            .subscribe { userData.postClearValue(it) }
-
-
-    private fun subscribeUserData(user: User): User {
-        getUserSuggestions(user)
-        return user
-    }
+    private fun getUserData() = scheduleFlowable()
+        .flatMap { userService.getLoggedUser().toFlowable(BackpressureStrategy.LATEST) }
 
 }

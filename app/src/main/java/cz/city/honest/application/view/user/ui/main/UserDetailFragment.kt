@@ -44,9 +44,9 @@ class UserDetailSuggestionsFragment() : UserDetailFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = getRoot(inflater, container)
-        userDetailViewModel.userSuggestions.observe(
-            viewLifecycleOwner,
-            Observer { addSuggestions(it, root) })
+        userDetailViewModel.userSuggestions.observe(viewLifecycleOwner,Observer{
+            addSuggestions(it,root)
+        })
         return root
     }
 

@@ -2,7 +2,6 @@ package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import cz.city.honest.application.view.detail.ui.main.ShowSubjectSuggestionsViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module

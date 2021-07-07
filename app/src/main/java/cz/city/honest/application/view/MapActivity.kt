@@ -55,7 +55,6 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private lateinit var map: GoogleMap
     private lateinit var mapViewModel: MapViewModel
     private lateinit var locationManager: LocationManager
-    var user: User? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -121,6 +120,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         map.setOnMarkerClickListener(MapClickListener(this))
         setLoginButton()
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
+        mapViewModel.newExchangePointSuggestions.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
     }
 
@@ -130,7 +130,6 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             setLoginButton(visibility = View.GONE)
             setUserDetailButton(it)
             setCreateSubjectButtonBehaviour()
-            user = it
         }
     }
 
@@ -142,9 +141,10 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
     private fun setLoginButtonListener() =
         this.startActivity(Intent(this, LoginActivity::class.java))
 
-    private fun getWatchedSubjectObserver(): Observer<List<WatchedSubject>> {
+
+    private fun getWatchedSubjectObserver(): Observer<WatchedSubject> {
         return Observer {
-            it.forEach { showOnMap(it) }
+             showOnMap(it)
         }
     }
 
@@ -157,6 +157,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         JobInfo.Builder(0, getUpdateScheduledJobComponentName(context))
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
             //.setPeriodic(connectionProperties.receiveDataAtHours * 60 * 60 * 1000)
+            //.setPeriodic(connectionProperties.receiveDataAtHours  * 60 * 1000)
             .setMinimumLatency(1)
             .setOverrideDeadline(1)
             .setRequiresCharging(true)
@@ -187,7 +188,9 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
             }
 
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
-        MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)
+        MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this).also {
+            println("suggestions id: " + watchedSubject.suggestions.first().id)
+        }
     }
 
     override fun onLocationChanged(location: Location) {
