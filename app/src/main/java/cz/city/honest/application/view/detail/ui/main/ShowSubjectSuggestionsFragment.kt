@@ -1,8 +1,8 @@
 package cz.city.honest.application.view.detail.ui.main
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +11,13 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.activity.ComponentActivity
 import androidx.core.view.children
+import androidx.core.view.size
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.State
 import cz.city.honest.application.model.dto.WatchedSubject
+import cz.city.honest.application.view.component.suggestion.SuggestionTableRowConverter
 import cz.city.honest.application.view.detail.SubjectDetailActivity
 import cz.city.honest.application.viewmodel.ShowSubjectSuggestionsViewModel
 import cz.city.honest.application.viewmodel.VotedSuggestion
@@ -34,7 +36,10 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         showSubjectSuggestionsViewModel =
-            ViewModelProvider(this, viewModelFactory).get(ShowSubjectSuggestionsViewModel::class.java)
+            ViewModelProvider(
+                this,
+                viewModelFactory
+            ).get(ShowSubjectSuggestionsViewModel::class.java)
     }
 
 
@@ -67,7 +72,16 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
 
     private fun decorate(view: View, context: ComponentActivity, suggestion: VotedSuggestion) =
         ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass)
-            .decorate(view, ShowSubjectSuggestionRowDecoratorData(this,context,suggestion,showSubjectSuggestionsViewModel,getWatchedSubjectId()))
+            .decorate(
+                view,
+                ShowSubjectSuggestionRowDecoratorData(
+                    this,
+                    context,
+                    suggestion,
+                    showSubjectSuggestionsViewModel,
+                    getWatchedSubjectId()
+                )
+            )
 
     private fun getWatchedSubjectId(): String =
         (activity!!.intent.extras[SubjectDetailActivity.WATCHED_SUBJECT] as WatchedSubject).id
@@ -79,63 +93,81 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
 }
 
 sealed class ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View> {
-    abstract fun decorate(view: VIEW_TYPE, data:ShowSubjectSuggestionRowDecoratorData): VIEW_TYPE
+    abstract fun decorate(view: VIEW_TYPE, data: ShowSubjectSuggestionRowDecoratorData): VIEW_TYPE
 
-    protected open fun getVoteButton(data:ShowSubjectSuggestionRowDecoratorData): Button = Button(data.context).apply {
-        layoutParams = getButtonLayoutParams()
-        setButtonText(this,data)
-        setOnClickListener {
-            val button = (it as Button)
-            if (button.text == resources.getString(R.string.vote_for_suggestion_button))
-                voteFor(button,data)
+    protected open fun getVoteButton(data: ShowSubjectSuggestionRowDecoratorData): Button =
+        Button(data.context).apply {
+            layoutParams = TableRowCreator.getTableCellLayoutsParams(10f, 5, 50)
+            this.gravity = Gravity.CENTER
+            this.textSize = 12f
+            setButtonText(this, data)
+            setOnClickListener { setVoteButtonOnClickListener(it, data) }
         }
+
+    private fun Button.setVoteButtonOnClickListener(
+        it: View,
+        data: ShowSubjectSuggestionRowDecoratorData
+    ) = (it as Button).also {
+        if (it.text == resources.getString(R.string.vote_for_suggestion_button))
+            voteFor(it, data)
     }
 
-    private fun setButtonText(button: Button, data:ShowSubjectSuggestionRowDecoratorData) =
+
+    private fun setButtonText(button: Button, data: ShowSubjectSuggestionRowDecoratorData) =
         button.apply {
-            if(data.votedSuggestion.voted)
+            if (data.votedSuggestion.voted)
                 button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
             else
                 text = resources.getString(R.string.vote_for_suggestion_button)
         }
 
-    private fun voteFor(button: Button, data:ShowSubjectSuggestionRowDecoratorData) = button.apply {
-        text = null
-        data.viewModel.voteFor(data.votedSuggestion.suggestion,data.watchedSubjectId)
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
-    }
-
-    private fun getButtonLayoutParams() = TableRow.LayoutParams(
-        TableRow.LayoutParams.WRAP_CONTENT,
-        TableRow.LayoutParams.WRAP_CONTENT
-    )
+    private fun voteFor(button: Button, data: ShowSubjectSuggestionRowDecoratorData) =
+        button.apply {
+            text = null
+            data.viewModel.voteFor(data.votedSuggestion.suggestion, data.watchedSubjectId)
+            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
+        }
 
 }
 
 class ShowSubjectSuggestionTableRowDecorator : ShowSubjectSuggestionRowDecorator<TableRow>() {
-    override fun decorate(view: TableRow, data:ShowSubjectSuggestionRowDecoratorData) = view.apply {
-        data.viewModel.loggedUser.observe(data.fragment, Observer{
-            if (data.votedSuggestion.suggestion.state == State.IN_PROGRESS)
-                addView(getVoteButton(data))
-        })
+    override fun decorate(view: TableRow, data: ShowSubjectSuggestionRowDecoratorData) =
+        view.apply {
+            data.viewModel.loggedUser.observe(data.fragment, Observer {
+                if (data.votedSuggestion.suggestion.state == State.IN_PROGRESS)
+                    addVoteButton(data)
+            })
 
 
+        }
+
+    private fun TableRow.addVoteButton(data: ShowSubjectSuggestionRowDecoratorData) {
+        this.removeViewAt(this.size - 1)
+        this.addView(getVoteButton(data))
     }
+
+
 }
 
 class ShowSubjectSuggestionTableLayoutDecorator : ShowSubjectSuggestionRowDecorator<TableLayout>() {
-    override fun decorate(view: TableLayout, data:ShowSubjectSuggestionRowDecoratorData) =
+    override fun decorate(view: TableLayout, data: ShowSubjectSuggestionRowDecoratorData) =
         view.apply {
             children.iterator().forEach {
                 decorateTableRow(it, data)
             }
         }
 
-    private fun decorateTableRow(view: View, data:ShowSubjectSuggestionRowDecoratorData) {
+    private fun decorateTableRow(view: View, data: ShowSubjectSuggestionRowDecoratorData) {
         if (view is TableRow)
             ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass)
                 .decorate(view, data)
     }
 }
 
-data class ShowSubjectSuggestionRowDecoratorData(val fragment: DaggerAppCompatDialogFragment,val context: Context, val votedSuggestion: VotedSuggestion, val viewModel: ShowSubjectSuggestionsViewModel, val watchedSubjectId:String)
+data class ShowSubjectSuggestionRowDecoratorData(
+    val fragment: DaggerAppCompatDialogFragment,
+    val context: Context,
+    val votedSuggestion: VotedSuggestion,
+    val viewModel: ShowSubjectSuggestionsViewModel,
+    val watchedSubjectId: String
+)

@@ -17,16 +17,10 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
     private var userService: UserService
 ) : ScheduledViewModel() {
 
-    //var loggedUser: User? = null
-    var loggedUser= LiveDataReactiveStreams.fromPublisher<User> (getLoggedUser().toFlowable())
+    var loggedUser= LiveDataReactiveStreams.fromPublisher<User> (getUser())
 
-    /*init {
-        scheduleFlowable {
-            getLoggedUser().subscribe({ loggedUser = it }, {}, { loggedUser = null })
-        }
-    }*/
-
-    private fun getLoggedUser() = userService.getUserDataAsMaybe()
+    private fun getUser() =
+        scheduleFlowable().flatMap { userService.getUserDataAsMaybe().toFlowable() }
 
     fun voteFor(suggestion: Suggestion, subjectId: String) =
         voteService.vote(suggestion)

@@ -2,8 +2,10 @@ package cz.city.honest.application.job
 
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.os.Looper
 import cz.city.honest.application.model.service.update.UpdateService
 import dagger.android.AndroidInjection
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class UpdateScheduledJob() : JobService() {
@@ -14,6 +16,7 @@ class UpdateScheduledJob() : JobService() {
     override fun onStartJob(p0: JobParameters?): Boolean =
         updateService
             .update()
+            .subscribeOn(AndroidSchedulers.from(Looper.getMainLooper()))
             .subscribe()
             .let { true }
 

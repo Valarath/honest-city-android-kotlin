@@ -7,8 +7,10 @@ import android.location.LocationManager
 import android.os.Bundle
 import cz.city.honest.application.model.dto.Position
 import cz.city.honest.application.model.service.subject.PositionProvider
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 
@@ -19,7 +21,7 @@ class AndroidPositionProvider( val context: Context):
     private var latestLocation:PublishSubject<Location> = PublishSubject.create()
 
     override fun provide(): Observable<Position> =
-        Observable.fromCallable{getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this) }
+        Observable.fromCallable{getLocationManager().requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this); }
             .flatMap {  latestLocation}
             .map { Position(it.longitude,it.latitude) }
 

@@ -47,7 +47,8 @@ class DatabaseOperationProvider constructor(
 
     private fun createExchangeRateTable(database: SQLiteDatabase) {
         database.execSQL("Create table IF NOT EXISTS exchange_rates(id varchar primary key ON CONFLICT REPLACE)")
-        database.execSQL("Create table IF NOT EXISTS exchange_rate(id varchar primary key ON CONFLICT REPLACE,exchange_rates_id varchar not null,buy float,sell float, currency text, foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
+        //database.execSQL("Create table IF NOT EXISTS exchange_rate(id varchar primary key ON CONFLICT REPLACE,exchange_rates_id varchar not null,buy float,sell float, currency text, foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
+        database.execSQL("Create table IF NOT EXISTS exchange_rate(id varchar, currency text, exchange_rates_id varchar not null,buy float,sell float, primary key (id,currency) ON CONFLICT REPLACE, foreign key(exchange_rates_id) references exchange_rates(exchange_rates_id))")
     }
 
     private fun createAuthorityTable(database: SQLiteDatabase) {

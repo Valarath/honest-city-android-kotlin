@@ -16,10 +16,15 @@ class CameraResultViewModel @Inject constructor(
 ) :
     ScheduledViewModel() {
 
-    val authorityRate  = LiveDataReactiveStreams.fromPublisher<ExchangeRate> ( authorityService.getAuthority().toFlowable(BackpressureStrategy.LATEST))
-    val loggedUser = LiveDataReactiveStreams.fromPublisher<User> (getUser().toFlowable())
+    val authorityRate = LiveDataReactiveStreams.fromPublisher<ExchangeRate>(getAuthorityRate())
+    val loggedUser = LiveDataReactiveStreams.fromPublisher<User>(getUser())
 
-    private fun getUser() = userService.getUserDataAsMaybe()
+    private fun getUser() =
+        scheduleFlowable().flatMap { userService.getUserDataAsMaybe().toFlowable() }
+
+    private fun getAuthorityRate() = scheduleFlowable().flatMap {
+        authorityService.getAuthority().toFlowable(BackpressureStrategy.LATEST)
+    }
 
     fun suggest(subjectId: String, exchangeRate: ExchangeRate) = suggestionService
         .createSuggestion(
@@ -33,9 +38,9 @@ class CameraResultViewModel @Inject constructor(
         ExchangeRateSuggestion(
             id = UUID.randomUUID().toString(),
             state = State.IN_PROGRESS,
-            subjectId =subjectId,
+            subjectId = subjectId,
             votes = 1,
-            suggestedExchangeRate =exchangeRate
+            suggestedExchangeRate = exchangeRate
         )
 
 }

@@ -1,6 +1,7 @@
 package cz.city.honest.application.view.detail.ui.main
 
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.widget.TableRow
 import android.widget.TextView
@@ -22,18 +23,21 @@ class TableRowCreator {
         fun getCell(value: String, initWeight: Float, context: Context): TextView =
             getCellTemplate(value, initWeight, context)
 
+        fun getCell(initWeight: Float, context: Context): TextView =
+            getCellTemplate(null, initWeight, context)
+
         fun getCellTemplate(text: String, context: Context): TextView = TextView(context).apply {
             this.text = text
-            this.gravity = View.TEXT_ALIGNMENT_GRAVITY
+            this.gravity = Gravity.CENTER
             this.width = 0
             this.height = 120
             this.layoutParams = getTableCellLayoutsParams()
         }
 
-        fun getCellTemplate(text: String, initWeight: Float, context: Context): TextView =
+        fun getCellTemplate(text: String?, initWeight: Float, context: Context): TextView =
             TextView(context).apply {
                 this.text = text
-                this.gravity = View.TEXT_ALIGNMENT_GRAVITY
+                this.gravity = Gravity.CENTER
                 this.width = 0
                 this.height = 120
                 this.layoutParams = getTableCellLayoutsParams(initWeight)
@@ -45,7 +49,7 @@ class TableRowCreator {
                 TableRow.LayoutParams.WRAP_CONTENT,
                 1f
             ).apply {
-                setMargins(0, 20, 0, 0)
+                setMargins(0, 5, 0, 0)
             }
         }
 
@@ -55,7 +59,17 @@ class TableRowCreator {
                 TableRow.LayoutParams.WRAP_CONTENT,
                 initWeight
             ).apply {
-                setMargins(0, 20, 0, 0)
+                setMargins(0, 5, 0, 0)
+            }
+        }
+
+        fun getTableCellLayoutsParams(initWeight: Float, marginTop: Int, width: Int = TableRow.LayoutParams.MATCH_PARENT): TableRow.LayoutParams {
+            return TableRow.LayoutParams(
+                width,
+                TableRow.LayoutParams.MATCH_PARENT,
+                initWeight
+            ).apply {
+                setMargins(0, marginTop, 0, 0)
             }
         }
     }

@@ -1,10 +1,14 @@
-package cz.city.honest.application.view.detail.ui.main
+package cz.city.honest.application.view.component.suggestion
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
+import cz.city.honest.application.R
 import cz.city.honest.application.model.dto.*
+import cz.city.honest.application.view.detail.ui.main.TableRowCreator
 
 
 class ClosedExchangePointSuggestionTableRowConverter :
@@ -32,22 +36,27 @@ class ExchangeRateSuggestionTableRowConverter :
         suggestion: ExchangeRateSuggestion
     ) = TableLayout(context).apply {
         suggestion.suggestedExchangeRate.rates.forEach {
-            addView(getExchangeRateRow(context, it, suggestion.state))
+            addView(getExchangeRateRow(context, it))
         }
+        background = getBackground(context, suggestion.state)
     }
 
     private fun getExchangeRateRow(
         context: Context,
-        it: Rate,
-        state: State
+        it: Rate
     ) =
         TableRow(context).apply {
-            setBackgroundColor(context.getColor(stateColor[state]!!))
             addView(TableRowCreator.getCell(it.rateValues.buy, 1f, context))
             addView(TableRowCreator.getCell(it.currency, 1f, context))
         }
 
-
+    private fun getBackground(context: Context, state: State): LayerDrawable? {
+        val background = context.getDrawable(R.drawable.suggestion_sub_table) as LayerDrawable
+        val backgroundHolder =
+            background.findDrawableByLayerId(R.id.suggestion_sub_table_background_holder) as GradientDrawable
+        backgroundHolder.setStroke(10,context.getColor(stateColor[state]!!))
+        return background
+    }
 }
 
 class NewExchangePointSuggestionTableRowConverter :

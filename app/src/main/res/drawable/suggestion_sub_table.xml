@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/suggestion_sub_table_background_holder"   android:top="-3dp">
+        <shape android:shape="rectangle">
+            <stroke android:width="3dp" android:color="@color/white" />
+        </shape>
+    </item>
+
+</layer-list>
