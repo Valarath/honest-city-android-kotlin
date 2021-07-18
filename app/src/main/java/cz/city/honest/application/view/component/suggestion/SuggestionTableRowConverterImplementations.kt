@@ -28,8 +28,27 @@ class ExchangeRateSuggestionTableRowConverter :
                 TableLayout.LayoutParams.MATCH_PARENT
             )
             addView(getGenericSuggestionInformationPanel(context, suggestion))
-            addView(getExchangeRatesTable(context, suggestion))
+            addExchangeRateTable(context, suggestion)
         }
+
+    private fun TableLayout.addExchangeRateTable(
+        context: Context,
+        suggestion: ExchangeRateSuggestion
+    ) {
+        val exchangeRatesTable = getExchangeRatesTable(context, suggestion)
+        addView(exchangeRatesTable)
+        exchangeRatesTable.visibility = View.GONE
+        this.setOnClickListener {
+            getExchangeRateSuggestionRowOnClickListenter(exchangeRatesTable)
+        }
+    }
+
+    private fun getExchangeRateSuggestionRowOnClickListenter(exchangeRatesTable: TableLayout) =
+        if (exchangeRatesTable.visibility == View.GONE)
+            exchangeRatesTable.visibility = View.VISIBLE
+        else
+            exchangeRatesTable.visibility = View.GONE
+
 
     private fun getExchangeRatesTable(
         context: Context,
