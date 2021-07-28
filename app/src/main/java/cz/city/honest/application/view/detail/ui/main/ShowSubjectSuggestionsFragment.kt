@@ -48,7 +48,8 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = getRoot(inflater, container)
-        addSuggestions(root, getWatchedSubjectId())
+        showSubjectSuggestionsViewModel.subjectId.postValue(getWatchedSubjectId())
+        addSuggestions(root)
         return root
     }
 
@@ -57,18 +58,35 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
         container: ViewGroup?
     ) = inflater.inflate(R.layout.fragment_show_subject_suggestions, container, false)
 
-    private fun addSuggestions(root: View, watchedSubjectId: String) =
-        getTableLayout(root).apply {
-            showSubjectSuggestionsViewModel.getSuggestionsForSubject(watchedSubjectId).forEach {
-                addView(
-                    decorate(
-                        SuggestionTableRowConverter.asTableRow(it, activity),
-                        activity!!,
-                        it
-                    )
-                )
-            }
+    private fun addSuggestions(root: View) =
+        getTableLayout(root).also { tableLayout ->
+            showSubjectSuggestionsViewModel.subjectSuggestions.observe(
+                viewLifecycleOwner,
+                androidx.lifecycle.Observer {
+                    addSuggestions(it, tableLayout, getHeaders(root))
+                })
         }
+
+    private fun addSuggestions(
+        votedSuggestions: List<VotedSuggestion>,
+        tableLayout: TableLayout,
+        tableHeader: TableRow
+    ) = tableLayout.also { it.removeAllViews() }
+            .also { it.addView(tableHeader) }
+            .also {
+                votedSuggestions.forEach {
+                    tableLayout.addView(
+                        decorate(
+                            SuggestionTableRowConverter.asTableRow(it, activity),
+                            activity!!,
+                            it
+                        )
+                    )
+                }
+            }
+
+    private fun getHeaders(root: View): TableRow =
+        root.findViewById(R.id.suggestions_holder_header)
 
     private fun decorate(view: View, context: ComponentActivity, suggestion: VotedSuggestion) =
         ShowSubjectSuggestionRowDecoratorProvider.provide(view.javaClass)
@@ -97,10 +115,12 @@ sealed class ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View> {
 
     protected open fun getVoteButton(data: ShowSubjectSuggestionRowDecoratorData): Button =
         Button(data.context).apply {
-            layoutParams = TableRowCreator.getTableCellLayoutsParams(10f, 5, 50)
+            this.setBackgroundColor(this.context.getColor(R.color.suggestionAccepted))
+            this.setTextColor(this.context.getColor(R.color.white))
             this.gravity = Gravity.CENTER
             this.textSize = 12f
             setButtonText(this, data)
+            layoutParams = TableRowCreator.getTableCellLayoutsParams(10f, 5, 50)
             setOnClickListener { setVoteButtonOnClickListener(it, data) }
         }
 
@@ -116,15 +136,17 @@ sealed class ShowSubjectSuggestionRowDecorator<VIEW_TYPE : View> {
     private fun setButtonText(button: Button, data: ShowSubjectSuggestionRowDecoratorData) =
         button.apply {
             if (data.votedSuggestion.voted)
-                button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
+                button.also { it.isEnabled = false }
+                    .setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
             else
                 text = resources.getString(R.string.vote_for_suggestion_button)
         }
 
     private fun voteFor(button: Button, data: ShowSubjectSuggestionRowDecoratorData) =
         button.apply {
+            button.isEnabled = false
             text = null
-            data.viewModel.voteFor(data.votedSuggestion.suggestion, data.watchedSubjectId)
+            data.viewModel.voteFor(data.votedSuggestion.suggestion)
             button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.checkmark, 0, 0, 0)
         }
 

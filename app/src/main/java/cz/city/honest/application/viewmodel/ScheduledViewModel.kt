@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -18,6 +19,13 @@ open class ScheduledViewModel : ViewModel() {
         backpressureBuffer: Int = 1000
     ) = Flowable.interval(initialDelay, period, TimeUnit.SECONDS)
             .onBackpressureBuffer(backpressureBuffer)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.newThread())
+
+    protected fun scheduleObservable(
+        initialDelay: Long = 0,
+        period: Long = 10L
+    ) = Observable.interval(initialDelay, period, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.newThread())
 }

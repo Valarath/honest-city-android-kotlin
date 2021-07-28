@@ -12,6 +12,7 @@ import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.view.camera.CameraActivity
 import cz.city.honest.application.viewmodel.ShowSubjectSuggestionsViewModel
 import cz.city.honest.application.view.detail.ui.main.SubjectPagerAdapter
+import cz.city.honest.application.viewmodel.VotedSuggestion
 import cz.city.honest.application.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import dagger.android.support.DaggerAppCompatActivity
 import java.util.*
@@ -44,19 +45,22 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
                 this,
                 viewModelFactory
             ).get(ShowSubjectSuggestionsViewModel::class.java)
+        showSubjectSuggestionsViewModel.subjectId.postValue(getWatchedSubjectId())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.subject_menu, menu)
-        setReportClosedSubjectButton(menu)
+        showSubjectSuggestionsViewModel.subjectSuggestions.observe(this, androidx.lifecycle.Observer {
+            setReportClosedSubjectButton(menu, it)
+        })
         setSuggestDifferentRateButton(menu)
         setVoteFor(menu)
         return true
     }
 
-    private fun setReportClosedSubjectButton(menu: Menu) {
+    private fun setReportClosedSubjectButton(menu: Menu, votedSuggestions: List<VotedSuggestion>) {
         showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
-            if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested())
+            if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested(votedSuggestions))
                 menu.findItem(R.id.suggest_non_existing_subject)
                     .apply { disableMenuItem(this) }
         })
@@ -91,9 +95,8 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     private fun isNewSubjectSuggestion() =
         getWatchedSubjectId() == NewExchangePointSuggestionExchangePointConverter.getId()
 
-    private fun isCloseSubjectSuggestionSuggested() =
-        showSubjectSuggestionsViewModel.getSuggestionsForSubject(getWatchedSubjectId())
-            .any { it.suggestion is ClosedExchangePointSuggestion }
+    private fun isCloseSubjectSuggestionSuggested(votedSuggestions: List<VotedSuggestion>) =
+        votedSuggestions.any { it.suggestion is ClosedExchangePointSuggestion }
 
     private fun getWatchedSubjectId() =
         getWatchedSubject().id
@@ -119,7 +122,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     )
 
     private fun voteFor(menuItem:MenuItem) = getWatchedSubject().suggestions
-        .forEach { showSubjectSuggestionsViewModel.voteFor(it,getWatchedSubject().id) }
+        .forEach { showSubjectSuggestionsViewModel.voteFor(it) }
         .let { true }
 
     private fun suggestExchangeRateChange(menuItem:MenuItem) =

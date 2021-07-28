@@ -1,8 +1,11 @@
 package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.User
+import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.suggestion.SuggestionService
@@ -17,27 +20,37 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
     private var userService: UserService
 ) : ScheduledViewModel() {
 
-    var loggedUser= LiveDataReactiveStreams.fromPublisher<User> (getUser())
+    val subjectId: MutableLiveData<String> = MutableLiveData()
+    val loggedUser = LiveDataReactiveStreams.fromPublisher<User>(getUser())
+
+    val subjectSuggestions = Transformations.switchMap(subjectId) {
+        LiveDataReactiveStreams.fromPublisher<List<VotedSuggestion>>(
+            getScheduledSuggestionsForSubject(it)
+        )
+    }
 
     private fun getUser() =
         scheduleFlowable().flatMap { userService.getUserDataAsMaybe().toFlowable() }
 
-    fun voteFor(suggestion: Suggestion, subjectId: String) =
+    fun voteFor(suggestion: Suggestion) =
         voteService.vote(suggestion)
-            .map { getSuggestionsForSubject(subjectId) }
             .subscribe()
 
-    fun getSuggestionsForSubject(subjectId: String) =
+    private fun getScheduledSuggestionsForSubject(subjectId: String) =
+        scheduleFlowable()
+            .flatMap { getSuggestionsForSubject(subjectId) }
+
+    private fun getSuggestionsForSubject(subjectId: String) =
         Observable.merge(
             getVotedSuggestionsForSubject(subjectId),
             getUnvotedSuggestionsForSubject(subjectId)
         )
             .toList()
-            .blockingGet()
+            .toFlowable()
 
     fun suggest(suggestion: Suggestion, markAs: UserSuggestionStateMarking, subjectId: String) =
         suggestionService.createSuggestion(suggestion, markAs)
-            .map { getSuggestionsForSubject(subjectId) }
+            //.map { getSuggestionsForSubject(subjectId) }
             .subscribe()
 
     private fun getVotedSuggestionsForSubject(subjectId: String) =
