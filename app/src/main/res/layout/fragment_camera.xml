@@ -7,10 +7,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.camera.CameraFragment">
 
+    <SurfaceView
+        android:id="@+id/overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.camera.view.PreviewView
         android:id="@+id/viewfinder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_width="411dp"
+        android:layout_height="478dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/analyzed_text"
+        android:layout_width="410dp"
+        android:layout_height="177dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:text="Decoded Text"
+        android:textColor="@color/suggestionInProgress"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,14 @@
 package cz.city.honest.application.view.camera
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.PorterDuff
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.DisplayMetrics
+import android.view.*
+import android.widget.TextView
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -13,6 +17,7 @@ import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import com.google.mlkit.vision.text.Text
 import cz.city.honest.application.R
 import cz.city.honest.application.android.service.provider.rate.ImageCameraAnalyzer
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateProvider
@@ -28,7 +33,7 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
-class CameraFragment : DaggerAppCompatDialogFragment() {
+class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
 
     @Inject
     lateinit var imageExchangeRateResultProvider: ImageExchangeRateResultProvider
@@ -41,6 +46,10 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
     private lateinit var scopedExecutor: ScopedExecutor
 
     private lateinit var cameraProvider: ProcessCameraProvider
+
+    lateinit var viewFinder: PreviewView
+
+    lateinit var analyzedTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +94,8 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
         val container = view as ConstraintLayout
         initExecutors()
         initViewFinder(container)
+        initOverlay(container)
+        analyzedTextView = findAnalyzedTextView(view)
     }
 
     private fun initExecutors() {
@@ -93,13 +104,69 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
     }
 
     private fun initViewFinder(container: ConstraintLayout) {
-        val viewFinder: PreviewView = findViewFinder(container)
+        viewFinder = findViewFinder(container)
         viewFinder.post { setUpCamera() }
+    }
+
+    private fun showAnalyzedText(lines:List<String>){
+        val stringBuilder = StringBuilder()
+        lines.forEach {stringBuilder.appendln(it)  }
+        analyzedTextView.text = stringBuilder.toString()
+    }
+
+    private fun initOverlay(container: ConstraintLayout) {
+        val overlay: SurfaceView = findOverlay(container)
+        overlay.setZOrderOnTop(true)
+        val holder = overlay.holder;
+        holder.setFormat(PixelFormat.TRANSPARENT);
+        holder.addCallback(this);
+    }
+
+    override fun surfaceCreated(holder: SurfaceHolder) {
+    }
+
+    private fun DrawFocusRect(color: Int,holder: SurfaceHolder) {
+        val height: Int = viewFinder.height
+        val width: Int = viewFinder.width
+
+        var diameter = width
+        if (height < width) {
+            diameter = height
+        }
+        val offset = (0.05 * diameter).toInt()
+        diameter -= offset
+        val canvas = holder.lockCanvas()
+        canvas.drawColor(0, PorterDuff.Mode.CLEAR)
+        //border's properties
+        val paint = Paint()
+        paint.style = Paint.Style.STROKE
+        paint.color = color
+        paint.strokeWidth = 5f
+        val left = width / 2 - diameter / 3
+        val top = height / 2 - diameter / 3
+        val right = width / 2 + diameter / 3
+        val bottom = height / 2 + diameter / 3
+
+        canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
+        //canvas.drawRect(viewFinder.left.toFloat(), viewFinder.top.toFloat(), viewFinder.right.toFloat(), viewFinder.bottom.toFloat(), paint)
+        holder.unlockCanvasAndPost(canvas)
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        DrawFocusRect(Color.parseColor("#b3dabb"),holder)
+    }
+
+    override fun surfaceDestroyed(holder: SurfaceHolder?) {
     }
 
     private fun findViewFinder(container: View): PreviewView =
         container.findViewById(R.id.viewfinder)
 
+    private fun findOverlay(container: View): SurfaceView =
+        container.findViewById(R.id.overlay)
+
+    private fun findAnalyzedTextView(container: View): TextView =
+        container.findViewById(R.id.analyzed_text)
 
     private fun setUpCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -131,7 +198,7 @@ class CameraFragment : DaggerAppCompatDialogFragment() {
             .also {
                 it.setAnalyzer(
                     cameraExecutor
-                    , ImageCameraAnalyzer(imageExchangeRateProvider)
+                    , ImageCameraAnalyzer(imageExchangeRateProvider,this::showAnalyzedText)
                 )
             }
 

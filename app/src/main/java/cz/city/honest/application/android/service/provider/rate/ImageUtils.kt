@@ -73,7 +73,7 @@ object ImageUtils {
         return rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
     }
 
-    fun rotateAndCrop(
+    private fun rotateAndCrop(
         bitmap: Bitmap,
         imageRotationDegrees: Int,
         cropRect: Rect
@@ -91,7 +91,7 @@ object ImageUtils {
         )
     }
 
-    fun convertYuv420888ImageToBitmap(image: Image): Bitmap {
+    private fun convertYuv420888ImageToBitmap(image: Image): Bitmap {
         require(image.format == ImageFormat.YUV_420_888) {
             "Unsupported image format $(image.format)"
         }
