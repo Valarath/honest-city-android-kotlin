@@ -94,6 +94,8 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
         subjectDetailViewModel.loggedUser.observe(this.viewLifecycleOwner, Observer {
             if (getExchangePoint().id == NewExchangePointSuggestionExchangePointConverter.getId())
                 button.text = getString(R.string.analyze_actual_rate)
+            else
+                button.text = getString(R.string.suggest_rate_button)
         })
 
     private fun suggestExchangeRateChange() =

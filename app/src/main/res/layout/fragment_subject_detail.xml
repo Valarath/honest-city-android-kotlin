@@ -16,7 +16,7 @@
         android:id="@+id/suggest_rate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/suggest_rate_button"
+        android:text="@string/analyze_actual_rate"
         tools:layout_editor_absoluteX="161dp"
         tools:layout_editor_absoluteY="303dp"
         tools:ignore="MissingConstraints" />

@@ -16,25 +16,29 @@ class ImageExchangeRateProvider(
     private val imageExchangeRateResultProvider: ImageExchangeRateResultProvider
 ) {
 
-    fun provide(image: InputImage, textCallback:(lines:List<String>)->Unit) =
+    fun provide(image: InputImage, textCallback: (lines: List<String>) -> Unit) =
         TextRecognition
-        .getClient()
-        .process(image)
-        .addOnSuccessListener {
-            val textLines = getTextLines(it)
-            textCallback.invoke(textLines)
-            provide(textLines).subscribe { imageExchangeRateResultProvider.result.postClearValue(it) }
-        }
+            .getClient()
+            .process(image)
+            .addOnSuccessListener {
+                val textLines = getTextLines(it)
+                textCallback.invoke(textLines)
+                provide(textLines).subscribe {
+                    imageExchangeRateResultProvider.result.postClearValue(
+                        it
+                    )
+                }
+            }
 
-    private fun getTextLines(text:Text) = mutableListOf<MutableList<Text.Line>>()
-        .apply { fillTextLines(text,this) }
+    private fun getTextLines(text: Text) = mutableListOf<MutableList<Text.Line>>()
+        .apply { fillTextLines(text, this) }
         .onEach { it.sortBy { it.cornerPoints!!.first().x } }
-        .map { it.joinToString(" "){it.text} }
-        .map { it.replace("|"," ") }
+        .map { it.joinToString(" ") { it.text } }
+        .map { it.replace("|", " ") }
         .map { it.replace("\\s+".toRegex(), " ").trim() }
         .map { removeDuplicities(it) }
         .toMutableList()
-        .apply { this.removeIf {it.size != 4 } }
+        .apply { this.removeIf { it.size != 4 } }
         .map { it.joinToString(" ") }
 
     private fun removeDuplicities(it: String) = it.split(" ")
@@ -42,13 +46,13 @@ class ImageExchangeRateProvider(
         .also { it.removeAll(getDuplicities(it)) }
 
     private fun getDuplicities(line: List<String>) = line
-        .groupingBy { it.replace(",","") }
+        .groupingBy { it.replace(",", "") }
         .eachCount()
         .filterValues { it > 1 }
         .keys
 
 
-    private fun fillTextLines(text:Text, lines:MutableList<MutableList<Text.Line>>) = text
+    private fun fillTextLines(text: Text, lines: MutableList<MutableList<Text.Line>>) = text
         .textBlocks
         .flatMap { it.lines }
         .sortedBy { it.cornerPoints!!.first().y }
@@ -59,9 +63,9 @@ class ImageExchangeRateProvider(
         lines: MutableList<MutableList<Text.Line>>,
         it: Text.Line
     ) = if (isOnRow(lines, it))
-            lines.last().add(it)
-        else
-            lines.add(mutableListOf(it))
+        lines.last().add(it)
+    else
+        lines.add(mutableListOf(it))
 
     //TODO misto odcitani tam dej nejakej pomer at to zohledni vzdalenosti kamery od plochy
     private fun isOnRow(
@@ -69,10 +73,11 @@ class ImageExchangeRateProvider(
         line: Text.Line
     ) = lines.firstOrNull() != null
             && lines.first().firstOrNull() != null
-            && (line.cornerPoints!!.first().y - lines.last().first().cornerPoints!!.first().y).absoluteValue <= 10
+            && (line.cornerPoints!!.first().y - lines.last()
+        .first().cornerPoints!!.first().y).absoluteValue <= 10
 
 
-    private fun getLinesSize(lines:List<List<Text.Line>>) = lines.flatten().count()
+    private fun getLinesSize(lines: List<List<Text.Line>>) = lines.flatten().count()
 
     fun provide(lines: List<String>) =
         currencySettingsService.get()
@@ -113,7 +118,7 @@ class ImageExchangeRateProvider(
         lines: List<String>,
         currencySettings: CurrencySettings
     ) = lines
-        .map { it.toUpperCase(Locale.getDefault())}
+        .map { it.toUpperCase(Locale.getDefault()) }
         .any { it.contains(currencySettings.currency) }
 
 
@@ -195,5 +200,7 @@ class ImageExchangeRateProvider(
         currencySettings: CurrencySettings
     ) = it.toUpperCase(Locale.getDefault()).contains(currencySettings.currency)
 }
+
+
 
 class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())

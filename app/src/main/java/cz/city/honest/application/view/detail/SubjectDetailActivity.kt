@@ -49,12 +49,16 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.subject_menu, menu)
-        showSubjectSuggestionsViewModel.subjectSuggestions.observe(this, androidx.lifecycle.Observer {
-            setReportClosedSubjectButton(menu, it)
-        })
-        setSuggestDifferentRateButton(menu)
-        setVoteFor(menu)
+        showSubjectSuggestionsViewModel.loggedUser.observe(this,androidx.lifecycle.Observer {
+            menuInflater.inflate(R.menu.subject_menu, menu)
+            showSubjectSuggestionsViewModel.subjectSuggestions.observe(
+                this,
+                androidx.lifecycle.Observer {
+                    setReportClosedSubjectButton(menu, it)
+                })
+            setSuggestDifferentRateButton(menu)
+            setVoteFor(menu)
+        } )
         return true
     }
 
