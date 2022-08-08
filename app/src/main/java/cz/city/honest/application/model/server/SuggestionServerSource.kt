@@ -1,16 +1,15 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import cz.city.honest.application.model.dto.Suggestion
-import cz.city.honest.application.model.gateway.SuggestionGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
 
-interface SuggestionServerSource : SuggestionGateway {
+interface SuggestionServerSource {
 
     @POST(SuggestionEndpointsUrl.REMOVE)
-    fun remove(@Body request: RemoveSuggestionRequest,@Header("Authorization") accessToken:String): Observable<Unit>
+    fun remove(@Body request: RemoveSuggestionRequest, @Header("Authorization") accessToken:String): Observable<Unit>
 
     @POST(SuggestionEndpointsUrl.SUGGEST)
     fun suggest(@Body request: PostSuggestRequest, @Header("Authorization") accessToken:String): Observable<Unit>

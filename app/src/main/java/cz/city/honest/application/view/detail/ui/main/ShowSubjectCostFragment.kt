@@ -118,7 +118,7 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
             .exchangePointRate
 
     private fun getExchangePoint() =
-        ((context as Activity)!!.intent.extras[SubjectDetailActivity.WATCHED_SUBJECT] as ExchangePoint)
+        ((context as Activity)!!.intent.extras!![SubjectDetailActivity.WATCHED_SUBJECT] as ExchangePoint)
 
     companion object {
 

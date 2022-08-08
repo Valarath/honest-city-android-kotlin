@@ -42,6 +42,8 @@ import cz.city.honest.application.viewmodel.MapViewModel
 import cz.city.honest.application.viewmodel.ViewModelModule
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.dto.WatchedSubject
+import cz.city.honest.application.view.filter.FilterActivity
+import cz.city.honest.application.view.filter.FilterFragment
 import dagger.Module
 import dagger.android.AndroidInjectionModule
 import dagger.android.ContributesAndroidInjector
@@ -119,6 +121,7 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         map = googleMap
         map.setOnMarkerClickListener(MapClickListener(this))
         setLoginButton()
+        setFilterButton()
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
         mapViewModel.newExchangePointSuggestions.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
@@ -174,9 +177,14 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
                 it.setOnClickListener { setUserDetailButtonListener() }
             }
 
+    private fun setFilterButton() =
+        findViewById<Button>(R.id.filter)
+            .also { it.setOnClickListener { this.startActivity(Intent(this, FilterActivity::class.java))} }
+
     private fun setUserDetailButtonListener() =
         this.startActivity(Intent(this, UserDetailActivity::class.java))
 
+    //TODO uprav tak aby to mohl použít i nepřihlášený uživatel
     private fun setCreateSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)
             .apply { this.visibility = View.VISIBLE }
@@ -201,14 +209,6 @@ class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListe
         TODO("Not yet implemented")
     }
 
-    override fun onProviderEnabled(provider: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onProviderDisabled(provider: String?) {
-        TODO("Not yet implemented")
-    }
-
 }
 
 fun Location.toLatLng(): LatLng = LatLng(this.latitude, this.longitude)
@@ -226,6 +226,9 @@ abstract class ActivityModule {
     internal abstract fun cameraActivity(): CameraActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun filterActivity(): FilterActivity
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun userDetailActivity(): UserDetailActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
@@ -236,6 +239,9 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector
     internal abstract fun cameraFragment(): CameraFragment
+
+    @ContributesAndroidInjector
+    internal abstract fun filterFragment(): FilterFragment
 
     @ContributesAndroidInjector
     internal abstract fun cameraResultFragment(): CameraResultFragment

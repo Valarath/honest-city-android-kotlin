@@ -1,7 +1,6 @@
 package cz.city.honest.application.model.service
 
 import cz.city.honest.application.model.dto.*
-import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
 import cz.city.honest.application.model.repository.subject.SubjectRepository
@@ -9,10 +8,13 @@ import cz.city.honest.application.model.repository.suggestion.SuggestionReposito
 import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.repository.vote.VoteRepository
+import cz.city.honest.application.model.server.*
 import cz.city.honest.application.model.service.authority.AuthorityService
 import cz.city.honest.application.model.service.authorization.AuthorizationService
 import cz.city.honest.application.model.service.authorization.FacebookLoginDataProvider
 import cz.city.honest.application.model.service.authorization.LoginDataProvider
+import cz.city.honest.application.model.service.filter.FilterPersistenceHandler
+import cz.city.honest.application.model.service.filter.FilterService
 import cz.city.honest.application.model.service.registration.FacebookLoginHandler
 import cz.city.honest.application.model.service.registration.LoginHandler
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
@@ -68,6 +70,13 @@ class ServiceModule {
             userSuggestionService,
             voteService
         )
+
+    @Provides
+    @Singleton
+    fun getFilterService(
+        filterPersistenceHandler: FilterPersistenceHandler
+    ): FilterService =
+        FilterService(filterPersistenceHandler)
 
     @Provides
     @Singleton

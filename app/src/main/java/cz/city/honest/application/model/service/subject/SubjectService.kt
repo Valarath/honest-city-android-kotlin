@@ -1,27 +1,29 @@
 package cz.city.honest.application.model.service.subject
 
-import cz.city.honest.application.model.dto.*
-import cz.city.honest.application.model.gateway.server.GetSubjectsResponse
-import cz.city.honest.application.model.gateway.server.SubjectServerSource
+import cz.city.honest.application.model.dto.Filter
+import cz.city.honest.application.model.dto.Position
+import cz.city.honest.application.model.dto.Suggestion
+import cz.city.honest.application.model.dto.WatchedSubject
 import cz.city.honest.application.model.repository.subject.SubjectRepository
+import cz.city.honest.application.model.server.GetSubjectsResponse
+import cz.city.honest.application.model.server.SubjectServerSource
 import cz.city.honest.application.model.service.RepositoryProvider
 import cz.city.honest.application.model.service.suggestion.SuggestionService
 import cz.city.honest.application.model.service.update.PublicUpdatable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
-import java.time.LocalDate
 
 
 class SubjectService(
     private val subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>,
     private val subjectServerSource: SubjectServerSource,
     private val suggestionService: SuggestionService,
-    val positionProvider: PositionProvider
+    private val positionProvider: PositionProvider
 ) : PublicUpdatable {
 
-    fun getSubjects(): Flowable<out WatchedSubject> =
+    fun getSubjects(filter: Filter): Flowable<out WatchedSubject> =
         Flowable.fromIterable(subjectRepositories.values)
-            .flatMap { it.get() }
+            .flatMap { it.get(filter) }
 
     override fun update(): Observable<Unit> =
         positionProvider.provide()

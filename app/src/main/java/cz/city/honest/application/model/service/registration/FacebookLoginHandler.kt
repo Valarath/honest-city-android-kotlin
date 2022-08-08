@@ -2,9 +2,9 @@ package cz.city.honest.application.model.service.registration
 
 import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.dto.User
-import cz.city.honest.application.model.gateway.server.AuthorizationServerSource
-import cz.city.honest.application.model.gateway.server.PostLoginRequest
-import cz.city.honest.application.model.gateway.server.PostRegisterRequest
+import cz.city.honest.application.model.server.AuthorizationServerSource
+import cz.city.honest.application.model.server.PostLoginRequest
+import cz.city.honest.application.model.server.PostRegisterRequest
 import cz.city.honest.application.model.service.UserService
 import io.reactivex.rxjava3.core.Observable
 
@@ -19,7 +19,11 @@ class FacebookLoginHandler(
         .flatMap { logUser(it.user) }
 
     override fun register(data: FacebookLoginData): Observable<User> = serverSource
-        .register(PostRegisterRequest(data))
+        .register(
+            PostRegisterRequest(
+                data
+            )
+        )
         .toObservable()
         .flatMap { registerUser(it.user) }
 

@@ -1,7 +1,7 @@
 package cz.city.honest.application.model.service.authority
 
 import cz.city.honest.application.model.dto.ExchangeRate
-import cz.city.honest.application.model.gateway.server.AuthorityServerSource
+import cz.city.honest.application.model.server.AuthorityServerSource
 import cz.city.honest.application.model.repository.authority.AuthorityRepository
 import cz.city.honest.application.model.service.BaseService
 import cz.city.honest.application.model.service.update.PublicUpdatable

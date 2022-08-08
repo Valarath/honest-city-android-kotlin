@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import cz.city.honest.application.model.dto.Vote
 import io.reactivex.rxjava3.core.Observable
@@ -9,7 +9,7 @@ import retrofit2.http.POST
 interface VoteServerSource  {
 
     @POST(VoteEndpointsUrl.UP_VOTE)
-    fun upVote(@Body request: PostUpVoteRequest,@Header("Authorization") accessToken:String): Observable<Unit>
+    fun upVote(@Body request: PostUpVoteRequest, @Header("Authorization") accessToken:String): Observable<Unit>
 
 }
 

@@ -1,16 +1,14 @@
 package cz.city.honest.application.model.service.vote
 
 import cz.city.honest.application.model.dto.*
-import cz.city.honest.application.model.gateway.server.PostUpVoteRequest
-import cz.city.honest.application.model.gateway.server.VoteServerSource
+import cz.city.honest.application.model.server.PostUpVoteRequest
+import cz.city.honest.application.model.server.VoteServerSource
 import cz.city.honest.application.model.repository.vote.VoteRepository
 import cz.city.honest.application.model.service.RepositoryProvider
 import cz.city.honest.application.model.service.update.PrivateUpdatable
 import cz.city.honest.application.model.service.UserProvider
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
-import java.time.LocalDate
-import java.util.*
 
 class VoteService(
     private val voteServerSource: VoteServerSource,
@@ -34,8 +32,18 @@ class VoteService(
             .flatMap { updateVotes(it,user,accessToken) }
 
     private fun updateVotes(votes: List<Vote>, user: User, accessToken: String) =
-        Observable.just(PostUpVoteRequest(votes, user.id))
-            .map { PostUpVoteRequest(votes, user.id) }
+        Observable.just(
+            PostUpVoteRequest(
+                votes,
+                user.id
+            )
+        )
+            .map {
+                PostUpVoteRequest(
+                    votes,
+                    user.id
+                )
+            }
             .flatMap { voteServerSource.upVote(it, accessToken) }
             .flatMap { Observable.fromIterable(votes) }
             .flatMap { update(it) }

@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.dto.User
@@ -9,10 +9,10 @@ import retrofit2.http.POST
 interface AuthorizationServerSource {
 
     @POST(AuthorizationEndpointsUrl.REGISTER)
-    fun register(@Body request:PostRegisterRequest): Single<PostRegisterResponse>
+    fun register(@Body request: PostRegisterRequest): Single<PostRegisterResponse>
 
     @POST(AuthorizationEndpointsUrl.LOGIN)
-    fun login(@Body request:PostLoginRequest): Single<PostLoginResponse>
+    fun login(@Body request: PostLoginRequest): Single<PostLoginResponse>
 
 }
 

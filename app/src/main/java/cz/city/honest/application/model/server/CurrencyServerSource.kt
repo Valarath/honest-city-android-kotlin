@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import cz.city.honest.application.model.dto.CurrencySettings
 import io.reactivex.rxjava3.core.Observable

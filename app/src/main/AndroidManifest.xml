@@ -27,6 +27,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.filter.FilterActivity"
+            android:exported="false"
+            android:label="@string/title_activity_filtr"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".view.user.UserDetailActivity"
             android:label="@string/title_activity_user_detail"
             android:parentActivityName=".view.MapActivity">
@@ -83,7 +88,8 @@
 
         <activity
             android:name=".view.MapActivity"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -95,46 +101,51 @@
             android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
 
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        
+
         <provider
+            android:name="cz.city.honest.application.android.service.sync.SyncContentProvider"
             android:authorities="cz.city.honest.application"
-            android:syncable="true"
             android:exported="false"
-            android:name="cz.city.honest.application.android.service.sync.SyncContentProvider"/>
-        
-        <service android:name=".android.service.authentication.AccountAuthenticationService">
+            android:syncable="true" />
+
+        <service android:name=".android.service.authentication.AccountAuthenticationService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator" />
         </service>
-
-        <service android:name=".android.service.sync.SyncAdapterService"
+        <service
+            android:name=".android.service.sync.SyncAdapterService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
+                <action android:name="android.content.SyncAdapter" />
             </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter"
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
                 android:resource="@xml/sync_adapter" />
         </service>
-
         <service
             android:name=".job.UpdateScheduledJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />

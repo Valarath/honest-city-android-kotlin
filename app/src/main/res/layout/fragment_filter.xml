@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <import type="cz.city.honest.application.model.dto.HonestyStatus"/>
+        <variable
+            name="filterViewModel"
+            type="cz.city.honest.application.viewmodel.FilterViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
+
+        <LinearLayout
+
+            android:id="@+id/filter_header"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/headerBackground">
+
+            <TextView
+                android:id="@+id/filter_header_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Show subjects settings"
+                android:textColor="@color/headerText" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/filter_settings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="8"
+            android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/show_honest_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:checked="@={filterViewModel.honestyStatusVisibilityLiveData[HonestyStatus.HONEST]}"
+                android:onCheckedChanged="@{(button, isChecked) -> filterViewModel.updateVisibilityState(HonestyStatus.HONEST,isChecked)}"
+                android:text="Show: Honest subjects" />
+
+            <Switch
+                android:id="@+id/show_honest_with_reserve_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.HONEST_WITH_RESERVE]}"
+                android:text="Show: Honest subjects with reserve" />
+
+            <Switch
+                android:id="@+id/show_be_caution_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.BE_CAUTION]}"
+                android:text="Show: Be caution Subjects" />
+
+            <Switch
+                android:id="@+id/show_dishonest_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="150dp"
+                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.DISHONEST]}"
+                android:text="Show: Dishonest subjects" />
+
+            <Switch
+                android:id="@+id/show_unknown_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="200dp"
+                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.UNKNOWN]}"
+                android:text="Show: Subjects with unknown honesty" />
+        </FrameLayout>
+
+        <LinearLayout
+
+            android:id="@+id/filter_footer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/filter_confirm_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/light_blue_600"
+                android:gravity="center"
+                android:text="ok"
+                android:textColor="@color/headerText" />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

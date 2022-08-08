@@ -156,7 +156,8 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
         DrawFocusRect(Color.parseColor("#b3dabb"),holder)
     }
 
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+        TODO("Not yet implemented")
     }
 
     private fun findViewFinder(container: View): PreviewView =

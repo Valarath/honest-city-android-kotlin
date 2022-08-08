@@ -1,7 +1,7 @@
 package cz.city.honest.application.model.service.settings
 
 import cz.city.honest.application.model.dto.CurrencySettings
-import cz.city.honest.application.model.gateway.server.CurrencyServerSource
+import cz.city.honest.application.model.server.CurrencyServerSource
 import cz.city.honest.application.model.repository.settings.CurrencySettingsRepository
 import cz.city.honest.application.model.service.BaseService
 import cz.city.honest.application.model.service.update.PublicUpdatable

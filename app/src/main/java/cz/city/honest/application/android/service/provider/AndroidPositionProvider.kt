@@ -32,13 +32,5 @@ class AndroidPositionProvider( val context: Context):
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         TODO("Not yet implemented")
     }
-
-    override fun onProviderEnabled(provider: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onProviderDisabled(provider: String?) {
-        TODO("Not yet implemented")
-    }
 }
 

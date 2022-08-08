@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.gateway
+package cz.city.honest.application.model.server
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -11,7 +11,6 @@ import cz.city.honest.application.model.dto.LoginData
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.Vote
 import cz.city.honest.application.model.dto.WatchedSubject
-import cz.city.honest.application.model.gateway.server.*
 import cz.city.honest.application.model.property.ConnectionProperties
 import dagger.Module
 import dagger.Provides
@@ -27,7 +26,7 @@ import javax.inject.Singleton
 
 
 @Module
-class GatewayModule() {
+class ServerSourceModule() {
 
     //TODO relocate this
     @Provides
@@ -56,10 +55,26 @@ class GatewayModule() {
 
     private fun setDeserializers(module: SimpleModule,objectMapper: ObjectMapper) =
         module.apply {
-            this.addDeserializer(LoginData::class.java, LoginDataSerializer(objectMapper))
-            this.addDeserializer(WatchedSubject::class.java, WatchedSubjectSerializer(objectMapper))
-            this.addDeserializer(Suggestion::class.java, SuggestionSerializer(objectMapper))
-            this.addDeserializer(Vote::class.java, VoteSerializer(objectMapper))
+            this.addDeserializer(LoginData::class.java,
+                LoginDataSerializer(
+                    objectMapper
+                )
+            )
+            this.addDeserializer(WatchedSubject::class.java,
+                WatchedSubjectSerializer(
+                    objectMapper
+                )
+            )
+            this.addDeserializer(Suggestion::class.java,
+                SuggestionSerializer(
+                    objectMapper
+                )
+            )
+            this.addDeserializer(Vote::class.java,
+                VoteSerializer(
+                    objectMapper
+                )
+            )
         }
 
     @Provides

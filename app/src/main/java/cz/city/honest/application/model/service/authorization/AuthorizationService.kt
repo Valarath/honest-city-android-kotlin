@@ -1,11 +1,10 @@
 package cz.city.honest.application.model.service.authorization
 
 import cz.city.honest.application.model.dto.LoginData
-import cz.city.honest.application.model.dto.LoginProvider
 import cz.city.honest.application.model.dto.User
-import cz.city.honest.application.model.gateway.server.AuthorizationServerSource
-import cz.city.honest.application.model.gateway.server.PostLoginRequest
-import cz.city.honest.application.model.gateway.server.PostLoginResponse
+import cz.city.honest.application.model.server.AuthorizationServerSource
+import cz.city.honest.application.model.server.PostLoginRequest
+import cz.city.honest.application.model.server.PostLoginResponse
 import cz.city.honest.application.model.service.BaseService
 import cz.city.honest.application.model.service.LoginHandlerProvider
 import cz.city.honest.application.model.service.UserService

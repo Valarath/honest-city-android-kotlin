@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 class EndpointsUrl {
 

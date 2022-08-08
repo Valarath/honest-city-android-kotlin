@@ -32,7 +32,7 @@ abstract class Repository<ENTITY>(protected val databaseOperationProvider: Datab
     protected fun isCursorNotEmpty(it: Cursor) =
         it.count > 0
 
-    protected fun mapToQueryParamSymbols(objects: List<*>) = objects.joinToString { "?" }
+    protected fun mapToQueryParamSymbols(objects: Collection<*>) = objects.joinToString { "?" }
 
     protected fun mapToQueryParamSymbols(objects: List<*>, prefix: String) = prefixByWhere(prefix,
         objects.joinToString { "?" })
@@ -43,7 +43,7 @@ abstract class Repository<ENTITY>(protected val databaseOperationProvider: Datab
         else
             value
 
-    protected fun mapToQueryParamVariable(objects: List<*>) = objects.joinToString()
+    protected fun mapToQueryParamVariable(objects: Collection<*>) = objects.joinToString()
 
     protected fun getMapParameterArray(objects: List<*>): Array<out String>? =
         if (objects.isNullOrEmpty())

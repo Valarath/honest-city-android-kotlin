@@ -63,7 +63,7 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         })
     }
 
-    private fun getWatchedSubject() = activity!!.intent.extras[CameraResultActivity.WATCHED_SUBJECT]
+    private fun getWatchedSubject() = activity!!.intent.extras!![CameraResultActivity.WATCHED_SUBJECT]
         .run { if (this != null) this as WatchedSubject else null }
 
     private fun getExchangeRateTableData(
@@ -76,6 +76,6 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
     )
 
     private fun getExchangeRateResult() =
-        activity!!.intent.extras[CameraResultActivity.EXCHANGE_RATE_RESULT] as ExchangeRate
+        activity!!.intent.extras!![CameraResultActivity.EXCHANGE_RATE_RESULT] as ExchangeRate
 
 }

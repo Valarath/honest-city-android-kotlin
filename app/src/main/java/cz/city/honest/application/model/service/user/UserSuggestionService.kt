@@ -4,9 +4,9 @@ import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.dto.UserSuggestionMetadata
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
-import cz.city.honest.application.model.gateway.server.PostSuggestRequest
-import cz.city.honest.application.model.gateway.server.RemoveSuggestionRequest
-import cz.city.honest.application.model.gateway.server.SuggestionServerSource
+import cz.city.honest.application.model.server.PostSuggestRequest
+import cz.city.honest.application.model.server.RemoveSuggestionRequest
+import cz.city.honest.application.model.server.SuggestionServerSource
 import cz.city.honest.application.model.repository.user.UserSuggestionRepository
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.service.update.PrivateUpdatable
@@ -88,7 +88,10 @@ class UserSuggestionService(
         accessToken: String
     ) =
         Observable.just(getSuggestions(userSuggestions))
-            .flatMap { suggestionServerSource.remove(RemoveSuggestionRequest(it), accessToken) }
+            .flatMap { suggestionServerSource.remove(
+                RemoveSuggestionRequest(
+                    it
+                ), accessToken) }
             .flatMap { deleteUserSuggestions(userSuggestions) }
 
     private fun deleteUserSuggestions(userSuggestions: MutableList<UserSuggestion>) =
@@ -120,7 +123,10 @@ class UserSuggestionService(
         userSuggestions: MutableList<UserSuggestion>,
         accessToken: String
     ) = Observable.just(getSuggestions(userSuggestions))
-        .flatMap { suggestionServerSource.suggest(PostSuggestRequest(it), accessToken) }
+        .flatMap { suggestionServerSource.suggest(
+            PostSuggestRequest(
+                it
+            ), accessToken) }
         .flatMap { updateUserSuggestions(userSuggestions) }
 
     private fun updateUserSuggestions(userSuggestions: MutableList<UserSuggestion>) =

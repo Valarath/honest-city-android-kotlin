@@ -1,14 +1,13 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.WatchedSubject
-import cz.city.honest.application.model.gateway.SubjectGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
 
 
-interface SubjectServerSource : SubjectGateway {
+interface SubjectServerSource {
 
     @GET(SubjectEndpointsUrl.SUBJECT_IN_AREA)
     fun getSubjectsInArea(@QueryMap request: Map<String, String>): Observable<GetSubjectsResponse>

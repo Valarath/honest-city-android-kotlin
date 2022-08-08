@@ -14,7 +14,7 @@ class CameraResultViewModel @Inject constructor(
     private val suggestionService: SuggestionService,
     private val userService: UserService
 ) :
-    ScheduledViewModel() {
+    ScheduledObservableViewModel() {
 
     val authorityRate = LiveDataReactiveStreams.fromPublisher<ExchangeRate>(getAuthorityRate())
     val loggedUser = LiveDataReactiveStreams.fromPublisher<User>(getUser())

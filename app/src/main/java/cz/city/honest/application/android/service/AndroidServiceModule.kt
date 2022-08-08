@@ -1,6 +1,7 @@
 package cz.city.honest.application.android.service
 
 import android.content.Context
+import cz.city.honest.application.android.service.filter.FilterSharedPreferenceRepository
 import cz.city.honest.application.android.service.provider.AndroidPositionProvider
 import cz.city.honest.application.android.service.provider.AndroidUserProvider
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateProvider
@@ -9,6 +10,7 @@ import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.service.subject.PositionProvider
 import cz.city.honest.application.model.service.UserProvider
 import cz.city.honest.application.model.service.UserService
+import cz.city.honest.application.model.service.filter.FilterPersistenceHandler
 import cz.city.honest.application.model.service.settings.CurrencySettingsService
 import dagger.Module
 import dagger.Provides
@@ -20,6 +22,12 @@ class AndroidServiceModule {
     @Provides
     @Singleton
     fun getPositionProvider(context: Context): PositionProvider = AndroidPositionProvider(context)
+
+
+    @Provides
+    @Singleton
+    fun getFilterPersistenceHandler(context: Context): FilterPersistenceHandler =
+        FilterSharedPreferenceRepository(context)
 
     @Provides
     @Singleton
@@ -35,6 +43,7 @@ class AndroidServiceModule {
     fun getImageExchangeRateProvider(
         currencySettingsService: CurrencySettingsService,
         imageExchangeRateResultProvider: ImageExchangeRateResultProvider
-    ): ImageExchangeRateProvider = ImageExchangeRateProvider(currencySettingsService, imageExchangeRateResultProvider)
+    ): ImageExchangeRateProvider =
+        ImageExchangeRateProvider(currencySettingsService, imageExchangeRateResultProvider)
 
 }

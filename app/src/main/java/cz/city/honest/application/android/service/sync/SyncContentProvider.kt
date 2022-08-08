@@ -12,40 +12,23 @@ class SyncContentProvider : ContentProvider() {
      */
     override fun onCreate(): Boolean = true
 
+    override fun query(
+        p0: Uri,
+        p1: Array<out String>?,
+        p2: String?,
+        p3: Array<out String>?,
+        p4: String?
+    ): Cursor? = null
+
     /*
      * Return no type for MIME type
      */
     override fun getType(uri: Uri): String? = null
 
-    /*
-     * query() always returns no results
-     *
-     */
-    override fun query(
-        uri: Uri,
-        projection: Array<String>,
-        selection: String,
-        selectionArgs: Array<String>,
-        sortOrder: String
-    ): Cursor? = null
+    override fun insert(p0: Uri, p1: ContentValues?): Uri? =null
 
-    /*
-     * insert() always returns null (no URI)
-     */
-    override fun insert(uri: Uri, values: ContentValues): Uri? = null
+    override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int =0
 
-    /*
-     * delete() always returns "no rows affected" (0)
-     */
-    override fun delete(uri: Uri, selection: String, selectionArgs: Array<String>): Int = 0
+    override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int =0
 
-    /*
-     * update() always returns "no rows affected" (0)
-     */
-    override fun update(
-        uri: Uri,
-        values: ContentValues,
-        selection: String,
-        selectionArgs: Array<String>
-    ): Int = 0
 }

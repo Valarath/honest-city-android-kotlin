@@ -2,7 +2,6 @@ package cz.city.honest.application.viewmodel
 
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.Transformations
-import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.User
 import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.service.UserService
@@ -13,7 +12,7 @@ import javax.inject.Inject
 class UserDetailViewModel @Inject constructor(
     val userService: UserService,
     val userSuggestionService: UserSuggestionService
-) : ScheduledViewModel() {
+) : ScheduledObservableViewModel() {
 
     val userData =
         LiveDataReactiveStreams.fromPublisher<User>(getUserData())

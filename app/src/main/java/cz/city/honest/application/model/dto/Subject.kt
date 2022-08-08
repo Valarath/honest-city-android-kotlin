@@ -1,6 +1,5 @@
 package cz.city.honest.application.model.dto
 
-import java.io.Serializable
 import java.time.LocalDate
 
 enum class HonestyStatus(private val nextLevelOfHonesty: HonestyStatus?) : HonestCitySerializable {

@@ -105,7 +105,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
     private fun getWatchedSubjectId() =
         getWatchedSubject().id
 
-    private fun getWatchedSubject() = (intent.extras[WATCHED_SUBJECT] as WatchedSubject)
+    private fun getWatchedSubject() = (intent.extras!![WATCHED_SUBJECT] as WatchedSubject)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == android.R.id.home)

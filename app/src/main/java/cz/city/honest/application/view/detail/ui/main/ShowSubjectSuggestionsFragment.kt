@@ -102,7 +102,7 @@ class ShowSubjectSuggestionsFragment : DaggerAppCompatDialogFragment() {
             )
 
     private fun getWatchedSubjectId(): String =
-        (activity!!.intent.extras[SubjectDetailActivity.WATCHED_SUBJECT] as WatchedSubject).id
+        (activity!!.intent.extras!![SubjectDetailActivity.WATCHED_SUBJECT] as WatchedSubject).id
 
     private fun getTableLayout(root: View): TableLayout =
         root.findViewById(R.id.suggestions_holder)

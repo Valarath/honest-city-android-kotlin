@@ -1,13 +1,12 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import cz.city.honest.application.model.dto.Suggestion
-import cz.city.honest.application.model.gateway.UserGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.QueryMap
 
-interface UserServerSource : UserGateway {
+interface UserServerSource {
 
     @GET(UserEndpointsUrl.USER_SUGGESTIONS)
     fun getUserSuggestions(@QueryMap request: Map<String, String>, @Header("Authorization") accessToken:String): Observable<GetUserSuggestionsResponse>

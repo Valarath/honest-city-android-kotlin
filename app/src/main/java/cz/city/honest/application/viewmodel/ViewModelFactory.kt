@@ -45,6 +45,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(FilterViewModel::class)
+    internal abstract fun filterViewModel(filterViewModel: FilterViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(SubjectDetailViewModel::class)
     internal abstract fun subjectDetailViewModel(subjectDetailViewModel: SubjectDetailViewModel): ViewModel
 

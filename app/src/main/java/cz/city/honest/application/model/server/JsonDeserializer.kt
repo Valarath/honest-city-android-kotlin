@@ -1,4 +1,4 @@
-package cz.city.honest.application.model.gateway.server
+package cz.city.honest.application.model.server
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext

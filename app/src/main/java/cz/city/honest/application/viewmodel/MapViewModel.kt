@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import cz.city.honest.application.model.dto.*
 import cz.city.honest.application.model.service.*
+import cz.city.honest.application.model.service.filter.FilterService
 import cz.city.honest.application.model.service.subject.PositionProvider
 import cz.city.honest.application.model.service.subject.SubjectService
 import cz.city.honest.application.model.service.suggestion.SuggestionService
@@ -15,8 +16,9 @@ class MapViewModel @Inject constructor(
     private var subjectService: SubjectService,
     private var suggestionService: SuggestionService,
     private var positionProvider: PositionProvider,
-    private var userService: UserService
-) : ScheduledViewModel() {
+    private var userService: UserService,
+    private var filterService: FilterService
+) : ScheduledObservableViewModel() {
 
     val watchedSubjects: LiveData<WatchedSubject> = LiveDataReactiveStreams.fromPublisher(getSubjects())
     val newExchangePointSuggestions: LiveData<WatchedSubject> = LiveDataReactiveStreams.fromPublisher(getSuggestionSubjects())
@@ -48,7 +50,8 @@ class MapViewModel @Inject constructor(
         )
 
     private fun getSubjects() =  scheduleFlowable()
-        .flatMap { subjectService.getSubjects() }
+        .flatMap { filterService.getFilter().toFlowable() }
+        .flatMap { subjectService.getSubjects(it) }
         .onBackpressureBuffer(1000)
 
     private fun getSuggestionSubjects() =

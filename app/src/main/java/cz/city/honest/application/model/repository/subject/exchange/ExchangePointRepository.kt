@@ -55,8 +55,8 @@ class ExchangePointRepository(
         findExchangePoint(id)
             .flatMap { toEntities(it) { toExchangePoint(it) } }
 
-    override fun get(): Flowable<ExchangePoint> =
-        findExchangePoint()
+    override fun get(filter: Filter): Flowable<ExchangePoint> =
+        findExchangePoint(filter)
             .flatMap { toEntities(it) { toExchangePoint(it) } }
 
     override fun delete(entity: ExchangePoint): Observable<Int> = super.delete(entity).map {
@@ -79,22 +79,27 @@ class ExchangePointRepository(
             )
         )
 
-    private fun findExchangePoint(): Flowable<Cursor> =
-        Flowable.just(
-            databaseOperationProvider.readableDatabase.rawQuery(
-                "Select exchange_point.id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where watched_to ='null'",
-                arrayOf()
-            )
-        )
+    private fun findExchangePoint(filter: Filter): Flowable<Cursor> =
+        Flowable.just(filter)
+            .map { it.subjectFilter.honestyStatusVisibilityMap.filter { it.value } }
+            .map { it.keys }
+            .map { databaseOperationProvider.readableDatabase.rawQuery(
+                "Select exchange_point.id,latitude,longitude,honesty_status,watched_to,exchange_rates_id from exchange_point join watched_subject on exchange_point.watched_subject_id = watched_subject.id where watched_to ='null' and honesty_status in( ${
+                    mapToQueryParamSymbols(
+                        it
+                    )
+                }) ",
+                arrayOf(mapToQueryParamVariable(it))
+            ) }
 
     private fun toExchangePoint(cursor: Cursor): Flowable<ExchangePoint> =
         Flowable.just(toExchangePointOnly(cursor))
             .flatMap { addSuggestions(it) }
-            .flatMap { addExchangeRate(cursor.getString(5),it) }
+            .flatMap { addExchangeRate(cursor.getString(5), it) }
 
 
-    private fun addExchangeRate(exchangeRatesId: String?,subject: ExchangePoint) =
-        if(exchangeRatesId !=null)
+    private fun addExchangeRate(exchangeRatesId: String?, subject: ExchangePoint) =
+        if (exchangeRatesId != null)
             exchangeRateRepository.get(listOf(exchangeRatesId))
                 .map { subject.exchangePointRate = it }
                 .map { subject }
@@ -114,7 +119,7 @@ class ExchangePointRepository(
     )
 
     private fun getWatchedTo(cursor: Cursor) = cursor.getString(4).let {
-        if(it == "null")
+        if (it == "null")
             null
         else
             LocalDate.parse(it)

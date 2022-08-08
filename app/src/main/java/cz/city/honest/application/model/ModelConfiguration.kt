@@ -5,7 +5,7 @@ import cz.city.honest.application.android.service.AndroidServiceModule
 import cz.city.honest.application.configuration.BaseApplication
 import cz.city.honest.application.configuration.ContextModule
 import cz.city.honest.application.job.JobModule
-import cz.city.honest.application.model.gateway.GatewayModule
+import cz.city.honest.application.model.server.ServerSourceModule
 import cz.city.honest.application.model.property.PropertyModule
 import cz.city.honest.application.model.repository.RepositoryModule
 import cz.city.honest.application.model.service.ServiceModule
@@ -19,7 +19,7 @@ import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [JobModule::class,ContextModule::class, AndroidSupportInjectionModule::class, AndroidServiceModule::class, ActivityModule::class, ServiceModule::class, GatewayModule::class, RepositoryModule::class, AndroidSupportInjectionModule::class, ViewModelModule::class, PropertyModule::class])
+@Component(modules = [JobModule::class,ContextModule::class, AndroidSupportInjectionModule::class, AndroidServiceModule::class, ActivityModule::class, ServiceModule::class, ServerSourceModule::class, RepositoryModule::class, AndroidSupportInjectionModule::class, ViewModelModule::class, PropertyModule::class])
 interface ModelConfiguration : AndroidInjector<DaggerApplication> {
 
     fun inject(application: BaseApplication): Unit;

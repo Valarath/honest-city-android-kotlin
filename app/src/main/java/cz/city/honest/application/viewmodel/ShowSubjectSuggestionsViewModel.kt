@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import cz.city.honest.application.model.dto.Suggestion
 import cz.city.honest.application.model.dto.User
-import cz.city.honest.application.model.dto.UserSuggestion
 import cz.city.honest.application.model.dto.UserSuggestionStateMarking
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.suggestion.SuggestionService
 import cz.city.honest.application.model.service.vote.VoteService
-import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
@@ -18,7 +16,7 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
     private var suggestionService: SuggestionService,
     private var voteService: VoteService,
     private var userService: UserService
-) : ScheduledViewModel() {
+) : ScheduledObservableViewModel() {
 
     val subjectId: MutableLiveData<String> = MutableLiveData()
     val loggedUser = LiveDataReactiveStreams.fromPublisher<User>(getUser())
