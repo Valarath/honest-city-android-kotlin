@@ -41,12 +41,10 @@ class AndroidServiceModule {
     @Provides
     @Singleton
     fun getImageExchangeRateProvider(
-        currencySettingsService: CurrencySettingsService,
         imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
         exchangeRateAnalyzers: List<ExchangeRateAnalyzer>
     ): ImageExchangeRateProvider =
         ImageExchangeRateProvider(
-            currencySettingsService,
             imageExchangeRateResultProvider,
             exchangeRateAnalyzers
         )
