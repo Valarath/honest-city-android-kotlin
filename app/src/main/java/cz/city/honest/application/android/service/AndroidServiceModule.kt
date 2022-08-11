@@ -4,9 +4,9 @@ import android.content.Context
 import cz.city.honest.application.android.service.filter.FilterSharedPreferenceRepository
 import cz.city.honest.application.android.service.provider.AndroidPositionProvider
 import cz.city.honest.application.android.service.provider.AndroidUserProvider
+import cz.city.honest.application.analyzer.ExchangeRateAnalyzer
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateProvider
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateResultProvider
-import cz.city.honest.application.model.repository.user.UserRepository
 import cz.city.honest.application.model.service.subject.PositionProvider
 import cz.city.honest.application.model.service.UserProvider
 import cz.city.honest.application.model.service.UserService
@@ -42,8 +42,13 @@ class AndroidServiceModule {
     @Singleton
     fun getImageExchangeRateProvider(
         currencySettingsService: CurrencySettingsService,
-        imageExchangeRateResultProvider: ImageExchangeRateResultProvider
+        imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
+        exchangeRateAnalyzers: List<ExchangeRateAnalyzer>
     ): ImageExchangeRateProvider =
-        ImageExchangeRateProvider(currencySettingsService, imageExchangeRateResultProvider)
+        ImageExchangeRateProvider(
+            currencySettingsService,
+            imageExchangeRateResultProvider,
+            exchangeRateAnalyzers
+        )
 
 }
