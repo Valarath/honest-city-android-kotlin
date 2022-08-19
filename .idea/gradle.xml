@@ -12,6 +12,16 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/app/analyzer" />
+            <option value="$PROJECT_DIR$/app/dto" />
+            <option value="$PROJECT_DIR$/app/external" />
+            <option value="$PROJECT_DIR$/app/internal" />
+            <option value="$PROJECT_DIR$/app/job" />
+            <option value="$PROJECT_DIR$/app/property" />
+            <option value="$PROJECT_DIR$/app/repository" />
+            <option value="$PROJECT_DIR$/app/service" />
+            <option value="$PROJECT_DIR$/app/view" />
+            <option value="$PROJECT_DIR$/app/view-model" />
           </set>
         </option>
       </GradleProjectSettings>

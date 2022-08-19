@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.MapActivity">
+
+    <Button
+        android:id="@+id/filter"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="right|top"
+        android:background="@drawable/circular_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="100dp"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/user_detail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="right|top"
+        android:background="@drawable/circular_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/login_map_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="right|top"
+        android:background="@drawable/circular_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="visible"
+        android:text="@string/map_login_button" />
+
+    <Button
+        android:id="@+id/add_subject"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circular_button"
+        android:visibility="gone"
+        android:text="@string/add_subject_button"
+        android:textSize="180sp" />
+
+</fragment>

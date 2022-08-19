@@ -119,12 +119,12 @@
         </activity>
 
         <provider
-            android:name="cz.city.honest.application.android.service.sync.SyncContentProvider"
+            android:name="cz.city.honest.application.cz.honest.city.internal.sync.SyncContentProvider"
             android:authorities="cz.city.honest.application"
             android:exported="false"
             android:syncable="true" />
 
-        <service android:name=".android.service.authentication.AccountAuthenticationService"
+        <service android:name="cz.honest.city.internal.authentication.AccountAuthenticationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -135,7 +135,7 @@
                 android:resource="@xml/account_authenticator" />
         </service>
         <service
-            android:name=".android.service.sync.SyncAdapterService"
+            android:name="cz.honest.city.internal.sync.SyncAdapterService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>
@@ -147,7 +147,7 @@
                 android:resource="@xml/sync_adapter" />
         </service>
         <service
-            android:name=".job.UpdateScheduledJob"
+            android:name="cz.city.honest.job.UpdateScheduledJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

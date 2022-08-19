@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.user.ui.main.UserDetailSuggestionsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:id="@+id/user_detail_suggestions_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_editor_absoluteX="33dp"
+            tools:layout_editor_absoluteY="107dp">
+            <TableRow
+                android:id="@+id/suggestions_holder_header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:textColor="@color/headerText"
+                    android:layout_height="50dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.32"
+                    android:gravity="center"
+                    android:text="@string/suggestion_type_title" />
+
+                <TextView
+                    android:textColor="@color/headerText"
+                    android:layout_height="50dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.32"
+                    android:gravity="center"
+                    android:text="@string/suggestion_state_title" />
+
+                <TextView
+                    android:textColor="@color/headerText"
+                    android:layout_height="50dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="@string/suggestion_votes_title" />
+
+                <TextView
+                    android:layout_height="50dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.15"
+                    android:gravity="center" />
+
+
+            </TableRow>
+
+        </TableLayout>
+
+    </ScrollView>
+
+
+</FrameLayout>

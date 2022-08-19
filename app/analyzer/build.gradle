@@ -1,0 +1,9 @@
+dependencies{
+    implementation project(':app:dto')
+    implementation project(':app:service')
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}

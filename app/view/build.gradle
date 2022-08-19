@@ -1,0 +1,48 @@
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 32
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation project(':app:dto')
+    implementation project(':app:property')
+    implementation project(':app:view-model')
+    implementation project(':app:job')
+    //TODO tohle uprav abz to slo skrz service
+    implementation project(':app:internal')
+
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'com.google.android.material:material:1.6.1'
+
+    implementation 'com.google.maps.android:android-maps-utils:1.2.1'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+    implementation "androidx.camera:camera-core:1.0.0-beta05"
+    implementation "androidx.camera:camera-camera2:1.0.0-beta12"
+    implementation "androidx.camera:camera-lifecycle:1.0.0-beta12"
+    implementation "androidx.camera:camera-view:1.0.0-alpha19"
+}
