@@ -5,6 +5,8 @@ import cz.honest.city.internal.filter.FilterSharedPreferenceRepository
 import cz.honest.city.internal.provider.AndroidPositionProvider
 import cz.honest.city.internal.provider.AndroidUserProvider
 import cz.city.honest.analyzer.ExchangeRateAnalyzer
+import cz.city.honest.service.filter.FilterPersistenceHandler
+import cz.city.honest.service.subject.PositionProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
 import cz.city.honest.service.user.UserProvider
@@ -18,12 +20,12 @@ class AndroidServiceModule {
 
     @Provides
     @Singleton
-    fun getPositionProvider(context: Context): cz.city.honest.service.subject.PositionProvider = AndroidPositionProvider(context)
+    fun getPositionProvider(context: Context): PositionProvider = AndroidPositionProvider(context)
 
 
     @Provides
     @Singleton
-    fun getFilterPersistenceHandler(context: Context): cz.city.honest.service.filter.FilterPersistenceHandler =
+    fun getFilterPersistenceHandler(context: Context): FilterPersistenceHandler =
         FilterSharedPreferenceRepository(context)
 
     @Provides
@@ -39,7 +41,7 @@ class AndroidServiceModule {
     @Singleton
     fun getImageExchangeRateProvider(
         imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
-        exchangeRateAnalyzers: List<ExchangeRateAnalyzer>
+        exchangeRateAnalyzers: List<@JvmSuppressWildcards ExchangeRateAnalyzer>
     ): ImageExchangeRateProvider =
         ImageExchangeRateProvider(
             imageExchangeRateResultProvider,

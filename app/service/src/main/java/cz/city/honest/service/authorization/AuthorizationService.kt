@@ -7,7 +7,7 @@ import cz.city.honest.external.PostLoginRequest
 import cz.city.honest.external.PostLoginResponse
 import cz.city.honest.service.BaseService
 import cz.city.honest.service.LoginHandlerProvider
-import cz.city.honest.application.model.service.UserService
+import cz.city.honest.service.user.UserService
 import cz.city.honest.service.registration.LoginHandler
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single

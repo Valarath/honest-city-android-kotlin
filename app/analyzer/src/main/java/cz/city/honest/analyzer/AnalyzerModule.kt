@@ -1,5 +1,6 @@
 package cz.city.honest.analyzer
 
+import cz.city.honest.service.settings.CurrencySettingsService
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -9,7 +10,7 @@ class AnalyzerModule {
 
     @Provides
     @Singleton
-    fun getRowExchangeRateAnalyzer(currencySettingsService: cz.city.honest.service.settings.CurrencySettingsService) =
+    fun getRowExchangeRateAnalyzer(currencySettingsService: CurrencySettingsService):RowExchangeRateAnalyzer =
         RowExchangeRateAnalyzer(currencySettingsService)
 
     @Provides

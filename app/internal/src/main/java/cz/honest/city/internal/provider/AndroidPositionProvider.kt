@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 
 
 class AndroidPositionProvider( val context: Context):
-    cz.city.honest.service.subject.PositionProvider,
+    PositionProvider,
     LocationListener {
 
     private var latestLocation:PublishSubject<Location> = PublishSubject.create()

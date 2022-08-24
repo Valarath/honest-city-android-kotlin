@@ -6,13 +6,12 @@ import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import cz.city.honest.analyzer.ExchangeRateAnalyzer
 import cz.city.honest.dto.ExchangeRate
-import cz.city.honest.viewmodel.postClearValue
 import io.reactivex.rxjava3.core.Maybe
 import kotlin.math.absoluteValue
 
 class ImageExchangeRateProvider(
     private val imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
-    private val exchangeRateAnalyzers: List<cz.city.honest.analyzer.ExchangeRateAnalyzer>
+    private val exchangeRateAnalyzers: List<ExchangeRateAnalyzer>
 ) {
 
     fun provide(image: InputImage, textCallback: (lines: List<String>) -> Unit) =
@@ -80,5 +79,9 @@ class ImageExchangeRateProvider(
 
 }
 
+fun <DATA> MutableLiveData<DATA>.postClearValue(value: DATA) = this.apply {
+    postValue(null)
+    postValue(value!!)
+}
 
 class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())

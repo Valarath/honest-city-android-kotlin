@@ -1,7 +1,5 @@
 package cz.city.honest.service
 
-import cz.city.honest.application.model.service.UserProvider
-import cz.city.honest.application.model.service.UserService
 import cz.city.honest.service.authority.AuthorityService
 import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.authorization.FacebookLoginDataProvider
@@ -21,6 +19,13 @@ import cz.city.honest.service.user.UserSuggestionService
 import cz.city.honest.service.vote.VoteService
 import cz.city.honest.dto.*
 import cz.city.honest.external.*
+import cz.city.honest.repository.settings.CurrencySettingsRepository
+import cz.city.honest.repository.subject.SubjectRepository
+import cz.city.honest.repository.suggestion.SuggestionRepository
+import cz.city.honest.repository.user.UserSuggestionRepository
+import cz.city.honest.repository.vote.VoteRepository
+import cz.city.honest.service.user.UserProvider
+import cz.city.honest.service.user.UserService
 import dagger.MapKey
 import dagger.Module
 import dagger.Provides
@@ -41,7 +46,7 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSubjectService(
-        subjectRepositories: Map<String, @JvmSuppressWildcards cz.city.honest.repository.subject.SubjectRepository<out WatchedSubject>>,
+        subjectRepositories: Map<String, @JvmSuppressWildcards SubjectRepository<out WatchedSubject>>,
         subjectServerSource: SubjectServerSource,
         suggestionService: SuggestionService,
         positionProvider: PositionProvider
@@ -56,7 +61,7 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSuggestionService(
-        suggestionRepositories: Map<String, @JvmSuppressWildcards cz.city.honest.repository.suggestion.SuggestionRepository<out Suggestion>>,
+        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
         userSuggestionService: UserSuggestionService,
         voteService: VoteService
     ): SuggestionService =
@@ -76,7 +81,7 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getUserSuggestionService(
-        userSuggestionRepository: cz.city.honest.repository.user.UserSuggestionRepository,
+        userSuggestionRepository: UserSuggestionRepository,
         userProvider: UserProvider,
         voteService: VoteService,
         suggestionServerSource: SuggestionServerSource
@@ -87,7 +92,7 @@ class ServiceModule {
     @Singleton
     fun getVoteService(
         voteServerSource: VoteServerSource,
-        voteRepositories: Map<String, @JvmSuppressWildcards cz.city.honest.repository.vote.VoteRepository<out Vote, out Suggestion>>,
+        voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
         userProvider: UserProvider
     ): VoteService = VoteService(voteServerSource, voteRepositories, userProvider)
 
@@ -119,7 +124,7 @@ class ServiceModule {
     @Singleton
     fun getUserService(
         userServerSource: UserServerSource,
-        userSuggestionRepository: cz.city.honest.repository.user.UserSuggestionRepository,
+        userSuggestionRepository: UserSuggestionRepository,
         userRepository: cz.city.honest.repository.user.UserRepository
     ): UserService =
         UserService(userServerSource, userSuggestionRepository,userRepository)
@@ -153,7 +158,7 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    fun getCurrencySettingsService(currencySettingsRepository: cz.city.honest.repository.settings.CurrencySettingsRepository, currencyServerSource: CurrencyServerSource): CurrencySettingsService =
+    fun getCurrencySettingsService(currencySettingsRepository: CurrencySettingsRepository, currencyServerSource: CurrencyServerSource): CurrencySettingsService =
         CurrencySettingsService(currencySettingsRepository,currencyServerSource)
 
 }

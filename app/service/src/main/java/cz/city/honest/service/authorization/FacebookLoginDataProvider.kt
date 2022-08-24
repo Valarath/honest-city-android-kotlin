@@ -1,8 +1,8 @@
 package cz.city.honest.service.authorization
 
 import com.facebook.AccessToken
+import cz.city.honest.dto.FacebookLoginData
 import cz.city.honest.dto.User
-import cz.city.honest.service.registration.FacebookLoginData
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.AsyncSubject
 
