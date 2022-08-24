@@ -1,17 +1,16 @@
 package cz.city.honest.application.android.service
 
 import android.content.Context
+import cz.city.honest.application.analyzer.ExchangeRateAnalyzer
 import cz.city.honest.application.android.service.filter.FilterSharedPreferenceRepository
 import cz.city.honest.application.android.service.provider.AndroidPositionProvider
 import cz.city.honest.application.android.service.provider.AndroidUserProvider
-import cz.city.honest.application.analyzer.ExchangeRateAnalyzer
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateProvider
 import cz.city.honest.application.android.service.provider.rate.ImageExchangeRateResultProvider
-import cz.city.honest.application.model.service.subject.PositionProvider
 import cz.city.honest.application.model.service.UserProvider
 import cz.city.honest.application.model.service.UserService
 import cz.city.honest.application.model.service.filter.FilterPersistenceHandler
-import cz.city.honest.application.model.service.settings.CurrencySettingsService
+import cz.city.honest.application.model.service.subject.PositionProvider
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -42,7 +41,7 @@ class AndroidServiceModule {
     @Singleton
     fun getImageExchangeRateProvider(
         imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
-        exchangeRateAnalyzers: List<ExchangeRateAnalyzer>
+        exchangeRateAnalyzers: @JvmSuppressWildcards List<ExchangeRateAnalyzer>
     ): ImageExchangeRateProvider =
         ImageExchangeRateProvider(
             imageExchangeRateResultProvider,

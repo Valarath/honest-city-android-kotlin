@@ -10,7 +10,7 @@ class AnalyzerModule {
 
     @Provides
     @Singleton
-    fun getRowExchangeRateAnalyzer(currencySettingsService: CurrencySettingsService) =
+    fun getRowExchangeRateAnalyzer(currencySettingsService: CurrencySettingsService):RowExchangeRateAnalyzer =
         RowExchangeRateAnalyzer(currencySettingsService)
 
     @Provides
