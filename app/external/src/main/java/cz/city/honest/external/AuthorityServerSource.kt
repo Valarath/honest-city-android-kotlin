@@ -1,8 +1,18 @@
 package cz.city.honest.external
 
 import cz.city.honest.dto.ExchangeRate
+import cz.city.honest.service.gateway.external.AuthorityGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
+
+class AuthorityServerSourceService(private val authorityServerSource: AuthorityServerSource) : AuthorityGateway{
+
+    override fun getRate(): Observable<ExchangeRate> =
+        authorityServerSource
+            .getRate()
+            .map { it.exchangeRate }
+
+}
 
 interface AuthorityServerSource {
 
@@ -10,7 +20,6 @@ interface AuthorityServerSource {
     fun getRate(): Observable<GetCentralAuthorityRateResponse>
 
 }
-
 
 data class GetCentralAuthorityRateResponse(
     val exchangeRate: ExchangeRate

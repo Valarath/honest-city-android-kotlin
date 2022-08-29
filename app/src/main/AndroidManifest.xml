@@ -27,49 +27,49 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".view.filter.FilterActivity"
+            android:name="cz.city.honest.view.filter.FilterActivity"
             android:exported="false"
             android:label="@string/title_activity_filtr"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.user.UserDetailActivity"
+            android:name="cz.city.honest.view.user.UserDetailActivity"
             android:label="@string/title_activity_user_detail"
-            android:parentActivityName=".view.MapActivity">
+            android:parentActivityName="cz.city.honest.view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MapActivity" />
+                android:value="cz.city.honest.view.MapActivity" />
         </activity>
         <activity
-            android:name=".view.camera.result.CameraResultActivity"
+            android:name="cz.city.honest.view.camera.result.CameraResultActivity"
             android:label="@string/title_activity_camera_result"
-            android:parentActivityName=".view.MapActivity">
+            android:parentActivityName="cz.city.honest.view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MapActivity" />
+                android:value="cz.city.honest.view.MapActivity" />
         </activity>
         <activity
-            android:name=".view.login.LoginActivity"
+            android:name="cz.city.honest.view.login.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".view.MapActivity">
+            android:parentActivityName="cz.city.honest.view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MapActivity" />
+                android:value="cz.city.honest.view.MapActivity" />
         </activity>
         <activity
-            android:name=".view.camera.CameraActivity"
+            android:name="cz.city.honest.view.camera.CameraActivity"
             android:label="@string/title_camera_activity"
-            android:parentActivityName=".view.MapActivity">
+            android:parentActivityName="cz.city.honest.view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MapActivity" />
+                android:value="cz.city.honest.view.MapActivity" />
         </activity>
         <activity
-            android:name=".view.detail.SubjectDetailActivity"
+            android:name="cz.city.honest.view.detail.SubjectDetailActivity"
             android:label="@string/title_activity_subject_detail"
-            android:parentActivityName=".view.MapActivity">
+            android:parentActivityName="cz.city.honest.view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MapActivity" />
+                android:value="cz.city.honest.view.MapActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -87,12 +87,11 @@
             android:value="ocr" />
 
         <activity
-            android:name=".view.MapActivity"
+            android:name="cz.city.honest.view.MapActivity"
             android:label="@string/title_activity_maps"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -119,7 +118,7 @@
         </activity>
 
         <provider
-            android:name="cz.city.honest.application.cz.honest.city.internal.sync.SyncContentProvider"
+            android:name="cz.honest.city.internal.sync.SyncContentProvider"
             android:authorities="cz.city.honest.application"
             android:exported="false"
             android:syncable="true" />
