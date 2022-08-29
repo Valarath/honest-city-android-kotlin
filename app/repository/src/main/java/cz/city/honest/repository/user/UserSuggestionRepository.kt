@@ -12,14 +12,14 @@ import cz.city.honest.repository.Repository
 import cz.city.honest.repository.suggestion.SuggestionRepository
 import cz.city.honest.repository.toBoolean
 import cz.city.honest.repository.toInt
-import cz.city.honest.service.RepositoryProvider
+import cz.city.honest.repository.RepositoryProvider
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class UserSuggestionRepository(
     databaseOperationProvider: DatabaseOperationProvider,
-    val userRepository: UserRepository,
-    val suggestionRepositories: Map<String, SuggestionRepository<out Suggestion>>
+    private val userRepository: UserRepository,
+    private val suggestionRepositories: Map<String, SuggestionRepository<out Suggestion>>
 ) : Repository<UserSuggestion>(databaseOperationProvider) {
 
     override fun insert(userSuggestion: UserSuggestion): Observable<Long> =

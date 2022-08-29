@@ -4,9 +4,9 @@ import cz.city.honest.dto.Filter
 import cz.city.honest.dto.Position
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.WatchedSubject
-import cz.city.honest.external.GetSubjectsResponse
-import cz.city.honest.external.SubjectServerSource
-import cz.city.honest.service.RepositoryProvider
+import cz.city.honest.service.gateway.external.ExternalSubjectGateway
+import cz.city.honest.service.gateway.external.Subjects
+import cz.city.honest.service.gateway.internal.InternalSubjectGateway
 import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.update.PublicUpdatable
 import io.reactivex.rxjava3.core.Flowable
@@ -14,24 +14,23 @@ import io.reactivex.rxjava3.core.Observable
 
 
 class SubjectService(
-    private val subjectRepositories: Map<String, cz.city.honest.repository.subject.SubjectRepository<out WatchedSubject>>,
-    private val subjectServerSource: SubjectServerSource,
+    private val internalSubjectGateway: InternalSubjectGateway,
+    private val externalSubjectGateway: ExternalSubjectGateway,
     private val suggestionService: SuggestionService,
     private val positionProvider: PositionProvider
 ) : PublicUpdatable {
 
     fun getSubjects(filter: Filter): Flowable<out WatchedSubject> =
-        Flowable.fromIterable(subjectRepositories.values)
-            .flatMap { it.get(filter) }
+        internalSubjectGateway.getSubjects(filter)
 
     override fun update(): Observable<Unit> =
         positionProvider.provide()
             .firstOrError()
-            .flatMapObservable { subjectServerSource.getSubjectsInArea(toRequest(it)) }
+            .flatMapObservable { externalSubjectGateway.getSubjectsInArea(it) }
             .flatMap { update(it) }
     //.onErrorComplete()
 
-    private fun update(it: GetSubjectsResponse) = Observable.concat(
+    private fun update(it: Subjects) = Observable.concat(
         updateSubjects(it.subjects),
         updateNewSubjectSuggestion(it.newSubjectSuggestions)
     ).map {}
@@ -41,23 +40,12 @@ class SubjectService(
             .flatMap { updateSubjects(it.value) }
 
     private fun updateSubjects(subjects: List<WatchedSubject>) =
-        Observable.fromIterable(subjects)
-            .flatMap {
-                RepositoryProvider.provide(subjectRepositories, it.getClassName()).insert(it)
-            }
-
+        internalSubjectGateway.updateSubjects(subjects)
 
     private fun updateNewSubjectSuggestion(newSubjectSuggestions: MutableMap<String, List<Suggestion>>) =
         Observable.fromIterable(newSubjectSuggestions.values)
             .flatMap { Observable.fromIterable(it) }
             .flatMap { suggestionService.suggest(it) }
-
-
-    private fun toRequest(position: Position) = mapOf(
-        "userPosition.latitude" to position.latitude.toString(),
-        "userPosition.longitude" to position.longitude.toString()
-    )
-
 
 }
 

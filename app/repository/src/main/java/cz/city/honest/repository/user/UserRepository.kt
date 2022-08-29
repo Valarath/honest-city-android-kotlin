@@ -10,7 +10,7 @@ import cz.city.honest.repository.Repository
 import cz.city.honest.repository.autorization.LoginDataRepository
 import cz.city.honest.repository.toBoolean
 import cz.city.honest.repository.toInt
-import cz.city.honest.service.RepositoryProvider
+import cz.city.honest.repository.RepositoryProvider
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable

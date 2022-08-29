@@ -3,8 +3,8 @@ package cz.city.honest.repository.autorization
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import cz.city.honest.dto.FacebookLoginData
 import cz.city.honest.repository.DatabaseOperationProvider
-import cz.city.honest.service.registration.FacebookLoginData
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable

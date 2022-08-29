@@ -2,7 +2,6 @@ package cz.city.honest.external
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import cz.city.honest.dto.*
-import cz.city.honest.service.registration.FacebookLoginData
 
 class LoginDataSerializer(objectMapper: ObjectMapper) :
     JsonDeserializer<LoginData>(objectMapper,mapOf(FacebookLoginData::class.java.simpleName to FacebookLoginData::class.java))

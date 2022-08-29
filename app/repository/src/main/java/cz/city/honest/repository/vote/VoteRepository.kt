@@ -7,7 +7,7 @@ import cz.city.honest.dto.Vote
 import cz.city.honest.repository.DatabaseOperationProvider
 import cz.city.honest.repository.Repository
 import cz.city.honest.repository.suggestion.SuggestionRepository
-import cz.city.honest.service.RepositoryProvider
+import cz.city.honest.repository.RepositoryProvider
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 

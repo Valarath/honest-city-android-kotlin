@@ -5,7 +5,7 @@ import cz.honest.city.internal.filter.FilterSharedPreferenceRepository
 import cz.honest.city.internal.provider.AndroidPositionProvider
 import cz.honest.city.internal.provider.AndroidUserProvider
 import cz.city.honest.analyzer.ExchangeRateAnalyzer
-import cz.city.honest.service.filter.FilterPersistenceHandler
+import cz.city.honest.service.gateway.internal.InternalFilterGateway
 import cz.city.honest.service.subject.PositionProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
@@ -25,7 +25,7 @@ class AndroidServiceModule {
 
     @Provides
     @Singleton
-    fun getFilterPersistenceHandler(context: Context): FilterPersistenceHandler =
+    fun getFilterPersistenceHandler(context: Context): InternalFilterGateway =
         FilterSharedPreferenceRepository(context)
 
     @Provides

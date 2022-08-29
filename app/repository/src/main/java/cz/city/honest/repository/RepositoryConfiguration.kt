@@ -6,22 +6,30 @@ import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.Vote
 import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.repository.authority.AuthorityRepository
+import cz.city.honest.repository.authority.AuthorityService
 import cz.city.honest.repository.autorization.FacebookLoginDataRepository
 import cz.city.honest.repository.autorization.LoginDataRepository
 import cz.city.honest.repository.settings.CurrencySettingsRepository
+import cz.city.honest.repository.settings.CurrencySettingsService
 import cz.city.honest.repository.subject.SubjectRepository
+import cz.city.honest.repository.subject.SubjectService
 import cz.city.honest.repository.subject.exchange.ExchangePointRepository
 import cz.city.honest.repository.subject.exchange.ExchangeRateRepository
 import cz.city.honest.repository.suggestion.SuggestionRepository
+import cz.city.honest.repository.suggestion.SuggestionService
 import cz.city.honest.repository.suggestion.exchange.ClosedExchangePointSuggestionRepository
 import cz.city.honest.repository.suggestion.exchange.ExchangeRateSuggestionRepository
 import cz.city.honest.repository.suggestion.exchange.NewExchangePointSuggestionRepository
 import cz.city.honest.repository.user.UserRepository
+import cz.city.honest.repository.user.UserService
 import cz.city.honest.repository.user.UserSuggestionRepository
+import cz.city.honest.repository.user.UserSuggestionService
 import cz.city.honest.repository.vote.VoteRepository
+import cz.city.honest.repository.vote.VoteService
 import cz.city.honest.repository.vote.subject.exchnge.ExchangePointDeleteVoteRepository
 import cz.city.honest.repository.vote.subject.exchnge.ExchangePointRateChangeVoteRepository
 import cz.city.honest.repository.vote.subject.exchnge.NewExchangePointVoteRepository
+import cz.city.honest.service.gateway.internal.*
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -68,7 +76,7 @@ class RepositoryModule() {
     fun getUserRepository(
         databaseOperationProvider: DatabaseOperationProvider,
         loginDataRepositories: Map<String, @JvmSuppressWildcards LoginDataRepository<out LoginData>>
-    ): UserRepository = UserRepository(databaseOperationProvider,loginDataRepositories)
+    ): UserRepository = UserRepository(databaseOperationProvider, loginDataRepositories)
 
     @Provides
     @Singleton
@@ -154,6 +162,41 @@ class RepositoryModule() {
         suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
     ): VoteRepository<out Vote, out Suggestion> =
         NewExchangePointVoteRepository(operationProvider, suggestionRepositories)
+
+    @Provides
+    @Singleton
+    fun getAuthorityService(authorityRepository: AuthorityRepository): InternalAuthorityGateway =
+        AuthorityService(authorityRepository)
+
+    @Provides
+    @Singleton
+    fun getCurrencySettingsService(currencySettingsRepository: CurrencySettingsRepository): InternalCurrencySettingsGateway =
+        CurrencySettingsService(currencySettingsRepository)
+
+    @Provides
+    @Singleton
+    fun getSubjectService(subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>): InternalSubjectGateway =
+        SubjectService(subjectRepositories)
+
+    @Provides
+    @Singleton
+    fun getSuggestionService(suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>): InternalSuggestionGateway =
+        SuggestionService(suggestionRepositories)
+
+    @Provides
+    @Singleton
+    fun getUserService(userRepository: UserRepository): InternalUserGateway =
+        UserService(userRepository)
+
+    @Provides
+    @Singleton
+    fun getUserSuggestionService(userSuggestionRepository: UserSuggestionRepository): InternalUserSuggestionGateway =
+        UserSuggestionService(userSuggestionRepository)
+
+    @Provides
+    @Singleton
+    fun getVoteService(voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>): InternalVoteGateway =
+        VoteService(voteRepositories)
 
 }
 

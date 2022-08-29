@@ -1,21 +1,16 @@
 package cz.city.honest.service.user
 
-import cz.city.honest.dto.Suggestion
-import cz.city.honest.dto.UserSuggestion
-import cz.city.honest.dto.UserSuggestionMetadata
-import cz.city.honest.dto.UserSuggestionStateMarking
-import cz.city.honest.external.PostSuggestRequest
-import cz.city.honest.external.RemoveSuggestionRequest
-import cz.city.honest.external.SuggestionServerSource
-import cz.city.honest.dto.User
+import cz.city.honest.dto.*
+import cz.city.honest.service.gateway.external.ExternalSuggestionGateway
+import cz.city.honest.service.gateway.internal.InternalUserSuggestionGateway
 import cz.city.honest.service.update.PrivateUpdatable
 import cz.city.honest.service.vote.VoteService
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class UserSuggestionService(
-    private val suggestionServerSource: SuggestionServerSource,
-    private val userSuggestionRepository: cz.city.honest.repository.user.UserSuggestionRepository,
+    private val externalSuggestionGateway: ExternalSuggestionGateway,
+    private val internalUserSuggestionGateway: InternalUserSuggestionGateway,
     private val voteService: VoteService,
     private val userProvider: UserProvider
 ) : PrivateUpdatable {
@@ -26,14 +21,14 @@ class UserSuggestionService(
     //.onErrorComplete()
 
     fun getUserSuggestions(id: String): Flowable<UserSuggestion> =
-        userSuggestionRepository.get(listOf(id))
+        internalUserSuggestionGateway.getUserSuggestions(id)
 
     fun delete(userSuggestion: UserSuggestion) =
         voteService.delete(userSuggestion.suggestion, userSuggestion.user)
-            .flatMap { userSuggestionRepository.update(toDeleteStateSuggestion(userSuggestion)) }
+            .flatMap { internalUserSuggestionGateway.update(toDeleteStateSuggestion(userSuggestion)) }
 
     fun suggest(userSuggestion: UserSuggestion) =
-        userSuggestionRepository.insert(userSuggestion)
+        internalUserSuggestionGateway.suggest(userSuggestion)
 
     fun suggest(suggestion: Suggestion, markAs: UserSuggestionStateMarking) =
         toUserSuggestion(suggestion, markAs)
@@ -73,7 +68,7 @@ class UserSuggestionService(
         )
 
     private fun removeSuggestions(user: User, accessToken: String): Observable<Unit> =
-        userSuggestionRepository.get(listOf(user.id))
+        internalUserSuggestionGateway.getUserSuggestions(user.id)
             .filter { isDeleteSuggestion(it) }
             .map { toProcessedSuggestion(it) }
             .toList()
@@ -86,18 +81,15 @@ class UserSuggestionService(
         accessToken: String
     ) =
         Observable.just(getSuggestions(userSuggestions))
-            .flatMap { suggestionServerSource.remove(
-                RemoveSuggestionRequest(
-                    it
-                ), accessToken) }
+            .flatMap { externalSuggestionGateway.remove(accessToken, it) }
             .flatMap { deleteUserSuggestions(userSuggestions) }
 
     private fun deleteUserSuggestions(userSuggestions: MutableList<UserSuggestion>) =
         Observable.fromIterable(userSuggestions)
-            .flatMap { userSuggestionRepository.delete(it) }
+            .flatMap { internalUserSuggestionGateway.remove(it) }
 
     private fun suggestSuggestions(user: User, accessToken: String): Observable<Unit> =
-        userSuggestionRepository.get(listOf(user.id))
+        internalUserSuggestionGateway.getUserSuggestions(user.id)
             .filter { isNewSuggestion(it) }
             .map { toProcessedSuggestion(it) }
             .toList()
@@ -121,15 +113,12 @@ class UserSuggestionService(
         userSuggestions: MutableList<UserSuggestion>,
         accessToken: String
     ) = Observable.just(getSuggestions(userSuggestions))
-        .flatMap { suggestionServerSource.suggest(
-            PostSuggestRequest(
-                it
-            ), accessToken) }
+        .flatMap { externalSuggestionGateway.suggest(accessToken, it) }
         .flatMap { updateUserSuggestions(userSuggestions) }
 
     private fun updateUserSuggestions(userSuggestions: MutableList<UserSuggestion>) =
         Observable.fromIterable(userSuggestions)
-            .flatMap { userSuggestionRepository.update(it)}
+            .flatMap { internalUserSuggestionGateway.update(it) }
 
     private fun getSuggestions(userSuggestions: MutableList<UserSuggestion>): List<Suggestion> =
         userSuggestions.map { it.suggestion }

@@ -4,10 +4,11 @@ import android.content.Context
 import cz.city.honest.dto.Filter
 import cz.city.honest.dto.HonestyStatus
 import cz.city.honest.dto.SubjectFilter
+import cz.city.honest.service.gateway.internal.InternalFilterGateway
 import io.reactivex.rxjava3.core.Single
 
 class FilterSharedPreferenceRepository ( private val context: Context):
-    cz.city.honest.service.filter.FilterPersistenceHandler {
+    InternalFilterGateway {
 
     override fun getFilter(): Single<Filter> =
         Single.just(getSharedPreferences())

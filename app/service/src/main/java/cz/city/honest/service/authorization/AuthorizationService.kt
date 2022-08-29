@@ -2,18 +2,17 @@ package cz.city.honest.service.authorization
 
 import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.User
-import cz.city.honest.external.AuthorizationServerSource
-import cz.city.honest.external.PostLoginRequest
-import cz.city.honest.external.PostLoginResponse
 import cz.city.honest.service.BaseService
 import cz.city.honest.service.LoginHandlerProvider
-import cz.city.honest.service.user.UserService
+import cz.city.honest.service.gateway.external.ExternalAuthorizationGateway
+import cz.city.honest.service.gateway.external.LoginResponse
 import cz.city.honest.service.registration.LoginHandler
+import cz.city.honest.service.user.UserService
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 
 class AuthorizationService(
-    private val authorizationServerSource: AuthorizationServerSource,
+    private val externalAuthorizationGateway: ExternalAuthorizationGateway,
     private val userService: UserService,
     private val loginHandlers: Map<String, LoginHandler<out LoginData>>
 ) : BaseService() {
@@ -34,24 +33,19 @@ class AuthorizationService(
 
     private fun authorizeUser(user: User) =
         Single.just(user)
-            .map { toPostLoginRequest(user) }
-            .flatMap { authorizationServerSource.login(it) }
+            .flatMap { externalAuthorizationGateway.login(it) }
             .flatMap { updateUserData(it) }
             .toMaybe()
 
-    private fun updateUserData(response: PostLoginResponse) = userService
+    private fun updateUserData(response: LoginResponse) = userService
         .update(getUser(response))
         .map { response }
         .toList()
         .map { it.first() }
 
-    private fun getUser(response: PostLoginResponse) =
+    private fun getUser(response: LoginResponse) =
         response.user
             .apply { this.logged = true }
-
-    private fun toPostLoginRequest(user: User) =
-        PostLoginRequest(user)
-
 
 }
 

@@ -1,29 +1,31 @@
 package cz.city.honest.service.user
 
-import cz.city.honest.external.UserServerSource
-import cz.city.honest.service.update.PrivateUpdatable
 import cz.city.honest.dto.*
 import cz.city.honest.service.BaseService
+import cz.city.honest.service.gateway.external.ExternalUserGateway
+import cz.city.honest.service.gateway.internal.InternalUserGateway
+import cz.city.honest.service.gateway.internal.InternalUserSuggestionGateway
+import cz.city.honest.service.update.PrivateUpdatable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 
 class UserService(
-    private val userServerSource: UserServerSource,
-    private val userSuggestionRepository: cz.city.honest.repository.user.UserSuggestionRepository,
-    private val userRepository: cz.city.honest.repository.user.UserRepository
+    private val externalUserGateway: ExternalUserGateway,
+    private val internalUserSuggestionGateway: InternalUserSuggestionGateway,
+    private val internalUserGateway: InternalUserGateway
 ) : BaseService(), PrivateUpdatable {
 
-    fun getLoggedUser(): Observable<User> = userRepository.getLoggedUser().toObservable()
+    fun getLoggedUser(): Observable<User> = internalUserGateway.getLoggedUser()
 
-    fun getUserDataAsMaybe(): Maybe<User> = userRepository.getLoggedUser()
+    fun getUserDataAsMaybe(): Maybe<User> = internalUserGateway.getUserDataAsMaybe()
 
     fun getUser(providerUserId: String, providerDataType: Class<out LoginData>) =
-        userRepository
-            .get(providerUserId, providerDataType)
+        internalUserGateway
+            .getUser(providerUserId, providerDataType)
 
-    fun update(user: User) = userRepository.update(user)
+    fun update(user: User) = internalUserGateway.update(user)
 
-    fun insert(user: User) = userRepository.insert(user)
+    fun insert(user: User) = internalUserGateway.insert(user)
 
     override fun update(accessToken: String): Observable<Unit> =
         getLoggedUser()
@@ -33,11 +35,11 @@ class UserService(
 
     private fun insertUserSuggestions(userSuggestions:List<UserSuggestion>) =
         Observable.fromIterable(userSuggestions)
-            .flatMap {userSuggestionRepository.insert(it)  }
+            .flatMap {internalUserSuggestionGateway.suggest(it)  }
             .map {  }
 
     private fun getUserSuggestions(user: User, accessToken: String) =
-        userServerSource.getUserSuggestions(getGetUserSuggestionsRequest(user), accessToken)
+        externalUserGateway.getUserSuggestions(user, accessToken)
             .map { it.userSuggestions.values.flatten() }
             .flatMap { Observable.fromIterable(it) }
             .map { UserSuggestion(user, it!!, getUserSuggestionMetadata()) }
@@ -47,8 +49,6 @@ class UserService(
 
     private fun getUserSuggestionMetadata() =
         UserSuggestionMetadata(processed = true, markAs = UserSuggestionStateMarking.NEW)
-
-    private fun getGetUserSuggestionsRequest(user: User) = mapOf("userId" to user.id)
 
 }
 

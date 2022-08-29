@@ -1,11 +1,15 @@
 package cz.city.honest.service
 
+import cz.city.honest.dto.LoginData
+import cz.city.honest.dto.LoginProvider
+import cz.city.honest.external.AuthorizationServerSource
 import cz.city.honest.service.authority.AuthorityService
 import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.authorization.FacebookLoginDataProvider
 import cz.city.honest.service.authorization.LoginDataProvider
-import cz.city.honest.service.filter.FilterPersistenceHandler
 import cz.city.honest.service.filter.FilterService
+import cz.city.honest.service.gateway.external.*
+import cz.city.honest.service.gateway.internal.*
 import cz.city.honest.service.registration.FacebookLoginHandler
 import cz.city.honest.service.registration.LoginHandler
 import cz.city.honest.service.settings.CurrencySettingsService
@@ -15,17 +19,10 @@ import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.update.PrivateUpdatable
 import cz.city.honest.service.update.PublicUpdatable
 import cz.city.honest.service.update.UpdateService
-import cz.city.honest.service.user.UserSuggestionService
-import cz.city.honest.service.vote.VoteService
-import cz.city.honest.dto.*
-import cz.city.honest.external.*
-import cz.city.honest.repository.settings.CurrencySettingsRepository
-import cz.city.honest.repository.subject.SubjectRepository
-import cz.city.honest.repository.suggestion.SuggestionRepository
-import cz.city.honest.repository.user.UserSuggestionRepository
-import cz.city.honest.repository.vote.VoteRepository
 import cz.city.honest.service.user.UserProvider
 import cz.city.honest.service.user.UserService
+import cz.city.honest.service.user.UserSuggestionService
+import cz.city.honest.service.vote.VoteService
 import dagger.MapKey
 import dagger.Module
 import dagger.Provides
@@ -39,21 +36,21 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getAuthorityService(
-        authorityRepository: cz.city.honest.repository.authority.AuthorityRepository,
-        authorityServerSource: AuthorityServerSource
-    ): AuthorityService = AuthorityService(authorityRepository, authorityServerSource)
+        internalAuthorityGateway: InternalAuthorityGateway,
+        externalAuthorityGateway: ExternalAuthorityGateway
+    ): AuthorityService = AuthorityService(internalAuthorityGateway, externalAuthorityGateway)
 
     @Provides
     @Singleton
     fun getSubjectService(
-        subjectRepositories: Map<String, @JvmSuppressWildcards SubjectRepository<out WatchedSubject>>,
-        subjectServerSource: SubjectServerSource,
+        internalSubjectGateway: InternalSubjectGateway,
+        externalSubjectGateway: ExternalSubjectGateway,
         suggestionService: SuggestionService,
         positionProvider: PositionProvider
     ): SubjectService =
         SubjectService(
-            subjectRepositories,
-            subjectServerSource,
+            internalSubjectGateway,
+            externalSubjectGateway,
             suggestionService,
             positionProvider
         )
@@ -61,12 +58,12 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getSuggestionService(
-        suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
+        internalSuggestionGateway: InternalSuggestionGateway,
         userSuggestionService: UserSuggestionService,
         voteService: VoteService
     ): SuggestionService =
         SuggestionService(
-            suggestionRepositories,
+            internalSuggestionGateway,
             userSuggestionService,
             voteService
         )
@@ -74,35 +71,41 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getFilterService(
-        filterPersistenceHandler: FilterPersistenceHandler
+        filterPersistenceHandler: InternalFilterGateway
     ): FilterService =
         FilterService(filterPersistenceHandler)
 
     @Provides
     @Singleton
     fun getUserSuggestionService(
-        userSuggestionRepository: UserSuggestionRepository,
+        externalSuggestionGateway: ExternalSuggestionGateway,
+        internalUserSuggestionGateway: InternalUserSuggestionGateway,
         userProvider: UserProvider,
         voteService: VoteService,
-        suggestionServerSource: SuggestionServerSource
     ): UserSuggestionService =
-        UserSuggestionService(suggestionServerSource, userSuggestionRepository, voteService, userProvider)
+        UserSuggestionService(
+            externalSuggestionGateway,
+            internalUserSuggestionGateway,
+            voteService,
+            userProvider
+        )
 
     @Provides
     @Singleton
     fun getVoteService(
-        voteServerSource: VoteServerSource,
-        voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>,
+        internalVoteGateway: InternalVoteGateway,
+        externalVoteGateway: ExternalVoteGateway,
         userProvider: UserProvider
-    ): VoteService = VoteService(voteServerSource, voteRepositories, userProvider)
+    ): VoteService = VoteService(internalVoteGateway, externalVoteGateway, userProvider)
 
     @Provides
     @Singleton
     fun getAuthorizationService(
-        authorizationServerSource: AuthorizationServerSource,
+        externalAuthorizationGateway: ExternalAuthorizationGateway,
         userService: UserService,
         loginHandlers: Map<String, @JvmSuppressWildcards LoginHandler<out LoginData>>
-    ): AuthorizationService = AuthorizationService(authorizationServerSource, userService,loginHandlers)
+    ): AuthorizationService =
+        AuthorizationService(externalAuthorizationGateway, userService, loginHandlers)
 
     @Provides
     @Singleton
@@ -111,7 +114,7 @@ class ServiceModule {
     fun getFacebookLoginHandler(
         serverSource: AuthorizationServerSource,
         userService: UserService
-    ): LoginHandler<out LoginData> = FacebookLoginHandler(serverSource,userService)
+    ): LoginHandler<out LoginData> = FacebookLoginHandler(serverSource, userService)
 
     @Provides
     @IntoMap
@@ -123,11 +126,11 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getUserService(
-        userServerSource: UserServerSource,
-        userSuggestionRepository: UserSuggestionRepository,
-        userRepository: cz.city.honest.repository.user.UserRepository
+        externalUserGateway: ExternalUserGateway,
+        internalUserSuggestionGateway: InternalUserSuggestionGateway,
+        internalUserGateway: InternalUserGateway
     ): UserService =
-        UserService(userServerSource, userSuggestionRepository,userRepository)
+        UserService(externalUserGateway, internalUserSuggestionGateway, internalUserGateway)
 
     @Provides
     @Singleton
@@ -136,7 +139,7 @@ class ServiceModule {
         userService: UserService,
         userSuggestionService: UserSuggestionService
     ): List<PrivateUpdatable> =
-        listOf( userService,userSuggestionService,voteService)
+        listOf(userService, userSuggestionService, voteService)
 
     @Provides
     @Singleton
@@ -145,7 +148,7 @@ class ServiceModule {
         subjectService: SubjectService,
         settingsService: CurrencySettingsService
     ): List<PublicUpdatable> =
-        listOf(authorityService, subjectService,settingsService)
+        listOf(authorityService, subjectService, settingsService)
 
     @Provides
     @Singleton
@@ -158,8 +161,11 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    fun getCurrencySettingsService(currencySettingsRepository: CurrencySettingsRepository, currencyServerSource: CurrencyServerSource): CurrencySettingsService =
-        CurrencySettingsService(currencySettingsRepository,currencyServerSource)
+    fun getCurrencySettingsService(
+        internalCurrencySettingsGateway: InternalCurrencySettingsGateway,
+        externalCurrencyGateway: ExternalCurrencyGateway
+    ): CurrencySettingsService =
+        CurrencySettingsService(internalCurrencySettingsGateway, externalCurrencyGateway)
 
 }
 

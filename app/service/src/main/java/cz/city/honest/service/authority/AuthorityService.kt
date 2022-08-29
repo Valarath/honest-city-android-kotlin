@@ -1,28 +1,27 @@
 package cz.city.honest.service.authority
 
 import cz.city.honest.dto.ExchangeRate
-import cz.city.honest.external.AuthorityServerSource
 import cz.city.honest.service.BaseService
+import cz.city.honest.service.gateway.external.ExternalAuthorityGateway
+import cz.city.honest.service.gateway.internal.InternalAuthorityGateway
 import cz.city.honest.service.update.PublicUpdatable
 import io.reactivex.rxjava3.core.Observable
 
 class AuthorityService(
-    private val authorityRepository: cz.city.honest.repository.authority.AuthorityRepository,
-    private val authorityServerSource: AuthorityServerSource
+    private val internalAuthorityGateway: InternalAuthorityGateway,
+    private val externalAuthorityGateway: ExternalAuthorityGateway
 ) : BaseService(), PublicUpdatable {
 
     fun getAuthority(): Observable<ExchangeRate> =
-        authorityRepository
-            .get()
-            .toObservable()
+        internalAuthorityGateway.getAuthority()
 
     override fun update(): Observable<Unit> =
-        authorityRepository.delete()
+        internalAuthorityGateway.delete()
             .doOnTerminate { getNewData().subscribe() }
             .onErrorComplete()
             .map { }
 
-    private fun getNewData() = authorityServerSource
+    private fun getNewData() = externalAuthorityGateway
         .getRate()
-        .flatMap { authorityRepository.insert(it.exchangeRate) }
+        .flatMap { internalAuthorityGateway.insert(it) }
 }

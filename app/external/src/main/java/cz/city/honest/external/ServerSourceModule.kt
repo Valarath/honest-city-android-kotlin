@@ -12,6 +12,7 @@ import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.Vote
 import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.property.ConnectionProperties
+import cz.city.honest.service.gateway.external.*
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey
@@ -51,9 +52,9 @@ class ServerSourceModule() {
         .also { it.registerModule(getModule(it)) }
 
     private fun getModule(objectMapper: ObjectMapper) = SimpleModule()
-        .apply { setDeserializers(this,objectMapper) }
+        .apply { setDeserializers(this, objectMapper) }
 
-    private fun setDeserializers(module: SimpleModule,objectMapper: ObjectMapper) =
+    private fun setDeserializers(module: SimpleModule, objectMapper: ObjectMapper) =
         module.apply {
             this.addDeserializer(
                 LoginData::class.java,
@@ -84,49 +85,83 @@ class ServerSourceModule() {
     @Provides
     @Singleton
     fun getAuthorityGateway(retrofit: Retrofit): AuthorityServerSource =
-        getGateway(retrofit, AuthorityServerSource::class.java)
+        getServerSource(retrofit, AuthorityServerSource::class.java)
 
 
     @Provides
     @Singleton
     fun getSubjectGateway(retrofit: Retrofit): SubjectServerSource =
-        getGateway(retrofit, SubjectServerSource::class.java)
+        getServerSource(retrofit, SubjectServerSource::class.java)
 
     @Provides
     @Singleton
     fun getSuggestionGateway(retrofit: Retrofit): SuggestionServerSource =
-        getGateway(retrofit, SuggestionServerSource::class.java)
+        getServerSource(retrofit, SuggestionServerSource::class.java)
 
     @Provides
     @Singleton
     fun getUserGateway(retrofit: Retrofit): UserServerSource =
-        getGateway(retrofit, UserServerSource::class.java)
+        getServerSource(retrofit, UserServerSource::class.java)
 
     @Provides
     @Singleton
     fun getVoteGateway(retrofit: Retrofit): VoteServerSource =
-        getGateway(retrofit, VoteServerSource::class.java)
+        getServerSource(retrofit, VoteServerSource::class.java)
 
     @Provides
     @Singleton
     fun getCurrencyServerSource(retrofit: Retrofit): CurrencyServerSource =
-        getGateway(retrofit, CurrencyServerSource::class.java)
+        getServerSource(retrofit, CurrencyServerSource::class.java)
 
     @Provides
     @Singleton
     fun getAuthorizationServerSource(retrofit: Retrofit): AuthorizationServerSource =
-        getGateway(retrofit, AuthorizationServerSource::class.java)
+        getServerSource(retrofit, AuthorizationServerSource::class.java)
 
-    private fun <T> getGateway(retrofit: Retrofit, gateway: Class<T>) = retrofit.create(gateway)
+    private fun <T> getServerSource(retrofit: Retrofit, gateway: Class<T>) =
+        retrofit.create(gateway)
+
+    @Provides
+    @Singleton
+    fun getAuthorityServerSourceService(authorityServerSource: AuthorityServerSource): ExternalAuthorityGateway =
+        AuthorityServerSourceService(authorityServerSource)
+
+    @Provides
+    @Singleton
+    fun getAuthorizationServerSourceService(authorityServerSource: AuthorizationServerSource): ExternalAuthorizationGateway =
+        AuthorizationServerSourceService(authorityServerSource)
+
+    @Provides
+    @Singleton
+    fun getCurrencyServerSourceService(currencyServerSource: CurrencyServerSource): ExternalCurrencyGateway =
+        CurrencyServerSourceService(currencyServerSource)
+
+    @Provides
+    @Singleton
+    fun getSubjectServerSourceService(subjectServerSource: SubjectServerSource): ExternalSubjectGateway =
+        SubjectServerSourceService(subjectServerSource)
+
+    @Provides
+    @Singleton
+    fun getSuggestionServerSourceService(suggestionServerSource: SuggestionServerSource): ExternalSuggestionGateway =
+        SuggestionServerSourceService(suggestionServerSource)
+
+    @Provides
+    @Singleton
+    fun getUserServerSourceService(userServerSource: UserServerSource): ExternalUserGateway =
+        UserServerSourceService(userServerSource)
+
+    @Provides
+    @Singleton
+    fun getVoteServerSourceService(voteServerSource: VoteServerSource): ExternalVoteGateway =
+        VoteServerSourceService(voteServerSource)
 
     companion object {
-
         fun getBaseObjectMapper() = ObjectMapper()
             .also { it.registerModule(KotlinModule()) }
             .also { it.registerModule(JavaTimeModule()) }
             .also { it.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) }
             .also { it.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) }
-
     }
 }
 

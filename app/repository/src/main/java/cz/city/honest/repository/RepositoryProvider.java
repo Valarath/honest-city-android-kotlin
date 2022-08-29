@@ -1,10 +1,9 @@
-package cz.city.honest.service;
+package cz.city.honest.repository;
 
 import java.util.Map;
 
 import cz.city.honest.dto.LoginData;
 import cz.city.honest.dto.WatchedSubject;
-import cz.city.honest.repository.Repository;
 import cz.city.honest.repository.autorization.LoginDataRepository;
 import cz.city.honest.repository.subject.SubjectRepository;
 
