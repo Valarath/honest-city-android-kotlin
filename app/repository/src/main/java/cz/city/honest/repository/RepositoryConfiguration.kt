@@ -175,7 +175,7 @@ class RepositoryModule() {
 
     @Provides
     @Singleton
-    fun getSubjectService(subjectRepositories: Map<String, SubjectRepository<out WatchedSubject>>): InternalSubjectGateway =
+    fun getSubjectService(subjectRepositories: Map<String, @JvmSuppressWildcards SubjectRepository<out WatchedSubject>>): InternalSubjectGateway =
         SubjectService(subjectRepositories)
 
     @Provides

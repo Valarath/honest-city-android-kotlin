@@ -48,7 +48,7 @@ import javax.inject.Inject
 import javax.inject.Scope
 
 @ActivityScope
-class MapActivity : DaggerAppCompatActivity(), OnMapReadyCallback, LocationListener {
+class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var mapViewModel: MapViewModel

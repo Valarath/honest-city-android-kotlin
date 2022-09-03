@@ -3,7 +3,6 @@ package cz.city.honest.application.configuration
 import android.app.Application
 import android.content.Context
 import cz.city.honest.analyzer.AnalyzerModule
-import cz.city.honest.application.DaggerModelConfiguration
 import cz.city.honest.external.ExternalSourceModule
 import cz.city.honest.job.JobModule
 import cz.city.honest.property.PropertyModule
@@ -25,7 +24,7 @@ import javax.inject.Singleton
 class BaseApplication : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         val component: ModuleConfiguration =
-            DaggerModelConfiguration.builder().application(this).build()
+            DaggerModuleConfiguration.builder().application(this).build()
         component.inject(this)
         return component
     }

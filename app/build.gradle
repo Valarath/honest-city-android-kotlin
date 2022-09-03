@@ -72,6 +72,7 @@ allprojects {
             implementation("io.reactivex.rxjava3:rxjava:3.0.3")
 
             //TODO tohle tadz nema co delat, ale neexistence zpusobuje error, casem na to koukni
+            //mozna bude stacit to zmenit na api v externalu
             implementation 'com.squareup.retrofit2:retrofit:2.9.0'
         }
     }
