@@ -234,6 +234,9 @@ abstract class ActivityModule {
     internal abstract fun showSubjectSuggestions(): ShowSubjectSuggestionsFragment
 
     @ContributesAndroidInjector
+    internal abstract fun cameraResultActivity(): CameraResultActivity
+
+    @ContributesAndroidInjector
     internal abstract fun cameraFragment(): CameraFragment
 
     @ContributesAndroidInjector
@@ -241,9 +244,6 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector
     internal abstract fun cameraResultFragment(): CameraResultFragment
-
-    @ContributesAndroidInjector
-    internal abstract fun cameraResultActivity(): CameraResultActivity
 
     //TODO to fragment module
     @ContributesAndroidInjector(modules = [ViewModelModule::class])

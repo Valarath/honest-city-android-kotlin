@@ -5,9 +5,9 @@
     android:id="@+id/camera_result_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.camera.result.CameraResultFragment">
+    tools:context=".camera.result.CameraResultFragment">
 
-    <cz.city.honest.application.view.component.rate.ExchangeRateTable
+    <cz.city.honest.view.component.rate.ExchangeRateTable
         android:id="@+id/exchange_rate"
         tools:ignore="MissingConstraints"
         android:layout_height="wrap_content"

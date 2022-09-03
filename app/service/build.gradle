@@ -1,7 +1,5 @@
 dependencies{
     implementation project(':app:dto')
-    implementation project(':app:repository')
-    implementation project(':app:external')
 
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 }

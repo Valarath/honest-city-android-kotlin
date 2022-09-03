@@ -4,9 +4,9 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.detail.ui.main.ShowSubjectCostFragment">
+    tools:context=".detail.ui.main.ShowSubjectCostFragment">
 
-    <cz.city.honest.application.view.component.rate.ExchangeRateTable
+    <cz.city.honest.view.component.rate.ExchangeRateTable
         android:id="@+id/exchange_rate"
         tools:ignore="MissingConstraints"
         android:layout_height="wrap_content"

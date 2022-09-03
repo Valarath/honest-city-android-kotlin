@@ -1,5 +1,7 @@
 package cz.city.honest.service.authorization
 
+/*
+
 import com.facebook.AccessToken
 import cz.city.honest.dto.FacebookLoginData
 import cz.city.honest.dto.User
@@ -23,4 +25,4 @@ class FacebookLoginDataProvider : LoginDataProvider<FacebookLoginData> {
     }
 
     private fun isTokenInvalid(accessToken: AccessToken?) = accessToken == null || accessToken.isExpired
-}
+} */

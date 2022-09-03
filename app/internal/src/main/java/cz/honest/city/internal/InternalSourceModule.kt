@@ -16,7 +16,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class AndroidServiceModule {
+class InternalSourceModule {
 
     @Provides
     @Singleton

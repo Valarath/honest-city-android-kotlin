@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.detail.SubjectDetailActivity">
+    tools:context=".detail.SubjectDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/subject_detail_toolbar"

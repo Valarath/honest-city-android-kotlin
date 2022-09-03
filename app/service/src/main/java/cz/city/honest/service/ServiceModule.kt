@@ -2,11 +2,8 @@ package cz.city.honest.service
 
 import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.LoginProvider
-import cz.city.honest.external.AuthorizationServerSource
 import cz.city.honest.service.authority.AuthorityService
 import cz.city.honest.service.authorization.AuthorizationService
-import cz.city.honest.service.authorization.FacebookLoginDataProvider
-import cz.city.honest.service.authorization.LoginDataProvider
 import cz.city.honest.service.filter.FilterService
 import cz.city.honest.service.gateway.external.*
 import cz.city.honest.service.gateway.internal.*
@@ -112,16 +109,17 @@ class ServiceModule {
     @IntoMap
     @StringKey("FacebookLoginData")
     fun getFacebookLoginHandler(
-        serverSource: AuthorizationServerSource,
+        externalAuthorizationGateway: ExternalAuthorizationGateway,
         userService: UserService
-    ): LoginHandler<out LoginData> = FacebookLoginHandler(serverSource, userService)
+    ): LoginHandler<out LoginData> = FacebookLoginHandler(externalAuthorizationGateway, userService)
 
+    /*
     @Provides
     @IntoMap
     @LoginProviderKey(LoginProvider.FACEBOOK)
     fun getFacebookLoginDataProvider(
     ): LoginDataProvider<out LoginData> = FacebookLoginDataProvider()
-
+*/
 
     @Provides
     @Singleton

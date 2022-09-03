@@ -3,16 +3,15 @@ package cz.city.honest.application.configuration
 import android.app.Application
 import android.content.Context
 import cz.city.honest.analyzer.AnalyzerModule
-import cz.city.honest.application.model.DaggerModelConfiguration
-import cz.city.honest.application.model.ModelConfiguration
-import cz.city.honest.external.ServerSourceModule
+import cz.city.honest.application.DaggerModelConfiguration
+import cz.city.honest.external.ExternalSourceModule
 import cz.city.honest.job.JobModule
 import cz.city.honest.property.PropertyModule
 import cz.city.honest.repository.RepositoryModule
 import cz.city.honest.service.ServiceModule
 import cz.city.honest.view.ActivityModule
 import cz.city.honest.viewmodel.ViewModelModule
-import cz.honest.city.internal.AndroidServiceModule
+import cz.honest.city.internal.InternalSourceModule
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -46,11 +45,11 @@ abstract class ContextModule {
         JobModule::class,
         ContextModule::class,
         AndroidSupportInjectionModule::class,
-        AndroidServiceModule::class,
+        InternalSourceModule::class,
         ActivityModule::class,
         AnalyzerModule::class,
         ServiceModule::class,
-        ServerSourceModule::class,
+        ExternalSourceModule::class,
         RepositoryModule::class,
         ViewModelModule::class,
         PropertyModule::class

@@ -48,7 +48,7 @@ class AuthorizationService(
             .apply { this.logged = true }
 
 }
-
+/*
 interface LoginDataProvider<LOGIN_DATA : LoginData> {
     fun provide(user: User): Single<LOGIN_DATA>
-}
+}*/

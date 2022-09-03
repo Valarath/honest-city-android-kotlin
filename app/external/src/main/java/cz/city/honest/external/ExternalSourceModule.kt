@@ -11,6 +11,8 @@ import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.Vote
 import cz.city.honest.dto.WatchedSubject
+import cz.city.honest.external.autorization.AuthorizationServerSource
+import cz.city.honest.external.autorization.AuthorizationServerSourceService
 import cz.city.honest.property.ConnectionProperties
 import cz.city.honest.service.gateway.external.*
 import dagger.Module
@@ -27,9 +29,8 @@ import javax.inject.Singleton
 
 
 @Module
-class ServerSourceModule() {
+class ExternalSourceModule() {
 
-    //TODO relocate this
     @Provides
     @Singleton
     fun getRetrofit(connectionProperties: ConnectionProperties): Retrofit = Retrofit.Builder()

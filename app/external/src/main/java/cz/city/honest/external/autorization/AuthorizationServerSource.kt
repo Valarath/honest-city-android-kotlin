@@ -1,7 +1,8 @@
-package cz.city.honest.external
+package cz.city.honest.external.autorization
 
 import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.User
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalAuthorizationGateway
 import cz.city.honest.service.gateway.external.LoginResponse
 import cz.city.honest.service.gateway.external.RegisterResponse
