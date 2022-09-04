@@ -36,7 +36,7 @@ dependencies {
     implementation project(':app:property')
     implementation project(':app:view-model')
     implementation project(':app:job')
-    //TODO tohle uprav abz to slo skrz service
+    //TODO tohle uprav abz to slo skrz service, jestli to pujde
     implementation project(':app:internal')
 
     implementation "com.facebook.android:facebook-android-sdk:$facebookAndroidVersion"
