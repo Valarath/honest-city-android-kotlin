@@ -8,7 +8,7 @@ import cz.city.honest.job.JobModule
 import cz.city.honest.property.PropertyModule
 import cz.city.honest.repository.RepositoryModule
 import cz.city.honest.service.ServiceModule
-import cz.city.honest.view.ActivityModule
+import cz.city.honest.view.ViewModule
 import cz.city.honest.viewmodel.ViewModelModule
 import cz.honest.city.internal.InternalSourceModule
 import dagger.Binds
@@ -45,7 +45,7 @@ abstract class ContextModule {
         ContextModule::class,
         AndroidSupportInjectionModule::class,
         InternalSourceModule::class,
-        ActivityModule::class,
+        ViewModule::class,
         AnalyzerModule::class,
         ServiceModule::class,
         ExternalSourceModule::class,

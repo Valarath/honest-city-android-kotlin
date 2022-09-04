@@ -34,10 +34,10 @@ dependencies {
     implementation project(':app:dto')
     implementation project(':app:service')
 
-    implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-reactivestreams-ktx', version: '2.3.1'
+    implementation "androidx.legacy:legacy-support-v4:$legacySupportVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewmodelKtxVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleLivedataKtxVersion"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycleReactivestreamsKtxVersion"
 
 }

@@ -1,7 +1,7 @@
 dependencies{
     implementation project(':app:dto')
 
-    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.27'
+    implementation "org.yaml:snakeyaml:$snakeYamlVersion"
 }
 
 java {
