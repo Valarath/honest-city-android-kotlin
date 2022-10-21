@@ -1,6 +1,7 @@
-package cz.city.honest.external
+package cz.city.honest.external.vote
 
 import cz.city.honest.dto.Vote
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalVoteGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.Body

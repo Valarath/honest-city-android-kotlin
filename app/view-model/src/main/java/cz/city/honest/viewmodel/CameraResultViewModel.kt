@@ -1,15 +1,17 @@
 package cz.city.honest.viewmodel
 
 import androidx.lifecycle.LiveDataReactiveStreams
-import cz.city.honest.service.user.UserService
 import cz.city.honest.dto.*
+import cz.city.honest.service.authority.AuthorityService
+import cz.city.honest.service.suggestion.SuggestionService
+import cz.city.honest.service.user.UserService
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import java.util.*
 import javax.inject.Inject
 
 class CameraResultViewModel @Inject constructor(
-    private val authorityService: cz.city.honest.service.authority.AuthorityService,
-    private val suggestionService: cz.city.honest.service.suggestion.SuggestionService,
+    private val authorityService: AuthorityService,
+    private val suggestionService: SuggestionService,
     private val userService: UserService
 ) :
     ScheduledObservableViewModel() {

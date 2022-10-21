@@ -58,6 +58,9 @@ class UserRepository(
     override fun get(ids: List<String>): Flowable<User> = findUsers(ids)
         .flatMap { toEntities(it) { toUser(it).toFlowable() } }
 
+    fun getByUsername(username: String): Maybe<User> = findUserByUsername(username)
+        .flatMap { toUser(it) }
+
 
     fun get(providerUserId: String, providerDataType: Class<out LoginData>) =
         getLoginDataRepository(providerDataType.simpleName)
@@ -102,6 +105,14 @@ class UserRepository(
             databaseOperationProvider.readableDatabase.rawQuery(
                 "Select id, score, username, logged, login_data_class from user where id = ?",
                 arrayOf(subjectId)
+            )
+        )
+
+    private fun findUserByUsername(username: String): Maybe<Cursor> =
+        Maybe.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select id, score, username, logged, login_data_class from user where username = ?",
+                arrayOf(username)
             )
         )
 

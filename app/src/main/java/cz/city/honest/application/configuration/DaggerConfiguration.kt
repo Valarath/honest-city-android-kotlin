@@ -3,8 +3,10 @@ package cz.city.honest.application.configuration
 import android.app.Application
 import android.content.Context
 import cz.city.honest.analyzer.AnalyzerModule
+import cz.city.honest.application.main.MainActivity
 import cz.city.honest.external.ExternalSourceModule
 import cz.city.honest.job.JobModule
+import cz.city.honest.job.UpdateWorkerManagerService
 import cz.city.honest.property.PropertyModule
 import cz.city.honest.repository.RepositoryModule
 import cz.city.honest.service.ServiceModule
@@ -16,17 +18,28 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.android.AndroidInjector
+import dagger.android.ContributesAndroidInjector
 import dagger.android.DaggerApplication
 import dagger.android.support.AndroidSupportInjectionModule
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
 class BaseApplication : DaggerApplication() {
+
+    @Inject
+    lateinit var workerManagerService: UpdateWorkerManagerService
+
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         val component: ModuleConfiguration =
             DaggerModuleConfiguration.builder().application(this).build()
         component.inject(this)
         return component
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        workerManagerService.initializeWorkerManager()
     }
 }
 
@@ -36,6 +49,10 @@ abstract class ContextModule {
     @Binds
     @Singleton
     abstract fun context(appInstance: Application): Context
+
+    @ContributesAndroidInjector
+    internal abstract fun mainActivity(): MainActivity
+
 }
 
 @Singleton

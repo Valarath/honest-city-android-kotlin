@@ -47,7 +47,7 @@ class ExchangePointMapPresenter : MapPresenter<ExchangePoint>() {
     ) {
         val markerOptions = getMarkerOptions(context, subject)
         val marker = map.addMarker(markerOptions)
-        marker.tag = subject
+        marker?.tag = subject
     }
 
     private fun getMarkerOptions(

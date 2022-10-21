@@ -8,9 +8,9 @@ import io.reactivex.rxjava3.core.Observable
 
 class UserService(private val userRepository: UserRepository) : InternalUserGateway {
 
-    override fun getLoggedUser(): Observable<User> = userRepository.getLoggedUser().toObservable()
-
     override fun getUserDataAsMaybe(): Maybe<User> = userRepository.getLoggedUser()
+
+    override fun getUserDataAsMaybe(username:String): Maybe<User> = userRepository.getByUsername(username)
 
     override fun getUser(
         providerUserId: String,

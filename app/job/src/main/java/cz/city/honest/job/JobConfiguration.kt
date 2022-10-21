@@ -1,24 +1,21 @@
 package cz.city.honest.job
 
-import cz.honest.city.internal.sync.SyncAdapter
+import android.content.Context
+import cz.city.honest.service.update.UpdateService
 import dagger.Module
-import dagger.android.ContributesAndroidInjector
-import javax.inject.Scope
+import dagger.Provides
+import javax.inject.Singleton
 
 @Module
-abstract class JobModule {
+class JobModule(){
 
-    @ServiceScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideDbUpdatedJob(): UpdateScheduledJob
+    @Provides
+    @Singleton
+    fun provideUpdateWorkerManagerService(context: Context, workersFactory: UpdateWorkerFactory) =
+        UpdateWorkerManagerService(context, workersFactory)
 
-    @ServiceScoped
-    @ContributesAndroidInjector
-    internal abstract fun provideSyncAdapter(): SyncAdapter
-
+    @Provides
+    @Singleton
+    fun provideUpdateWorkerFactory(updateService: UpdateService) =
+        UpdateWorkerFactory(updateService)
 }
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.TYPE, AnnotationTarget.FUNCTION)
-annotation class ServiceScoped

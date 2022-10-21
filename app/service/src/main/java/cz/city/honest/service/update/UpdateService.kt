@@ -14,7 +14,6 @@ class UpdateService(
 
     private fun updatePrivate() = authorizationService
         .getUserToken()
-        .toObservable()
         .map { "Bearer $it" }
         .flatMap { updatePrivate(it) }
 

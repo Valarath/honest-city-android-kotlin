@@ -1,6 +1,7 @@
-package cz.city.honest.external
+package cz.city.honest.external.suggestion
 
 import cz.city.honest.dto.Suggestion
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalSuggestionGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.Body

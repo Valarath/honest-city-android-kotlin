@@ -1,6 +1,7 @@
-package cz.city.honest.external
+package cz.city.honest.external.settings
 
 import cz.city.honest.dto.CurrencySettings
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalCurrencyGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET

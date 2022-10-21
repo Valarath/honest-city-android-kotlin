@@ -1,8 +1,9 @@
-package cz.city.honest.external
+package cz.city.honest.external.subject
 
 import cz.city.honest.dto.Position
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.WatchedSubject
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalSubjectGateway
 import cz.city.honest.service.gateway.external.Subjects
 import io.reactivex.rxjava3.core.Observable

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_maps_key">AIzaSyARmUcO5_7pu1yhSNUINe2NBBY4VjYVaGM</string>
+    <string name="facebook_app_id">588054412223462</string>
+    <string name="fb_login_protocol_scheme">fb588054412223462</string>
+    <string name="facebook_client_token">bb045e85fce1f5178cff4ee3c18b22d3</string>
+</resources>

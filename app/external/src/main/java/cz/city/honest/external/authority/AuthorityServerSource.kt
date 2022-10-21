@@ -1,6 +1,7 @@
-package cz.city.honest.external
+package cz.city.honest.external.authority
 
 import cz.city.honest.dto.ExchangeRate
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalAuthorityGateway
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET

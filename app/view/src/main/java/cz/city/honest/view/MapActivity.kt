@@ -1,9 +1,6 @@
 package cz.city.honest.view
 
 import android.Manifest
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -23,29 +20,14 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import cz.city.honest.dto.User
 import cz.city.honest.dto.WatchedSubject
-import cz.city.honest.job.UpdateScheduledJob
-import cz.city.honest.property.ConnectionProperties
 import cz.city.honest.view.camera.CameraActivity
-import cz.city.honest.view.camera.CameraFragment
-import cz.city.honest.view.camera.result.CameraResultActivity
-import cz.city.honest.view.camera.result.CameraResultFragment
-import cz.city.honest.view.detail.SubjectDetailActivity
-import cz.city.honest.view.detail.ui.main.ShowSubjectCostFragment
-import cz.city.honest.view.detail.ui.main.ShowSubjectSuggestionsFragment
 import cz.city.honest.view.filter.FilterActivity
-import cz.city.honest.view.filter.FilterFragment
 import cz.city.honest.view.login.LoginActivity
 import cz.city.honest.view.map.MapClickListener
 import cz.city.honest.view.user.UserDetailActivity
-import cz.city.honest.view.user.ui.main.UserDetailSuggestionsFragment
 import cz.city.honest.viewmodel.MapViewModel
-import cz.city.honest.viewmodel.ViewModelModule
-import dagger.Module
-import dagger.android.AndroidInjectionModule
-import dagger.android.ContributesAndroidInjector
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
-import javax.inject.Scope
 
 @ActivityScope
 class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallback {
@@ -56,9 +38,6 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var connectionProperties: ConnectionProperties
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +80,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
         }
         //TODO you want these two
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
-        scheduleJobs(this)
+        //scheduleJobs(this)
     }
 
     /**
@@ -147,6 +126,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
         }
     }
 
+    /*
     private fun scheduleJobs(context: Context) =
         context.getSystemService(JobScheduler::class.java)
             .schedule(getJobInfoUpdateBuilder(context))
@@ -162,8 +142,9 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
             .setRequiresCharging(true)
             .build()
 
+
     private fun getUpdateScheduledJobComponentName(context: Context) =
-        ComponentName(context, UpdateScheduledJob::class.java)
+        ComponentName(context, UpdateScheduledJob::class.java)*/
 
     private fun setUserDetailButton(user: User) =
         findViewById<Button>(R.id.user_detail)

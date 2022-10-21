@@ -29,4 +29,10 @@ android {
 dependencies {
     implementation project(':app:service')
     implementation project(':app:internal')
+
+    implementation "androidx.work:work-runtime:$workerVersion"
+    implementation "androidx.work:work-runtime-ktx:$workerVersion"
+    implementation "androidx.work:work-rxjava3:$workerVersion"
+    implementation "androidx.work:work-gcm:$workerVersion"
+    implementation "androidx.work:work-multiprocess:$workerVersion"
 }

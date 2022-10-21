@@ -3,6 +3,7 @@ package cz.city.honest.service.user
 import cz.city.honest.dto.*
 import cz.city.honest.service.BaseService
 import cz.city.honest.service.gateway.external.ExternalUserGateway
+import cz.city.honest.service.gateway.internal.InternalAuthorizationGateway
 import cz.city.honest.service.gateway.internal.InternalUserGateway
 import cz.city.honest.service.gateway.internal.InternalUserSuggestionGateway
 import cz.city.honest.service.update.PrivateUpdatable
@@ -15,7 +16,8 @@ class UserService(
     private val internalUserGateway: InternalUserGateway
 ) : BaseService(), PrivateUpdatable {
 
-    fun getLoggedUser(): Observable<User> = internalUserGateway.getLoggedUser()
+    fun getLoggedUser(): Observable<User> = getUserDataAsMaybe()
+        .toObservable()
 
     fun getUserDataAsMaybe(): Maybe<User> = internalUserGateway.getUserDataAsMaybe()
 

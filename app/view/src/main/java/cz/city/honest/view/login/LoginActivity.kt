@@ -125,7 +125,7 @@ class LoginResultFacebookCallback(
         showMessage(activity.getString(R.string.facebook_login_error))
     }
 
-    fun handleError(error: Throwable) {
+    private fun handleError(error: Throwable) {
         showMessage(activity.getString(R.string.facebook_login_error))
     }
 

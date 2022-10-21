@@ -11,8 +11,22 @@ import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.Vote
 import cz.city.honest.dto.WatchedSubject
+import cz.city.honest.external.authority.AuthorityServerSource
+import cz.city.honest.external.authority.AuthorityServerSourceService
 import cz.city.honest.external.autorization.AuthorizationServerSource
 import cz.city.honest.external.autorization.AuthorizationServerSourceService
+import cz.city.honest.external.settings.CurrencyServerSource
+import cz.city.honest.external.settings.CurrencyServerSourceService
+import cz.city.honest.external.subject.SubjectServerSource
+import cz.city.honest.external.subject.SubjectServerSourceService
+import cz.city.honest.external.suggestion.SuggestionServerSource
+import cz.city.honest.external.suggestion.SuggestionServerSourceService
+import cz.city.honest.external.user.UserServerSource
+import cz.city.honest.external.user.UserServerSourceService
+import cz.city.honest.external.validation.TokenValidationServerSource
+import cz.city.honest.external.validation.TokenValidationServerSourceService
+import cz.city.honest.external.vote.VoteServerSource
+import cz.city.honest.external.vote.VoteServerSourceService
 import cz.city.honest.property.ConnectionProperties
 import cz.city.honest.service.gateway.external.*
 import dagger.Module
@@ -26,7 +40,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 import javax.inject.Singleton
-
 
 @Module
 class ExternalSourceModule() {
@@ -119,6 +132,11 @@ class ExternalSourceModule() {
     fun getAuthorizationServerSource(retrofit: Retrofit): AuthorizationServerSource =
         getServerSource(retrofit, AuthorizationServerSource::class.java)
 
+    @Provides
+    @Singleton
+    fun getTokenValidationServerSource(retrofit: Retrofit): TokenValidationServerSource =
+        getServerSource(retrofit, TokenValidationServerSource::class.java)
+
     private fun <T> getServerSource(retrofit: Retrofit, gateway: Class<T>) =
         retrofit.create(gateway)
 
@@ -156,6 +174,11 @@ class ExternalSourceModule() {
     @Singleton
     fun getVoteServerSourceService(voteServerSource: VoteServerSource): ExternalVoteGateway =
         VoteServerSourceService(voteServerSource)
+
+    @Provides
+    @Singleton
+    fun getTokenValidationServerSourceService(tokenValidationServerSource: TokenValidationServerSource): ExternalTokenValidationGateway =
+        TokenValidationServerSourceService(tokenValidationServerSource)
 
     companion object {
         fun getBaseObjectMapper() = ObjectMapper()

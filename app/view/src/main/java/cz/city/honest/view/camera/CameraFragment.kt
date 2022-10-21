@@ -16,14 +16,14 @@ import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import cz.city.honest.dto.ExchangeRate
+import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.view.R
+import cz.city.honest.view.camera.result.CameraResultActivity
+import cz.city.honest.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
 import cz.honest.city.internal.provider.rate.ImageCameraAnalyzer
 import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
-import cz.city.honest.dto.ExchangeRate
-import cz.city.honest.dto.WatchedSubject
-import cz.city.honest.view.camera.result.CameraResultActivity
-import cz.city.honest.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.util.concurrent.ExecutorService
@@ -31,7 +31,7 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 
-class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
+class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
 
     @Inject
     lateinit var imageExchangeRateResultProvider: ImageExchangeRateResultProvider
@@ -78,8 +78,9 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
         imageExchangeRateResultProvider.result.postValue(null)
     }
 
-    private fun getWatchedSubject(): WatchedSubject? = activity!!.intent.extras?.get(CameraActivity.WATCHED_SUBJECT)
-        .run { if(this != null)this as WatchedSubject else null }
+    private fun getWatchedSubject(): WatchedSubject? =
+        activity!!.intent.extras?.get(CameraActivity.WATCHED_SUBJECT)
+            .run { if (this != null) this as WatchedSubject else null }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -106,9 +107,9 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
         viewFinder.post { setUpCamera() }
     }
 
-    private fun showAnalyzedText(lines:List<String>){
+    private fun showAnalyzedText(lines: List<String>) {
         val stringBuilder = StringBuilder()
-        lines.forEach {stringBuilder.appendln(it)  }
+        lines.forEach { stringBuilder.appendln(it) }
         analyzedTextView.text = stringBuilder.toString()
     }
 
@@ -123,7 +124,7 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
     override fun surfaceCreated(holder: SurfaceHolder) {
     }
 
-    private fun DrawFocusRect(color: Int,holder: SurfaceHolder) {
+    private fun DrawFocusRect(color: Int, holder: SurfaceHolder) {
         val height: Int = viewFinder.height
         val width: Int = viewFinder.width
 
@@ -151,7 +152,7 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        DrawFocusRect(Color.parseColor("#b3dabb"),holder)
+        DrawFocusRect(Color.parseColor("#b3dabb"), holder)
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder) {
@@ -178,7 +179,12 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
     private fun bindCameraUseCases() {
         try {
             cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, getPreview(), getImageAnalyzer())
+            cameraProvider.bindToLifecycle(
+                this,
+                CameraSelector.DEFAULT_BACK_CAMERA,
+                getPreview(),
+                getImageAnalyzer()
+            )
         } catch (exc: IllegalStateException) {
             println(exc)
         }
@@ -196,8 +202,7 @@ class CameraFragment : DaggerAppCompatDialogFragment(),SurfaceHolder.Callback {
             .build()
             .also {
                 it.setAnalyzer(
-                    cameraExecutor
-                    ,
+                    cameraExecutor,
                     ImageCameraAnalyzer(
                         imageExchangeRateProvider,
                         this::showAnalyzedText

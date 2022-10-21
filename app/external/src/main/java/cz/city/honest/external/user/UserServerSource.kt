@@ -1,7 +1,8 @@
-package cz.city.honest.external
+package cz.city.honest.external.user
 
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.User
+import cz.city.honest.external.EndpointsUrl
 import cz.city.honest.service.gateway.external.ExternalUserGateway
 import cz.city.honest.service.gateway.external.UserSuggestions
 import io.reactivex.rxjava3.core.Observable

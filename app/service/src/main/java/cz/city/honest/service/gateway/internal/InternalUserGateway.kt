@@ -7,8 +7,6 @@ import io.reactivex.rxjava3.core.Observable
 
 interface InternalUserGateway {
 
-    fun getLoggedUser(): Observable<User>
-
     fun getUserDataAsMaybe(): Maybe<User>
 
     fun getUser(providerUserId: String, providerDataType: Class<out LoginData>): Maybe<User>
@@ -16,4 +14,6 @@ interface InternalUserGateway {
     fun update(user: User): Observable<Unit>
 
     fun insert(user: User): Observable<Unit>
+
+    fun getUserDataAsMaybe(username: String): Maybe<User>
 }

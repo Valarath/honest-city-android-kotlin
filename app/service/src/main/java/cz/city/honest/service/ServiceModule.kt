@@ -7,8 +7,6 @@ import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.filter.FilterService
 import cz.city.honest.service.gateway.external.*
 import cz.city.honest.service.gateway.internal.*
-import cz.city.honest.service.registration.FacebookLoginHandler
-import cz.city.honest.service.registration.LoginHandler
 import cz.city.honest.service.settings.CurrencySettingsService
 import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.subject.SubjectService
@@ -23,8 +21,6 @@ import cz.city.honest.service.vote.VoteService
 import dagger.MapKey
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
-import dagger.multibindings.StringKey
 import javax.inject.Singleton
 
 @Module
@@ -98,20 +94,17 @@ class ServiceModule {
     @Provides
     @Singleton
     fun getAuthorizationService(
+        externalTokenValidationGateway: ExternalTokenValidationGateway,
         externalAuthorizationGateway: ExternalAuthorizationGateway,
         userService: UserService,
-        loginHandlers: Map<String, @JvmSuppressWildcards LoginHandler<out LoginData>>
+        internalAuthorizationGateways: Map<String, @JvmSuppressWildcards InternalAuthorizationGateway<out LoginData>>
     ): AuthorizationService =
-        AuthorizationService(externalAuthorizationGateway, userService, loginHandlers)
-
-    @Provides
-    @Singleton
-    @IntoMap
-    @StringKey("FacebookLoginData")
-    fun getFacebookLoginHandler(
-        externalAuthorizationGateway: ExternalAuthorizationGateway,
-        userService: UserService
-    ): LoginHandler<out LoginData> = FacebookLoginHandler(externalAuthorizationGateway, userService)
+        AuthorizationService(
+            externalTokenValidationGateway,
+            externalAuthorizationGateway,
+            userService,
+            internalAuthorizationGateways
+        )
 
     /*
     @Provides
