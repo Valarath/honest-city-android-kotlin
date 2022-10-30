@@ -69,7 +69,7 @@ class ExchangePointMapPresenter : MapPresenter<ExchangePoint>() {
 
 
     private fun toByteArray(context: MapActivity): ByteArray {
-        val drawable: Drawable = context.resources.getDrawable(R.drawable.mock, null)
+        val drawable: Drawable = context.resources.getDrawable(R.drawable.exchange, null)
         val bitmap = (drawable as BitmapDrawable).bitmap
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
