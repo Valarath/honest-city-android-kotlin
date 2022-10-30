@@ -23,7 +23,7 @@ import cz.city.honest.view.R
 import cz.city.honest.view.camera.result.CameraResultActivity
 import cz.city.honest.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
 import cz.city.honest.viewmodel.CameraViewModel
-import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
+//import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.util.concurrent.ExecutorService
@@ -38,10 +38,10 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    //@Inject
+    //lateinit var imageExchangeRateResultProvider: ImageExchangeRateResultProvider
+/*
     @Inject
-    lateinit var imageExchangeRateResultProvider: ImageExchangeRateResultProvider
-
-    /*@Inject
     lateinit var imageExchangeRateProvider: ImageExchangeRateProvider*/
 
     private lateinit var cameraExecutor: ExecutorService
@@ -67,7 +67,6 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
         also { setViewModels() }
         /*imageExchangeRateResultProvider.result
             .observe(viewLifecycleOwner,
-                Observer { showCameraAnalyzerResult(it) }
             )*/
         cameraViewModel.result
             .observe(viewLifecycleOwner,
@@ -91,7 +90,7 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
         intent.putExtra(EXCHANGE_RATE_RESULT, exchangeRate)
         intent.putExtra(CameraResultActivity.WATCHED_SUBJECT, getWatchedSubject())
         startActivity(intent)
-        imageExchangeRateResultProvider.result.postValue(null)
+        //cameraViewModel.result.postValue(null)
     }
 
     private fun getWatchedSubject(): WatchedSubject? =
@@ -163,7 +162,6 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
         val bottom = height / 2 + diameter / 3
 
         canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
-        //canvas.drawRect(viewFinder.left.toFloat(), viewFinder.top.toFloat(), viewFinder.right.toFloat(), viewFinder.bottom.toFloat(), paint)
         holder.unlockCanvasAndPost(canvas)
     }
 
