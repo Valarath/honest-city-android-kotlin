@@ -29,11 +29,13 @@
 
     </androidx.viewpager.widget.ViewPager>
 
-    <!--com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" /-->
+    <com.facebook.login.widget.LoginButton
+        xmlns:facebook="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/facebookButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_marginBottom="12dp"
+        facebook:com_facebook_confirm_logout = "false"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

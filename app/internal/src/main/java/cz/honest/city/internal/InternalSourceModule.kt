@@ -10,11 +10,13 @@ import cz.city.honest.dto.Suggestion
 import cz.city.honest.service.gateway.external.ExternalAuthorizationGateway
 import cz.city.honest.service.gateway.internal.InternalAuthorizationGateway
 import cz.city.honest.service.gateway.internal.InternalFilterGateway
+import cz.city.honest.service.gateway.internal.InternalImageAnalyticGateway
 import cz.city.honest.service.subject.PositionProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
 import cz.city.honest.service.user.UserProvider
 import cz.city.honest.service.user.UserService
+import cz.honest.city.internal.analyze.ExchangeRateAnalyticGateway
 import cz.honest.city.internal.authentication.FacebookLoginHandler
 import dagger.Module
 import dagger.Provides
@@ -29,11 +31,15 @@ class InternalSourceModule {
     @Singleton
     fun getPositionProvider(context: Context): PositionProvider = AndroidPositionProvider(context)
 
-
     @Provides
     @Singleton
     fun getFilterPersistenceHandler(context: Context): InternalFilterGateway =
         FilterSharedPreferenceRepository(context)
+
+    @Provides
+    @Singleton
+    fun getExchangeRateAnalyticGateway(imageExchangeRateProvider: ImageExchangeRateProvider): InternalImageAnalyticGateway =
+        ExchangeRateAnalyticGateway(imageExchangeRateProvider)
 
     @Provides
     @Singleton

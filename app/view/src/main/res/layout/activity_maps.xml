@@ -45,7 +45,7 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
-        android:visibility="gone"
+        android:visibility="visible"
         android:text="@string/add_subject_button"
         android:textSize="180sp" />
 

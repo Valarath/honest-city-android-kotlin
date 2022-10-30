@@ -51,20 +51,20 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         .apply {this.setOnClickListener { suggestNewResult(this) } }
 
     private fun suggestNewResult(button: Button) {
-        cameraResultViewModel.suggest(getWatchedSubject()!!.id, getExchangeRateResult())
+        cameraResultViewModel.suggest(getWatchedSubjectId(), getExchangeRateResult())
         button.visibility = View.GONE
     }
 
     @SuppressLint("FragmentLiveDataObserve")
     private fun setSuggestButtonVisibility(button: Button) {
         cameraResultViewModel.loggedUser.observe(this, Observer {
-            if (getWatchedSubject() != null)
-                button.visibility = View.VISIBLE
+            button.visibility = View.VISIBLE
         })
     }
-
-    private fun getWatchedSubject() = activity!!.intent.extras!![CameraResultActivity.WATCHED_SUBJECT]
+    
+    private fun getWatchedSubjectId() = activity!!.intent.extras!![CameraResultActivity.WATCHED_SUBJECT]
         .run { if (this != null) this as WatchedSubject else null }
+        .run { this?.id }
 
     private fun getExchangeRateTableData(
         authorityRate: ExchangeRate,

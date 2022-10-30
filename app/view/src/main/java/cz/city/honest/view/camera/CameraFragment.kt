@@ -16,13 +16,13 @@ import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.dto.ExchangeRate
 import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.view.R
 import cz.city.honest.view.camera.result.CameraResultActivity
 import cz.city.honest.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
-import cz.honest.city.internal.provider.rate.ImageCameraAnalyzer
-import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
+import cz.city.honest.viewmodel.CameraViewModel
 import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
@@ -33,11 +33,16 @@ import javax.inject.Inject
 
 class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
 
+    private lateinit var cameraViewModel: CameraViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var imageExchangeRateResultProvider: ImageExchangeRateResultProvider
 
-    @Inject
-    lateinit var imageExchangeRateProvider: ImageExchangeRateProvider
+    /*@Inject
+    lateinit var imageExchangeRateProvider: ImageExchangeRateProvider*/
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -59,12 +64,23 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
         savedInstanceState: Bundle?
     ): View {
         val root = inflater.inflate(R.layout.fragment_camera, container, false)
-        imageExchangeRateResultProvider.result
+        also { setViewModels() }
+        /*imageExchangeRateResultProvider.result
             .observe(viewLifecycleOwner,
                 Observer { showCameraAnalyzerResult(it) }
-            )
+            )*/
+        cameraViewModel.result
+            .observe(viewLifecycleOwner,
+            Observer { showCameraAnalyzerResult(it) }
+        )
         return root
     }
+
+    private fun setViewModels() =
+        this.apply {
+            cameraViewModel =
+                ViewModelProvider(this, viewModelFactory).get(CameraViewModel::class.java)
+        }
 
     private fun showCameraAnalyzerResult(exchangeRate: ExchangeRate?) {
         exchangeRate?.let { openCameraResultActivity(it) }
@@ -156,7 +172,7 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     private fun findViewFinder(container: View): PreviewView =
@@ -204,7 +220,7 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
                 it.setAnalyzer(
                     cameraExecutor,
                     ImageCameraAnalyzer(
-                        imageExchangeRateProvider,
+                        cameraViewModel,
                         this::showAnalyzedText
                     )
                 )

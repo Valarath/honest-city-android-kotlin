@@ -36,8 +36,9 @@
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_filter.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_show_subject_suggestions.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_subject_detail.xml" value="0.178125" />
-        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_user_detail.xml" value="0.178125" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_user_detail.xml" value="0.33" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/menu/subject_menu.xml" value="0.178125" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/menu/user_menu.xml" value="0.5" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/xml/root_preferences.xml" value="0.178125" />
       </map>
     </option>

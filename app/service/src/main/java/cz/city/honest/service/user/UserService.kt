@@ -26,6 +26,7 @@ class UserService(
             .getUser(providerUserId, providerDataType)
 
     fun update(user: User) = internalUserGateway.update(user)
+        .map { user }
 
     fun insert(user: User) = internalUserGateway.insert(user)
 

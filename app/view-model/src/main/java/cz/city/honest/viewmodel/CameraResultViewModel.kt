@@ -3,15 +3,18 @@ package cz.city.honest.viewmodel
 import androidx.lifecycle.LiveDataReactiveStreams
 import cz.city.honest.dto.*
 import cz.city.honest.service.authority.AuthorityService
+import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.user.UserService
 import io.reactivex.rxjava3.core.BackpressureStrategy
+import io.reactivex.rxjava3.core.Observable
 import java.util.*
 import javax.inject.Inject
 
 class CameraResultViewModel @Inject constructor(
     private val authorityService: AuthorityService,
     private val suggestionService: SuggestionService,
+    private var positionProvider: PositionProvider,
     private val userService: UserService
 ) :
     ScheduledObservableViewModel() {
@@ -26,13 +29,44 @@ class CameraResultViewModel @Inject constructor(
         authorityService.getAuthority().toFlowable(BackpressureStrategy.LATEST)
     }
 
-    fun suggest(subjectId: String, exchangeRate: ExchangeRate) = suggestionService
-        .createSuggestion(
-            getNewExchangeRateSuggestion(subjectId, exchangeRate),
-            UserSuggestionStateMarking.NEW
-        )
-        .subscribe()
+    fun suggest(subjectId: String?, exchangeRate: ExchangeRate) =
+        getSubjectIdSafely(subjectId)
+            .flatMap { createNewExchangeRateSuggestion(it, exchangeRate) }
+            .subscribe()
 
+    private fun suggestNewSubject() =
+        positionProvider.provide()
+            .firstOrError()
+            .map { getNewExchangePointSuggestion(it) }
+            .flatMapObservable { suggestNewSubject(it) }
+            .map { it.id }
+
+    private fun suggestNewSubject(suggestion: NewExchangePointSuggestion) =
+        suggestionService
+            .createSuggestion(suggestion, UserSuggestionStateMarking.NEW)
+            .map { suggestion }
+
+    private fun getNewExchangePointSuggestion(position: Position) =
+        NewExchangePointSuggestion(
+            id = UUID.randomUUID().toString(),
+            state = State.IN_PROGRESS,
+            votes = 1,
+            position = position,
+            subjectId = null
+        )
+
+    private fun getSubjectIdSafely(subjectId: String?) =
+    if(subjectId == null)
+        suggestNewSubject()
+    else
+        Observable.just(subjectId)
+
+    private fun createNewExchangeRateSuggestion(subjectId: String, exchangeRate: ExchangeRate) =
+        suggestionService
+            .createSuggestion(
+                getNewExchangeRateSuggestion(subjectId, exchangeRate),
+                UserSuggestionStateMarking.NEW
+            )
 
     private fun getNewExchangeRateSuggestion(subjectId: String, exchangeRate: ExchangeRate) =
         ExchangeRateSuggestion(

@@ -17,7 +17,11 @@ class UpdateWorkerFactory(
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker? = UpdateWorker(context = appContext, workerParameters = workerParameters,updateService = updateService)
+    ): ListenableWorker? = UpdateWorker(
+        context = appContext,
+        workerParameters = workerParameters,
+        updateService = updateService
+    )
 }
 
 class UpdateWorkerManagerService(
@@ -50,14 +54,15 @@ class UpdateWorker(
     private val updateService: UpdateService
 ) : RxWorker(context, workerParameters) {
 
-    override fun createWork(): Single<Result> = Single
-        .fromObservable(updateService.update())
-        .map { Result.success() }
-        .onErrorReturn {
-            println(it)
-            Result.failure()
-        }
-        .subscribeOn(AndroidSchedulers.mainThread())
-        .observeOn(AndroidSchedulers.mainThread())
-
+    override fun createWork(): Single<Result> =
+        updateService.update()
+            .lastElement()
+            .toSingle()
+            .map { Result.success() }
+            .onErrorReturn {
+                println(it)
+                Result.failure()
+            }
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
 }

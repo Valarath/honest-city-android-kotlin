@@ -14,4 +14,6 @@ interface InternalAuthorizationGateway<DATA : LoginData> {
 
     fun getAuthenticationToken(user: User): Maybe<String>
 
+    fun logout(user: User) :Observable<User>
+
 }

@@ -96,7 +96,6 @@
 
         <activity
             android:name="cz.city.honest.application.main.MainActivity"
-            android:label="Main activity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

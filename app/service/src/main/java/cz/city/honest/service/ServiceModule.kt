@@ -2,6 +2,7 @@ package cz.city.honest.service
 
 import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.LoginProvider
+import cz.city.honest.service.analyze.AnalyticService
 import cz.city.honest.service.authority.AuthorityService
 import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.filter.FilterService
@@ -122,6 +123,13 @@ class ServiceModule {
         internalUserGateway: InternalUserGateway
     ): UserService =
         UserService(externalUserGateway, internalUserSuggestionGateway, internalUserGateway)
+
+    @Provides
+    @Singleton
+    fun getAnalyticService(
+        internalImageAnalyticGateway: InternalImageAnalyticGateway
+    ): AnalyticService =
+        AnalyticService(internalImageAnalyticGateway)
 
     @Provides
     @Singleton

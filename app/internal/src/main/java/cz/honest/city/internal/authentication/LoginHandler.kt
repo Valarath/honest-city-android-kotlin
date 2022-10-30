@@ -30,14 +30,17 @@ abstract class LoginHandler<DATA : LoginData>(
         .filter { it.name == user.username }
         .switchIfEmpty { addToAccountManager(toAccount(user),accessToken)  }
         .map { accountManager.setAuthToken(it, AUTH_TOKEN_TYPE, accessToken) }
-        //.switchIfEmpty {addToAccountManager(toAccount(user),accessToken)  }
         .map { user }
+
+    protected fun invalidateAuthenticationToken(user: User) =
+        getAuthenticationToken(user)
+            .map { accountManager.invalidateAuthToken(AUTH_TOKEN_TYPE,it) }
+            .map { user.logged = false }
+            .map { user }
 
     private fun addToAccountManager(account: Account, accessToken: String) =
         Observable.just(account)
             .map { accountManager.addAccountExplicitly(account, accessToken, Bundle()) }
-            //.map { accountManager.setAuthToken(account, AUTH_TOKEN_TYPE, accessToken) }
-
 
     private fun toAccount(user: User) = Account(user.username, "honest.city.cz")
 
@@ -49,11 +52,6 @@ abstract class LoginHandler<DATA : LoginData>(
                 else
                     Maybe.just(accountManager.peekAuthToken(it.first(), AUTH_TOKEN_TYPE))
             }
-        /*Maybe.fromObservable(
-        Observable.fromArray(*accountManager.accounts)
-            .filter { it.name == user.username }
-            .map { accountManager.peekAuthToken(it, AUTH_TOKEN_TYPE) })
-            //.switchIfEmpty { Observable.empty<String>() })*/
 
     companion object{
         const val AUTH_TOKEN_TYPE = "USER_ACCESS"

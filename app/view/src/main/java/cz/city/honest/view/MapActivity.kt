@@ -49,38 +49,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
         supportActionBar!!.hide()
         mapViewModel = ViewModelProvider(this, viewModelFactory).get(MapViewModel::class.java)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.CAMERA
-                ), 1
-            )
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            // scheduleJobs(this)
-            return
-        }
-        //TODO you want these two
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, this)
-        //scheduleJobs(this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1200000, 15.0f, this)
     }
 
     /**
@@ -93,21 +62,26 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        map.setOnMarkerClickListener(MapClickListener(this))
+        setMapProperty(googleMap)
         setLoginButton()
         setFilterButton()
+        setAnalyzeSubjectButtonBehaviour()
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
         mapViewModel.newExchangePointSuggestions.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
     }
 
+    private fun setMapProperty(googleMap: GoogleMap) {
+        map = googleMap
+        map.setOnMarkerClickListener(MapClickListener(this))
+        map.isMyLocationEnabled = true
+        map.uiSettings.isMyLocationButtonEnabled = false
+    }
 
     private fun getLoggedUserObserver(): Observer<User> {
         return Observer {
             setLoginButton(visibility = View.GONE)
             setUserDetailButton(it)
-            setCreateSubjectButtonBehaviour()
         }
     }
 
@@ -126,26 +100,6 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
         }
     }
 
-    /*
-    private fun scheduleJobs(context: Context) =
-        context.getSystemService(JobScheduler::class.java)
-            .schedule(getJobInfoUpdateBuilder(context))
-
-
-    private fun getJobInfoUpdateBuilder(context: Context) =
-        JobInfo.Builder(0, getUpdateScheduledJobComponentName(context))
-            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-            //.setPeriodic(connectionProperties.receiveDataAtHours * 60 * 60 * 1000)
-            //.setPeriodic(connectionProperties.receiveDataAtHours  * 60 * 1000)
-            .setMinimumLatency(1)
-            .setOverrideDeadline(1)
-            .setRequiresCharging(true)
-            .build()
-
-
-    private fun getUpdateScheduledJobComponentName(context: Context) =
-        ComponentName(context, UpdateScheduledJob::class.java)*/
-
     private fun setUserDetailButton(user: User) =
         findViewById<Button>(R.id.user_detail)
             .also {
@@ -161,13 +115,10 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
     private fun setUserDetailButtonListener() =
         this.startActivity(Intent(this, UserDetailActivity::class.java))
 
-    //TODO uprav tak aby to mohl použít i nepřihlášený uživatel
-    private fun setCreateSubjectButtonBehaviour() =
+    private fun setAnalyzeSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)
-            .apply { this.visibility = View.VISIBLE }
             .also {
                 it.setOnClickListener {
-                    mapViewModel.suggestNewSubject()
                     this.startActivity(Intent(this, CameraActivity::class.java))
                 }
             }
@@ -183,7 +134,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        TODO("Not yet implemented")
+
     }
 
 }

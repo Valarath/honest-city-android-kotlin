@@ -7,11 +7,13 @@ import com.google.mlkit.vision.text.TextRecognition
 import cz.city.honest.analyzer.ExchangeRateAnalyzer
 import cz.city.honest.dto.ExchangeRate
 import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Observable
 import kotlin.math.absoluteValue
 
 class ImageExchangeRateProvider(
     private val imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
-    private val exchangeRateAnalyzers: List<ExchangeRateAnalyzer>
+    private val exchangeRateAnalyzers: List<ExchangeRateAnalyzer>,
+    private var result:Observable<ExchangeRate> = Observable.empty()
 ) {
 
     fun provide(image: InputImage, textCallback: (lines: List<String>) -> Unit) =
@@ -25,8 +27,11 @@ class ImageExchangeRateProvider(
                     .toTypedArray())
                     .subscribe {
                         imageExchangeRateResultProvider.result.postClearValue(it)
+                        result = Observable.just(it)
                     }
             }
+
+    fun getResult() = result
 
     private fun getTextLines(text: Text) = mutableListOf<MutableList<Text.Line>>()
         .apply { fillTextLines(text, this) }

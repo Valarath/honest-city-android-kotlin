@@ -24,6 +24,7 @@ import android.graphics.Rect
 import android.media.Image
 import androidx.annotation.ColorInt
 import androidx.camera.core.ImageProxy
+import cz.city.honest.dto.AnalyzeImageData
 
 /**
  * Utility class for manipulating images.
@@ -31,6 +32,47 @@ import androidx.camera.core.ImageProxy
 object ImageUtils {
     private val CHANNEL_RANGE = 0 until (1 shl 18)
 
+
+    fun getInputImage(imageData: AnalyzeImageData):Bitmap{
+        val rotationDegrees = imageData.rotationDegrees
+        var imageCropPercentages = Pair(72,4)
+        // We requested a setTargetAspectRatio, but it's not guaranteed that's what the camera
+        // stack is able to support, so we calculate the actual ratio from the first frame to
+        // know how to appropriately crop the image we want to analyze.
+        val imageHeight = imageData.height
+        val imageWidth = imageData.width
+
+        val actualAspectRatio = imageWidth / imageHeight
+
+        val convertImageToBitmap = convertYuv420888ImageToBitmap(imageData.image)
+        val cropRect = Rect(0, 0, imageWidth, imageHeight)
+
+        // If the image has a way wider aspect ratio than expected, crop less of the height so we
+        // don't end up cropping too much of the image. If the image has a way taller aspect ratio
+        // than expected, we don't have to make any changes to our cropping so we don't handle it
+        // here.
+        if (actualAspectRatio > 3) {
+            val originalHeightCropPercentage = imageCropPercentages.first
+            val originalWidthCropPercentage = imageCropPercentages.second
+            imageCropPercentages = Pair(originalHeightCropPercentage / 2, originalWidthCropPercentage)
+        }
+
+        // If the image is rotated by 90 (or 270) degrees, swap height and width when calculating
+        // the crop.
+        val heightCropPercent = imageCropPercentages.first
+        val widthCropPercent = imageCropPercentages.second
+        val (widthCrop, heightCrop) = when (rotationDegrees) {
+            90, 270 -> Pair(heightCropPercent / 100f, widthCropPercent / 100f)
+            else -> Pair(widthCropPercent / 100f, heightCropPercent / 100f)
+        }
+
+        cropRect.inset(
+            (imageWidth * widthCrop / 2).toInt(),
+            (imageHeight * heightCrop / 2).toInt()
+        )
+
+        return rotateAndCrop(convertImageToBitmap, rotationDegrees, cropRect)
+    }
 
     fun getInputImage(imageProxy: ImageProxy, mediaImage: Image):Bitmap{
         val rotationDegrees = imageProxy.imageInfo.rotationDegrees

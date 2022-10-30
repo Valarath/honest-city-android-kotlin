@@ -2,20 +2,19 @@ package cz.city.honest.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import cz.city.honest.dto.*
+import cz.city.honest.dto.NewExchangePointSuggestion
+import cz.city.honest.dto.User
+import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.service.filter.FilterService
-import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.subject.SubjectService
 import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.user.UserService
 import cz.city.honest.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
-import java.util.*
 import javax.inject.Inject
 
 class MapViewModel @Inject constructor(
     private var subjectService: SubjectService,
     private var suggestionService: SuggestionService,
-    private var positionProvider: PositionProvider,
     private var userService: UserService,
     private var filterService: FilterService
 ) : ScheduledObservableViewModel() {
@@ -27,27 +26,6 @@ class MapViewModel @Inject constructor(
 
     private fun getUser() = scheduleFlowable()
         .flatMap {  userService.getUserDataAsMaybe().toFlowable()}
-
-    fun suggestNewSubject() =
-        positionProvider.provide()
-            .firstOrError()
-            .map { getNewExchangePointSuggestion(it) }
-            .flatMapObservable { suggestNewSubject(it) }
-            .subscribe { it }
-
-    private fun suggestNewSubject(suggestion: NewExchangePointSuggestion) =
-        suggestionService
-            .createSuggestion(suggestion, UserSuggestionStateMarking.NEW)
-            .map { suggestion }
-
-    private fun getNewExchangePointSuggestion(position: Position) =
-        NewExchangePointSuggestion(
-            id = UUID.randomUUID().toString(),
-            state = State.IN_PROGRESS,
-            votes = 1,
-            position = position,
-            subjectId = null
-        )
 
     private fun getSubjects() =  scheduleFlowable()
         .flatMap { filterService.getFilter().toFlowable() }

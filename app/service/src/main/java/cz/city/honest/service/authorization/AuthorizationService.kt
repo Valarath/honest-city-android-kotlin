@@ -27,6 +27,10 @@ class AuthorizationService(
             .toObservable()
             .flatMap { loginResponse -> login(loginResponse.user,loginResponse.accessToken).map { loginResponse } }
 
+    fun logout() = userService.getLoggedUser()
+        .flatMap { getInternalAuthorizationGateway(it).logout(it) }
+        .flatMap {  userService.update(it)}
+
     fun register(loginData: LoginData) =
         externalAuthorizationGateway
             .register(loginData)
