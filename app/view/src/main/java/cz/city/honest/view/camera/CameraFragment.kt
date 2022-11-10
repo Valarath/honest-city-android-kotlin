@@ -6,8 +6,10 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.*
 import android.widget.TextView
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -29,6 +31,10 @@ import kotlinx.android.synthetic.main.fragment_camera.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.ln
+import kotlin.math.max
+import kotlin.math.min
 
 
 class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
@@ -206,13 +212,17 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
 
     private fun getPreview() =
         Preview.Builder()
+            .setTargetAspectRatio(getAspectRatio())
+            .setTargetRotation(getDisplayRotation())
             .build()
             .apply { setSurfaceProvider(viewfinder.surfaceProvider) }
 
 
     private fun getImageAnalyzer() =
         ImageAnalysis.Builder()
+            .setTargetAspectRatio(getAspectRatio())
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setTargetRotation(getDisplayRotation())
             .build()
             .also {
                 it.setAnalyzer(
@@ -223,5 +233,21 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
                     )
                 )
             }
+
+    private fun getDisplayRotation() = viewFinder.display.rotation
+
+    private fun getAspectRatio() = DisplayMetrics()
+        .also { viewFinder.display.getRealMetrics(it) }
+        .run { aspectRatio(widthPixels,heightPixels) }
+
+    private fun aspectRatio(width: Int, height: Int): Int {
+        val previewRatio = ln(max(width, height).toDouble() / min(width, height))
+        if (abs(previewRatio - ln(4.0 / 3.0))
+            <= abs(previewRatio - ln(16.0 / 9.0))
+        ) {
+            return AspectRatio.RATIO_4_3
+        }
+        return AspectRatio.RATIO_16_9
+    }
 
 }
