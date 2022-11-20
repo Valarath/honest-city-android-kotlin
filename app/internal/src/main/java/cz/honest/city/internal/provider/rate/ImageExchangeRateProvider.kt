@@ -1,6 +1,5 @@
 package cz.honest.city.internal.provider.rate
 
-import androidx.lifecycle.MutableLiveData
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -11,7 +10,6 @@ import io.reactivex.rxjava3.core.Observable
 import kotlin.math.absoluteValue
 
 class ImageExchangeRateProvider(
-    private val imageExchangeRateResultProvider: ImageExchangeRateResultProvider,
     private val exchangeRateAnalyzers: List<ExchangeRateAnalyzer>,
     private var result:Observable<ExchangeRate> = Observable.empty()
 ) {
@@ -26,12 +24,14 @@ class ImageExchangeRateProvider(
                 Maybe.mergeArray(*exchangeRateAnalyzers.map { it.analyze(textLines) }
                     .toTypedArray())
                     .subscribe {
-                        imageExchangeRateResultProvider.result.postClearValue(it)
                         result = Observable.just(it)
                     }
             }
 
-    fun getResult() = result
+    fun getResult() = result.map {
+        result =Observable.empty()
+        it
+    }
 
     private fun getTextLines(text: Text) = mutableListOf<MutableList<Text.Line>>()
         .apply { fillTextLines(text, this) }
@@ -53,7 +53,6 @@ class ImageExchangeRateProvider(
         .eachCount()
         .filterValues { it > 1 }
         .keys
-
 
     private fun fillTextLines(text: Text, lines: MutableList<MutableList<Text.Line>>) = text
         .textBlocks
@@ -79,14 +78,6 @@ class ImageExchangeRateProvider(
             && (line.cornerPoints!!.first().y - lines.last()
         .first().cornerPoints!!.first().y).absoluteValue <= 10
 
-
     private fun getLinesSize(lines: List<List<Text.Line>>) = lines.flatten().count()
 
 }
-
-fun <DATA> MutableLiveData<DATA>.postClearValue(value: DATA) = this.apply {
-    postValue(null)
-    postValue(value!!)
-}
-
-class ImageExchangeRateResultProvider(val result: MutableLiveData<ExchangeRate> = MutableLiveData())

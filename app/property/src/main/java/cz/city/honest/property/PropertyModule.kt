@@ -6,10 +6,10 @@ import javax.inject.Singleton
 
 @Module
 class PropertyModule {
-
-    @Provides
-    @Singleton
-    fun getConnectionProperties(): ConnectionProperties =
-        PropertyProvider.get(ConnectionProperties::class.java)
-
+    companion object {
+        @Provides
+        @Singleton
+        fun getConnectionProperties(): ConnectionProperties =
+            PropertyProvider.get(ConnectionProperties::class.java)
+    }
 }

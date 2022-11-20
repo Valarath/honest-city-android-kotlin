@@ -17,6 +17,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.dto.ExchangeRate
@@ -25,6 +27,7 @@ import cz.city.honest.view.R
 import cz.city.honest.view.camera.result.CameraResultActivity
 import cz.city.honest.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
 import cz.city.honest.viewmodel.CameraViewModel
+import cz.city.honest.viewmodel.postClearValue
 //import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
@@ -43,12 +46,6 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    //@Inject
-    //lateinit var imageExchangeRateResultProvider: ImageExchangeRateResultProvider
-/*
-    @Inject
-    lateinit var imageExchangeRateProvider: ImageExchangeRateProvider*/
 
     private lateinit var cameraExecutor: ExecutorService
 
@@ -71,9 +68,6 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
     ): View {
         val root = inflater.inflate(R.layout.fragment_camera, container, false)
         also { setViewModels() }
-        /*imageExchangeRateResultProvider.result
-            .observe(viewLifecycleOwner,
-            )*/
         cameraViewModel.result
             .observe(viewLifecycleOwner,
             Observer { showCameraAnalyzerResult(it) }
@@ -96,7 +90,6 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
         intent.putExtra(EXCHANGE_RATE_RESULT, exchangeRate)
         intent.putExtra(CameraResultActivity.WATCHED_SUBJECT, getWatchedSubject())
         startActivity(intent)
-        //cameraViewModel.result.postValue(null)
     }
 
     private fun getWatchedSubject(): WatchedSubject? =

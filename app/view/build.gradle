@@ -34,7 +34,6 @@ android {
 dependencies {
     implementation project(':app:dto')
     implementation project(':app:view-model')
-    //implementation project(':app:internal')
 
     implementation "com.facebook.android:facebook-android-sdk:$facebookAndroidVersion"
     implementation "androidx.core:core-ktx:$coreKtxVersion"

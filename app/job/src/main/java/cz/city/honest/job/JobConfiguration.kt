@@ -7,15 +7,19 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class JobModule(){
+class JobModule() {
+    companion object {
+        @Provides
+        @Singleton
+        fun provideUpdateWorkerManagerService(
+            context: Context,
+            workersFactory: UpdateWorkerFactory
+        ) =
+            UpdateWorkerManagerService(context, workersFactory)
 
-    @Provides
-    @Singleton
-    fun provideUpdateWorkerManagerService(context: Context, workersFactory: UpdateWorkerFactory) =
-        UpdateWorkerManagerService(context, workersFactory)
-
-    @Provides
-    @Singleton
-    fun provideUpdateWorkerFactory(updateService: UpdateService) =
-        UpdateWorkerFactory(updateService)
+        @Provides
+        @Singleton
+        fun provideUpdateWorkerFactory(updateService: UpdateService) =
+            UpdateWorkerFactory(updateService)
+    }
 }

@@ -124,9 +124,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
             }
 
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
-        MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this).also {
-            println("suggestions id: " + watchedSubject.suggestions.first().id)
-        }
+        MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)
     }
 
     override fun onLocationChanged(location: Location) {

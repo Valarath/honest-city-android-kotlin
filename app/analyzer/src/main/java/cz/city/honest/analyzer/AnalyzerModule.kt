@@ -7,14 +7,15 @@ import javax.inject.Singleton
 
 @Module
 class AnalyzerModule {
+    companion object {
+        @Provides
+        @Singleton
+        fun getRowExchangeRateAnalyzer(currencySettingsService: CurrencySettingsService): RowExchangeRateAnalyzer =
+            RowExchangeRateAnalyzer(currencySettingsService)
 
-    @Provides
-    @Singleton
-    fun getRowExchangeRateAnalyzer(currencySettingsService: CurrencySettingsService):RowExchangeRateAnalyzer =
-        RowExchangeRateAnalyzer(currencySettingsService)
-
-    @Provides
-    @Singleton
-    fun getExchangeRateAnalyzers(rowExchangeRateAnalyzer: RowExchangeRateAnalyzer): List<ExchangeRateAnalyzer> =
-        listOf(rowExchangeRateAnalyzer)
+        @Provides
+        @Singleton
+        fun getExchangeRateAnalyzers(rowExchangeRateAnalyzer: RowExchangeRateAnalyzer): List<ExchangeRateAnalyzer> =
+            listOf(rowExchangeRateAnalyzer)
+    }
 }
