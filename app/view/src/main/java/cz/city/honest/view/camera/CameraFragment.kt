@@ -1,10 +1,7 @@
 package cz.city.honest.view.camera
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
@@ -17,8 +14,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.dto.ExchangeRate
@@ -27,7 +22,6 @@ import cz.city.honest.view.R
 import cz.city.honest.view.camera.result.CameraResultActivity
 import cz.city.honest.view.camera.result.CameraResultActivity.Companion.EXCHANGE_RATE_RESULT
 import cz.city.honest.viewmodel.CameraViewModel
-import cz.city.honest.viewmodel.postClearValue
 //import cz.honest.city.internal.provider.rate.ImageExchangeRateResultProvider
 import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.fragment_camera.*
@@ -70,8 +64,8 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
         also { setViewModels() }
         cameraViewModel.result
             .observe(viewLifecycleOwner,
-            Observer { showCameraAnalyzerResult(it) }
-        )
+                Observer { showCameraAnalyzerResult(it) }
+            )
         return root
     }
 
@@ -138,34 +132,44 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
     override fun surfaceCreated(holder: SurfaceHolder) {
     }
 
-    private fun DrawFocusRect(color: Int, holder: SurfaceHolder) {
+    private fun drawFocusRectangle(holder: SurfaceHolder) {
         val height: Int = viewFinder.height
         val width: Int = viewFinder.width
-
-        var diameter = width
-        if (height < width) {
-            diameter = height
-        }
-        val offset = (0.05 * diameter).toInt()
-        diameter -= offset
         val canvas = holder.lockCanvas()
         canvas.drawColor(0, PorterDuff.Mode.CLEAR)
-        //border's properties
-        val paint = Paint()
-        paint.style = Paint.Style.STROKE
-        paint.color = color
-        paint.strokeWidth = 5f
-        val left = width / 2 - diameter / 3
-        val top = height / 2 - diameter / 3
-        val right = width / 2 + diameter / 3
-        val bottom = height / 2 + diameter / 3
-
-        canvas.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
+        drawOnCanvas(canvas, height, width)
         holder.unlockCanvasAndPost(canvas)
     }
 
+    private fun drawOnCanvas(canvas: Canvas, height: Int, width: Int) {
+        val diameter = getDiameter(height, width)
+        canvas.drawRect(
+            (width / 2 - diameter / 3).toFloat(),
+            (height / 2 - diameter / 3).toFloat(),
+            (width / 2 + diameter / 3).toFloat(),
+            (height / 2 + diameter / 3).toFloat(),
+            getBorderPaint()
+        )
+    }
+
+    private fun getBorderPaint() = Paint()
+        .also {
+            it.style = Paint.Style.STROKE
+            it.color = Color.parseColor("#b3dabb")
+            it.strokeWidth = 5f
+        }
+
+    private fun getDiameter(height: Int, width: Int): Int {
+        var diameter = width
+        if (height < width)
+            diameter = height
+        val offset = (0.05 * diameter).toInt()
+        diameter -= offset
+        return diameter
+    }
+
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        DrawFocusRect(Color.parseColor("#b3dabb"), holder)
+        drawFocusRectangle(holder)
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder) {
@@ -231,15 +235,12 @@ class CameraFragment : DaggerAppCompatDialogFragment(), SurfaceHolder.Callback {
 
     private fun getAspectRatio() = DisplayMetrics()
         .also { viewFinder.display.getRealMetrics(it) }
-        .run { aspectRatio(widthPixels,heightPixels) }
+        .run { aspectRatio(widthPixels, heightPixels) }
 
     private fun aspectRatio(width: Int, height: Int): Int {
         val previewRatio = ln(max(width, height).toDouble() / min(width, height))
-        if (abs(previewRatio - ln(4.0 / 3.0))
-            <= abs(previewRatio - ln(16.0 / 9.0))
-        ) {
+        if (abs(previewRatio - ln(4.0 / 3.0)) <= abs(previewRatio - ln(16.0 / 9.0)))
             return AspectRatio.RATIO_4_3
-        }
         return AspectRatio.RATIO_16_9
     }
 
