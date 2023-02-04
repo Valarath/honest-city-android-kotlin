@@ -88,12 +88,12 @@ class ExternalSourceModule() {
                         objectMapper
                     )
                 )
-                this.addDeserializer(
-                    Vote::class.java,
-                    VoteSerializer(
-                        objectMapper
-                    )
-                )
+//                this.addDeserializer(
+//                    Vote::class.java,
+//                    VoteSerializer(
+//                        objectMapper
+//                    )
+//                )
             }
 
         @Provides

@@ -16,9 +16,9 @@ class SuggestionSerializer(objectMapper: ObjectMapper) :
         ClosedExchangePointSuggestion::class.java.simpleName to ClosedExchangePointSuggestion::class.java
     ))
 
-class VoteSerializer(objectMapper: ObjectMapper) :
-    JsonDeserializer<Vote>(objectMapper,mapOf(
-        VoteForExchangePointDelete::class.java.simpleName to VoteForExchangePointDelete::class.java,
-        VoteForExchangePointRateChange::class.java.simpleName to VoteForExchangePointRateChange::class.java,
-        VoteForNewExchangePoint::class.java.simpleName to VoteForNewExchangePoint::class.java
-    ))
+//class VoteSerializer(objectMapper: ObjectMapper) :
+//    JsonDeserializer<Vote>(objectMapper,mapOf(
+//        VoteForExchangePointDelete::class.java.simpleName to VoteForExchangePointDelete::class.java,
+//        VoteForExchangePointRateChange::class.java.simpleName to VoteForExchangePointRateChange::class.java,
+//        VoteForNewExchangePoint::class.java.simpleName to VoteForNewExchangePoint::class.java
+//    ))

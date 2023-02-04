@@ -22,6 +22,7 @@ class VoteService(
 
     private fun updateVotes(user: User, accessToken: String) =
         internalVoteGateway.updateVotes(user)
+            .filter { !it.processed }
             .map { setAsProcessed(it) }
             .toList()
             .toObservable()

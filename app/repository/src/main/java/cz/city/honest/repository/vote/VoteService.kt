@@ -10,35 +10,34 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class VoteService(
-    private val voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>
+    private val voteRepository: VoteRepository
 ) : InternalVoteGateway {
 
-    override fun updateVotes(user: User): Flowable<out Vote> =
-        Flowable.fromIterable(voteRepositories.values)
-            .flatMap { it.get(listOf(user.id)) }
+    override fun updateVotes(user: User): Flowable<Vote> =
+        voteRepository.get(listOf(user.id))
 
     override fun update(vote: Vote): Observable<Unit> =
-        RepositoryProvider.provide(voteRepositories, vote::class.java)
+        voteRepository
             .update(vote)
-            .map { }
+            .map {  }
 
     override fun vote(vote: Vote): Observable<Unit> =
-        RepositoryProvider.provide(voteRepositories, vote::class.java)
+        voteRepository
             .insert(vote)
             .map { }
 
     override fun delete(vote: Vote): Observable<Unit> =
-        RepositoryProvider.provide(voteRepositories, vote::class.java)
+        voteRepository
             .delete(vote)
             .map { }
 
     override fun delete(suggestion: Suggestion, user: User): Observable<Unit> =
-        Observable.just(voteRepositories.values.first())
-            .flatMap { it.delete(suggestion.id, user.id) }
+        voteRepository
+            .delete(suggestion.id, user.id)
             .map { }
 
-    override fun getUserSubjectVotes(subjectId: String, userId: String): Observable<out Vote> =
-        Flowable.fromIterable(voteRepositories.values)
-            .flatMap { it.getBySubjectId(subjectId, userId) }
+    override fun getUserSubjectVotes(subjectId: String, userId: String): Observable<Vote> =
+        voteRepository
+            .getBySubjectId(subjectId, userId)
             .toObservable()
 }

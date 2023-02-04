@@ -8,7 +8,7 @@ import io.reactivex.rxjava3.core.Observable
 
 interface InternalVoteGateway {
 
-    fun updateVotes(user: User): Flowable<out Vote>
+    fun updateVotes(user: User): Flowable<Vote>
 
     fun update(vote: Vote): Observable<Unit>
 
@@ -18,6 +18,6 @@ interface InternalVoteGateway {
 
     fun delete(suggestion: Suggestion, user: User): Observable<Unit>
 
-    fun getUserSubjectVotes(subjectId: String, userId: String): Observable<out Vote>
+    fun getUserSubjectVotes(subjectId: String, userId: String): Observable<Vote>
 
 }

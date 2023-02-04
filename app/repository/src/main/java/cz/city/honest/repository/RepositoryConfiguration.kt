@@ -26,9 +26,6 @@ import cz.city.honest.repository.user.UserSuggestionRepository
 import cz.city.honest.repository.user.UserSuggestionService
 import cz.city.honest.repository.vote.VoteRepository
 import cz.city.honest.repository.vote.VoteService
-import cz.city.honest.repository.vote.subject.exchnge.ExchangePointDeleteVoteRepository
-import cz.city.honest.repository.vote.subject.exchnge.ExchangePointRateChangeVoteRepository
-import cz.city.honest.repository.vote.subject.exchnge.NewExchangePointVoteRepository
 import cz.city.honest.service.gateway.internal.*
 import dagger.Module
 import dagger.Provides
@@ -142,33 +139,41 @@ class RepositoryModule() {
 
         @Provides
         @Singleton
-        @IntoMap
-        @StringKey("VoteForExchangePointDelete")
         fun getExchangePointDeleteVoteRepository(
             operationProvider: DatabaseOperationProvider,
             suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-        ): VoteRepository<out Vote, out Suggestion> =
-            ExchangePointDeleteVoteRepository(operationProvider, suggestionRepositories)
-
-        @Provides
-        @Singleton
-        @IntoMap
-        @StringKey("VoteForExchangePointRateChange")
-        fun getExchangePointRateChangeRepository(
-            operationProvider: DatabaseOperationProvider,
-            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-        ): VoteRepository<out Vote, out Suggestion> =
-            ExchangePointRateChangeVoteRepository(operationProvider, suggestionRepositories)
-
-        @Provides
-        @Singleton
-        @IntoMap
-        @StringKey("VoteForNewExchangePoint")
-        fun getNewExchangePointVoteRepository(
-            operationProvider: DatabaseOperationProvider,
-            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-        ): VoteRepository<out Vote, out Suggestion> =
-            NewExchangePointVoteRepository(operationProvider, suggestionRepositories)
+        ): VoteRepository =
+            VoteRepository(operationProvider, suggestionRepositories)
+//
+//        @Provides
+//        @Singleton
+//        @IntoMap
+//        @StringKey("VoteForExchangePointDelete")
+//        fun getExchangePointDeleteVoteRepository(
+//            operationProvider: DatabaseOperationProvider,
+//            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+//        ): VoteRepository<out Vote, out Suggestion> =
+//            ExchangePointDeleteVoteRepository(operationProvider, suggestionRepositories)
+//
+//        @Provides
+//        @Singleton
+//        @IntoMap
+//        @StringKey("VoteForExchangePointRateChange")
+//        fun getExchangePointRateChangeRepository(
+//            operationProvider: DatabaseOperationProvider,
+//            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+//        ): VoteRepository<out Vote, out Suggestion> =
+//            ExchangePointRateChangeVoteRepository(operationProvider, suggestionRepositories)
+//
+//        @Provides
+//        @Singleton
+//        @IntoMap
+//        @StringKey("VoteForNewExchangePoint")
+//        fun getNewExchangePointVoteRepository(
+//            operationProvider: DatabaseOperationProvider,
+//            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+//        ): VoteRepository<out Vote, out Suggestion> =
+//            NewExchangePointVoteRepository(operationProvider, suggestionRepositories)
 
         @Provides
         @Singleton
@@ -202,7 +207,7 @@ class RepositoryModule() {
 
         @Provides
         @Singleton
-        fun getVoteService(voteRepositories: Map<String, @JvmSuppressWildcards VoteRepository<out Vote, out Suggestion>>): InternalVoteGateway =
+        fun getVoteService(voteRepositories: VoteRepository): InternalVoteGateway =
             VoteService(voteRepositories)
     }
 }
