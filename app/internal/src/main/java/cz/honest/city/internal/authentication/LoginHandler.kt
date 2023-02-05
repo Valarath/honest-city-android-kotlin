@@ -28,32 +28,35 @@ abstract class LoginHandler<DATA : LoginData>(
         accessToken: String
     ) = Observable.fromArray(*accountManager.accounts)
         .filter { it.name == user.username }
-        .switchIfEmpty { addToAccountManager(toAccount(user),accessToken)  }
+        .switchIfEmpty { addToAccountManager(toAccount(user), accessToken) }
         .map { accountManager.setAuthToken(it, AUTH_TOKEN_TYPE, accessToken) }
         .map { user }
 
     protected fun invalidateAuthenticationToken(user: User) =
         getAuthenticationToken(user)
-            .map { accountManager.invalidateAuthToken(AUTH_TOKEN_TYPE,it) }
+            .map { accountManager.invalidateAuthToken(AUTH_TOKEN_TYPE, it) }
             .map { user.logged = false }
             .map { user }
 
     private fun addToAccountManager(account: Account, accessToken: String) =
         Observable.just(account)
             .map { accountManager.addAccountExplicitly(account, accessToken, Bundle()) }
+            .map { accountManager.setAuthToken(account,AUTH_TOKEN_TYPE,accessToken) }
 
-    private fun toAccount(user: User) = Account(user.username, "honest.city.cz")
+    private fun toAccount(user: User) =
+        Account(user.username, "honest.city.cz")
 
     override fun getAuthenticationToken(user: User) =
         Maybe.just(accountManager.accounts)
             .map { it.filter { it.name == user.username } }
-            .flatMap { if(it.isEmpty())
+            .flatMap {
+                if (it.isEmpty())
                     Maybe.empty()
                 else
                     Maybe.just(accountManager.peekAuthToken(it.first(), AUTH_TOKEN_TYPE))
             }
 
-    companion object{
+    companion object {
         const val AUTH_TOKEN_TYPE = "USER_ACCESS"
     }
 }
