@@ -18,6 +18,7 @@ import cz.city.honest.dto.State
 import cz.city.honest.dto.UserSuggestionStateMarking
 import cz.city.honest.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatActivity
+import kotlinx.android.synthetic.main.activity_subject_detail.*
 import java.util.*
 import javax.inject.Inject
 

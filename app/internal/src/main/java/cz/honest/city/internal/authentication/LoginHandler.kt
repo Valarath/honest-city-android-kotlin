@@ -13,7 +13,7 @@ import io.reactivex.rxjava3.core.Single
 
 abstract class LoginHandler<DATA : LoginData>(
     protected val context: Context,
-    private val accountManager: AccountManager = AccountManager.get(context)
+    val accountManager: AccountManager = AccountManager.get(context)
 ) : InternalAuthorizationGateway<DATA> {
 
     protected fun registerAccountInAccountManager(

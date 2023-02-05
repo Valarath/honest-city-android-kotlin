@@ -35,7 +35,7 @@ class AuthorizationService(
         externalAuthorizationGateway
             .register(loginData)
             .toObservable()
-            .map { getInternalAuthorizationGateway(it.user).register(it.user, it.accessToken) }
+            .flatMap { getInternalAuthorizationGateway(it.user).register(it.user, it.accessToken) }
 
     fun getAuthenticationToken(user: User) = getInternalAuthorizationGateway(user)
         .getAuthenticationToken(user)

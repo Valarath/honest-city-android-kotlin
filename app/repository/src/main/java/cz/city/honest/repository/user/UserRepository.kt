@@ -11,26 +11,25 @@ import cz.city.honest.repository.autorization.LoginDataRepository
 import cz.city.honest.repository.toBoolean
 import cz.city.honest.repository.toInt
 import cz.city.honest.repository.RepositoryProvider
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.core.*
 
 class UserRepository(
     operationProvider: DatabaseOperationProvider,
     private val loginDataRepositories: Map<String, LoginDataRepository<out LoginData>>
 ) : Repository<User>(operationProvider) {
 
-    override fun insert(entity: User): Observable<Long> = Observable.just(
-        databaseOperationProvider.writableDatabase.insertWithOnConflict(
-            TABLE_NAME,
-            null,
-            getContentValues(entity),
-            SQLiteDatabase.CONFLICT_REPLACE
-        )
-    )
-        .map { getLoginDataRepository(entity.loginData.javaClass.simpleName) }
-        .flatMap { it.insert(entity.loginData) }
+    override fun insert(entity: User): Observable<Long> = Observable.just(insertEntityWithSubscription(entity))
+        .map { 1L }
+
+    private fun insertEntityWithSubscription(entity: User) = getLoginDataRepository(entity.loginData.javaClass.simpleName).insert(entity.loginData)
+        .map {
+            databaseOperationProvider.writableDatabase.insertWithOnConflict(
+                TABLE_NAME,
+                null,
+                getContentValues(entity),
+                SQLiteDatabase.CONFLICT_REPLACE
+            )
+        }.subscribe()
 
     override fun update(entity: User): Observable<Int> =
         Observable.just(
