@@ -1,4 +1,4 @@
-package cz.city.honest.external
+package cz.city.honest.service.mapping
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import cz.city.honest.dto.*
@@ -15,10 +15,3 @@ class SuggestionSerializer(objectMapper: ObjectMapper) :
         ExchangeRateSuggestion::class.java.simpleName to ExchangeRateSuggestion::class.java,
         ClosedExchangePointSuggestion::class.java.simpleName to ClosedExchangePointSuggestion::class.java
     ))
-
-//class VoteSerializer(objectMapper: ObjectMapper) :
-//    JsonDeserializer<Vote>(objectMapper,mapOf(
-//        VoteForExchangePointDelete::class.java.simpleName to VoteForExchangePointDelete::class.java,
-//        VoteForExchangePointRateChange::class.java.simpleName to VoteForExchangePointRateChange::class.java,
-//        VoteForNewExchangePoint::class.java.simpleName to VoteForNewExchangePoint::class.java
-//    ))

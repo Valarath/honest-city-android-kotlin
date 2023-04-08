@@ -7,6 +7,7 @@ import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.filter.FilterService
 import cz.city.honest.service.gateway.external.*
 import cz.city.honest.service.gateway.internal.*
+import cz.city.honest.service.mapping.ObjectMapperProvider
 import cz.city.honest.service.settings.CurrencySettingsService
 import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.subject.SubjectService

@@ -3,8 +3,6 @@ package cz.city.honest.repository.vote
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.User
 import cz.city.honest.dto.Vote
-import cz.city.honest.repository.RepositoryProvider
-
 import cz.city.honest.service.gateway.internal.InternalVoteGateway
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable

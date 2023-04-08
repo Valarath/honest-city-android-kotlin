@@ -1,25 +1,16 @@
 package cz.city.honest.repository
 
 import android.content.Context
-import cz.city.honest.dto.LoginData
-import cz.city.honest.dto.Suggestion
-import cz.city.honest.dto.Vote
-import cz.city.honest.dto.WatchedSubject
+import com.fasterxml.jackson.databind.ObjectMapper
 import cz.city.honest.repository.authority.AuthorityRepository
 import cz.city.honest.repository.authority.AuthorityService
-import cz.city.honest.repository.autorization.FacebookLoginDataRepository
 import cz.city.honest.repository.autorization.LoginDataRepository
 import cz.city.honest.repository.settings.CurrencySettingsRepository
 import cz.city.honest.repository.settings.CurrencySettingsService
 import cz.city.honest.repository.subject.SubjectRepository
 import cz.city.honest.repository.subject.SubjectService
-import cz.city.honest.repository.subject.exchange.ExchangePointRepository
-import cz.city.honest.repository.subject.exchange.ExchangeRateRepository
 import cz.city.honest.repository.suggestion.SuggestionRepository
 import cz.city.honest.repository.suggestion.SuggestionService
-import cz.city.honest.repository.suggestion.exchange.ClosedExchangePointSuggestionRepository
-import cz.city.honest.repository.suggestion.exchange.ExchangeRateSuggestionRepository
-import cz.city.honest.repository.suggestion.exchange.NewExchangePointSuggestionRepository
 import cz.city.honest.repository.user.UserRepository
 import cz.city.honest.repository.user.UserService
 import cz.city.honest.repository.user.UserSuggestionRepository
@@ -27,10 +18,9 @@ import cz.city.honest.repository.user.UserSuggestionService
 import cz.city.honest.repository.vote.VoteRepository
 import cz.city.honest.repository.vote.VoteService
 import cz.city.honest.service.gateway.internal.*
+import cz.city.honest.service.mapping.ObjectMapperProvider
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
-import dagger.multibindings.StringKey
 import javax.inject.Singleton
 
 @Module
@@ -51,10 +41,9 @@ class RepositoryModule() {
         @Provides
         @Singleton
         fun getAuthorityRepository(
-            databaseOperationProvider: DatabaseOperationProvider,
-            exchangeRateRepository: ExchangeRateRepository
+            databaseOperationProvider: DatabaseOperationProvider
         ): AuthorityRepository =
-            AuthorityRepository(databaseOperationProvider, exchangeRateRepository)
+            AuthorityRepository(databaseOperationProvider, getObjectMapper())
 
         @Provides
         @Singleton
@@ -64,116 +53,47 @@ class RepositoryModule() {
 
         @Provides
         @Singleton
-        @IntoMap
-        @StringKey("FacebookLoginData")
-        fun getFacebookLoginDataRepository(
+        fun getLoginDataRepository(
             databaseOperationProvider: DatabaseOperationProvider
-        ): LoginDataRepository<out LoginData> =
-            FacebookLoginDataRepository(databaseOperationProvider)
+        ): LoginDataRepository = LoginDataRepository(databaseOperationProvider, getObjectMapper())
 
         @Provides
         @Singleton
         fun getUserRepository(
             databaseOperationProvider: DatabaseOperationProvider,
-            loginDataRepositories: Map<String, @JvmSuppressWildcards LoginDataRepository<out LoginData>>
-        ): UserRepository = UserRepository(databaseOperationProvider, loginDataRepositories)
+            loginDataRepository: LoginDataRepository
+        ): UserRepository = UserRepository(databaseOperationProvider, loginDataRepository)
 
         @Provides
         @Singleton
-        @IntoMap
-        @StringKey("ExchangePoint")
-        fun getExchangePointRepository(
-            databaseOperationProvider: DatabaseOperationProvider,
-            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>,
-            exchangeRateRepository: ExchangeRateRepository
-        ): SubjectRepository<out WatchedSubject> =
-            ExchangePointRepository(
-                databaseOperationProvider,
-                suggestionRepositories,
-                exchangeRateRepository
-            )
+        fun getSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider): SuggestionRepository =
+            SuggestionRepository(databaseOperationProvider,getObjectMapper())
 
         @Provides
         @Singleton
-        @IntoMap
-        @StringKey("ClosedExchangePointSuggestion")
-        fun getClosedExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider)
-                : SuggestionRepository<out Suggestion> =
-            ClosedExchangePointSuggestionRepository(databaseOperationProvider)
-
-        @Provides
-        @Singleton
-        @IntoMap
-        @StringKey("ExchangeRateSuggestion")
-        fun getExchangeRateSuggestionRepository(
-            databaseOperationProvider: DatabaseOperationProvider,
-            exchangeRateRepository: ExchangeRateRepository
-        ): SuggestionRepository<out Suggestion> =
-            ExchangeRateSuggestionRepository(databaseOperationProvider, exchangeRateRepository)
-
-        @Provides
-        @Singleton
-        @IntoMap
-        @StringKey("NewExchangePointSuggestion")
-        fun getNewExchangePointSuggestionRepository(databaseOperationProvider: DatabaseOperationProvider)
-                : SuggestionRepository<out Suggestion> =
-            NewExchangePointSuggestionRepository(databaseOperationProvider)
-
-        @Provides
-        @Singleton
-        fun getExchangeRateRepository(databaseOperationProvider: DatabaseOperationProvider): ExchangeRateRepository =
-            ExchangeRateRepository(databaseOperationProvider)
+        fun getSubjectRepository(databaseOperationProvider: DatabaseOperationProvider, suggestionRepository: SuggestionRepository): SubjectRepository =
+            SubjectRepository(databaseOperationProvider,suggestionRepository, getObjectMapper())
 
         @Provides
         @Singleton
         fun getUserSuggestionRepository(
             databaseOperationProvider: DatabaseOperationProvider,
             userRepository: UserRepository,
-            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+            suggestionRepository:SuggestionRepository
         ): UserSuggestionRepository =
             UserSuggestionRepository(
                 databaseOperationProvider,
                 userRepository,
-                suggestionRepositories
+                suggestionRepository
             )
 
         @Provides
         @Singleton
-        fun getExchangePointDeleteVoteRepository(
+        fun getVoteRepository(
             operationProvider: DatabaseOperationProvider,
-            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
+            suggestionRepository: SuggestionRepository
         ): VoteRepository =
-            VoteRepository(operationProvider, suggestionRepositories)
-//
-//        @Provides
-//        @Singleton
-//        @IntoMap
-//        @StringKey("VoteForExchangePointDelete")
-//        fun getExchangePointDeleteVoteRepository(
-//            operationProvider: DatabaseOperationProvider,
-//            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-//        ): VoteRepository<out Vote, out Suggestion> =
-//            ExchangePointDeleteVoteRepository(operationProvider, suggestionRepositories)
-//
-//        @Provides
-//        @Singleton
-//        @IntoMap
-//        @StringKey("VoteForExchangePointRateChange")
-//        fun getExchangePointRateChangeRepository(
-//            operationProvider: DatabaseOperationProvider,
-//            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-//        ): VoteRepository<out Vote, out Suggestion> =
-//            ExchangePointRateChangeVoteRepository(operationProvider, suggestionRepositories)
-//
-//        @Provides
-//        @Singleton
-//        @IntoMap
-//        @StringKey("VoteForNewExchangePoint")
-//        fun getNewExchangePointVoteRepository(
-//            operationProvider: DatabaseOperationProvider,
-//            suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>
-//        ): VoteRepository<out Vote, out Suggestion> =
-//            NewExchangePointVoteRepository(operationProvider, suggestionRepositories)
+            VoteRepository(operationProvider, suggestionRepository)
 
         @Provides
         @Singleton
@@ -187,13 +107,13 @@ class RepositoryModule() {
 
         @Provides
         @Singleton
-        fun getSubjectService(subjectRepositories: Map<String, @JvmSuppressWildcards SubjectRepository<out WatchedSubject>>): InternalSubjectGateway =
-            SubjectService(subjectRepositories)
+        fun getSubjectService(subjectRepository: SubjectRepository): InternalSubjectGateway =
+            SubjectService(subjectRepository)
 
         @Provides
         @Singleton
-        fun getSuggestionService(suggestionRepositories: Map<String, @JvmSuppressWildcards SuggestionRepository<out Suggestion>>): InternalSuggestionGateway =
-            SuggestionService(suggestionRepositories)
+        fun getSuggestionService(suggestionRepository: SuggestionRepository): InternalSuggestionGateway =
+            SuggestionService(suggestionRepository)
 
         @Provides
         @Singleton
@@ -209,6 +129,8 @@ class RepositoryModule() {
         @Singleton
         fun getVoteService(voteRepositories: VoteRepository): InternalVoteGateway =
             VoteService(voteRepositories)
+
+        private fun getObjectMapper() = ObjectMapperProvider.getObjectMapper()
     }
 }
 

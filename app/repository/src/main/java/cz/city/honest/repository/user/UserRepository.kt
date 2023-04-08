@@ -10,18 +10,47 @@ import cz.city.honest.repository.Repository
 import cz.city.honest.repository.autorization.LoginDataRepository
 import cz.city.honest.repository.toBoolean
 import cz.city.honest.repository.toInt
-import cz.city.honest.repository.RepositoryProvider
-import io.reactivex.rxjava3.core.*
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 class UserRepository(
     operationProvider: DatabaseOperationProvider,
-    private val loginDataRepositories: Map<String, LoginDataRepository<out LoginData>>
+    private val loginDataRepository: LoginDataRepository
 ) : Repository<User>(operationProvider) {
 
     override fun insert(entity: User): Observable<Long> = Observable.just(insertEntityWithSubscription(entity))
         .map { 1L }
 
-    private fun insertEntityWithSubscription(entity: User) = getLoginDataRepository(entity.loginData.javaClass.simpleName).insert(entity.loginData)
+    fun update(entity: User): Observable<Int> =
+        Observable.just(
+            databaseOperationProvider.writableDatabase.update(
+                TABLE_NAME,
+                getContentValues(entity),
+                "id = ?",
+                arrayOf(entity.id)
+            )
+        )
+            .flatMap { loginDataRepository.update(entity.loginData) }
+
+    fun get(ids: List<String>): Flowable<User> = findUsers(ids)
+        .flatMap { toEntities(it) { toUser(it).toFlowable() } }
+
+    fun getByUsername(username: String): Maybe<User> = findUserByUsername(username)
+        .flatMap { toUser(it) }
+
+    fun get(providerUserId: String) =
+        loginDataRepository.getById(providerUserId)
+            .map { it }
+            .flatMap { toUser(it) }
+
+    fun getLoggedUser(): Maybe<User> =
+        findLoggedUser()
+            .filter { cursorContainsData(it) }
+            .flatMap { toUser(it) }
+
+    private fun insertEntityWithSubscription(entity: User) = loginDataRepository.insert(entity.loginData)
         .map {
             databaseOperationProvider.writableDatabase.insertWithOnConflict(
                 TABLE_NAME,
@@ -31,55 +60,21 @@ class UserRepository(
             )
         }.subscribe()
 
-    override fun update(entity: User): Observable<Int> =
-        Observable.just(
-            databaseOperationProvider.writableDatabase.update(
-                TABLE_NAME,
-                getContentValues(entity),
-                "id = ?",
-                arrayOf(entity.id)
-            )
-        )
-            .map { getLoginDataRepository(entity.loginData.javaClass.simpleName) }
-            .flatMap { it.update(entity.loginData) }
-
-    private fun getLoginDataRepository(loginDataType: String) = RepositoryProvider
-        .provideLoginDataRepository(loginDataRepositories, loginDataType)
-
     private fun getContentValues(entity: User): ContentValues = ContentValues().apply {
         put("id", entity.id)
         put("score", entity.score)
         put("username", entity.username)
         put("logged", entity.logged.toInt())
-        put("login_data_class", entity.loginData.javaClass.simpleName)
     }
-
-    override fun get(ids: List<String>): Flowable<User> = findUsers(ids)
-        .flatMap { toEntities(it) { toUser(it).toFlowable() } }
-
-    fun getByUsername(username: String): Maybe<User> = findUserByUsername(username)
-        .flatMap { toUser(it) }
-
-
-    fun get(providerUserId: String, providerDataType: Class<out LoginData>) =
-        getLoginDataRepository(providerDataType.simpleName)
-            .getById(providerUserId)
-            .map { it as LoginData }
-            .flatMap { toUser(it) }
 
     private fun toUser(loginData: LoginData) =
         findUser(loginData.userId())
             .filter { cursorContainsData(it) }
             .map { toUser(it,loginData) }
 
-    fun getLoggedUser(): Maybe<User> =
-        findLoggedUser()
-            .filter { cursorContainsData(it) }
-            .flatMap { toUser(it) }
-
-    private fun toUser(cursor: Cursor) = getLoginDataRepository(cursor.getString(4))
+    private fun toUser(cursor: Cursor) = loginDataRepository
         .getByUserId(cursor.getString(0))
-        .map { toUser(cursor, it as LoginData) }
+        .map { toUser(cursor, it) }
 
     private fun toUser(cursor: Cursor, loginData: LoginData): User =
         User(
@@ -94,7 +89,7 @@ class UserRepository(
     private fun findLoggedUser(): Single<Cursor> =
         Single.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, score, username, logged, login_data_class from user where logged",
+                "Select id, score, username, logged from user where logged",
                 arrayOf()
             )
         )
@@ -102,7 +97,7 @@ class UserRepository(
     private fun findUser(subjectId: String): Maybe<Cursor> =
         Maybe.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, score, username, logged, login_data_class from user where id = ?",
+                "Select id, score, username, logged from user where id = ?",
                 arrayOf(subjectId)
             )
         )
@@ -110,7 +105,7 @@ class UserRepository(
     private fun findUserByUsername(username: String): Maybe<Cursor> =
         Maybe.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, score, username, logged, login_data_class from user where username = ?",
+                "Select id, score, username, logged from user where username = ?",
                 arrayOf(username)
             )
         )
@@ -118,7 +113,7 @@ class UserRepository(
     private fun findUsers(userIds: List<String>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, score, username, logged, login_data_class from user where id in( ${
+                "Select id, score, username, logged from user where id in( ${
                     mapToQueryParamSymbols(
                         userIds
                     )
@@ -126,18 +121,6 @@ class UserRepository(
                 arrayOf(mapToQueryParamVariable(userIds))
             )
         )
-
-
-    override fun delete(entity: User): Observable<Int> =
-        Observable.just(getLoginDataRepository(entity.loginData.javaClass.simpleName))
-            .flatMap { it.delete(entity.loginData) }
-            .map {
-                databaseOperationProvider.writableDatabase.delete(
-                    TABLE_NAME,
-                    "id = ?",
-                    arrayOf(entity.id)
-                )
-            }
 
     companion object {
         const val TABLE_NAME = "user"

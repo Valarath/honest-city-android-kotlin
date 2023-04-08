@@ -3,6 +3,7 @@ dependencies {
     implementation project(':app:service')
 
     implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
 }
 

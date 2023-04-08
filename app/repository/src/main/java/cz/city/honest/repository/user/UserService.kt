@@ -1,6 +1,5 @@
 package cz.city.honest.repository.user
 
-import cz.city.honest.dto.LoginData
 import cz.city.honest.dto.User
 import cz.city.honest.service.gateway.internal.InternalUserGateway
 import io.reactivex.rxjava3.core.Maybe
@@ -13,11 +12,10 @@ class UserService(private val userRepository: UserRepository) : InternalUserGate
     override fun getUserDataAsMaybe(username:String): Maybe<User> = userRepository.getByUsername(username)
 
     override fun getUser(
-        providerUserId: String,
-        providerDataType: Class<out LoginData>
+        providerUserId: String
     ): Maybe<User> =
         userRepository
-            .get(providerUserId, providerDataType)
+            .get(providerUserId)
 
     override fun update(user: User): Observable<Unit> =
         userRepository.update(user)

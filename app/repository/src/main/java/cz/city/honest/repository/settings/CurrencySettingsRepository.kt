@@ -22,7 +22,7 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         )
     )
 
-    override fun update(entity: CurrencySettings): Observable<Int> = Observable.just(
+    fun update(entity: CurrencySettings): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.update(
             TABLE_NAME,
             getContentValues(entity),
@@ -31,21 +31,9 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         )
     )
 
-    override fun get(ids: List<String>): Flowable<CurrencySettings> =
-        Flowable.just(findCurrencySettings(ids))
-            .flatMap { toEntities(it) { toCurrencySettings(it) } }
-
     fun get(): Flowable<CurrencySettings> =
         Flowable.just(findCurrencySettings())
             .flatMap { toEntities(it) { toCurrencySettings(it) } }
-
-    override fun delete(entity: CurrencySettings): Observable<Int> = Observable.just(
-        databaseOperationProvider.writableDatabase.delete(
-            TABLE_NAME,
-            "id = ?",
-            arrayOf(entity.id)
-        )
-    )
 
     fun delete(): Observable<Int> = Observable.just(
         databaseOperationProvider.writableDatabase.delete(
@@ -54,8 +42,6 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
             null
         )
     )
-
-    private fun getAsIdsList(cursor: Cursor) = listOf(cursor.getString(0))
 
     private fun getContentValues(entity: CurrencySettings) =
         ContentValues().apply {
@@ -76,12 +62,6 @@ class CurrencySettingsRepository(databaseOperationProvider: DatabaseOperationPro
         databaseOperationProvider.readableDatabase.rawQuery(
             "Select id, currency, main_country_currency from currency_settings",
             null
-        )
-
-    private fun findCurrencySettings(ids: List<String>) =
-        databaseOperationProvider.readableDatabase.rawQuery(
-            "Select id, currency, main_country_currency from currency_settings",
-            arrayOf(mapToQueryParamVariable(ids))
         )
 
     companion object {

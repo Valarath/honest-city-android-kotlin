@@ -24,10 +24,9 @@ class LoginViewModel @Inject constructor(
 
     fun loginUser(
         providerUserId: String,
-        providerDataType: Class<out LoginData>,
         subscribeHandler: LoginUserSubscribeHandler
     ) = userService
-        .getUser(providerUserId, providerDataType)
+        .getUser(providerUserId)
         .subscribe(
             { subscribeHandler.loginUser.invoke(it) },
             { subscribeHandler.exceptionHandler.invoke(it) },

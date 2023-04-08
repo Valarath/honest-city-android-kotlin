@@ -90,7 +90,6 @@ class LoginResultFacebookCallback(
 
     private fun loginUser(accessToken: AccessToken) = loginViewModel.loginUser(
         accessToken.userId,
-        FacebookLoginData::class.java,
         getLoginUserSubscribeHandler(accessToken)
     )
 

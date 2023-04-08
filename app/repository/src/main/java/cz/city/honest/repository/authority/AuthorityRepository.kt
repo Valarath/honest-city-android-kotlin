@@ -3,16 +3,16 @@ package cz.city.honest.repository.authority
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import com.fasterxml.jackson.databind.ObjectMapper
 import cz.city.honest.dto.ExchangeRate
 import cz.city.honest.repository.DatabaseOperationProvider
 import cz.city.honest.repository.Repository
-import cz.city.honest.repository.subject.exchange.ExchangeRateRepository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class AuthorityRepository(
     databaseOperationProvider: DatabaseOperationProvider,
-    private val exchangeRateRepository: ExchangeRateRepository
+    private val objectMapper: ObjectMapper
 ) : Repository<ExchangeRate>(databaseOperationProvider) {
 
     override fun insert(entity: ExchangeRate): Observable<Long> = Observable.just(
@@ -22,36 +22,14 @@ class AuthorityRepository(
             getContentValues(entity),
             SQLiteDatabase.CONFLICT_REPLACE
         )
-    ).flatMap { exchangeRateRepository.insert(entity) }
-
-    override fun update(entity: ExchangeRate): Observable<Int> = Observable.just(
-        databaseOperationProvider.writableDatabase.update(
-            TABLE_NAME,
-            getContentValues(entity),
-            "exchange_rates_id = ?",
-            arrayOf(entity.id)
-        )
     )
-
-    override fun get(id: List<String>): Flowable<ExchangeRate> =
-        Flowable.just(findAuthorityExchangeRates())
-            .flatMap { toEntities(it) { exchangeRateRepository.get(getAsIdsList(it)) } }
 
     fun get(): Flowable<ExchangeRate> =
         Flowable.just(findAuthorityExchangeRates())
-            .flatMap { toEntities(it) { exchangeRateRepository.get(getAsIdsList(it)) } }
-
-    override fun delete(entity: ExchangeRate): Observable<Int> = Observable.just(
-        databaseOperationProvider.writableDatabase.delete(
-            TABLE_NAME,
-            "id = ?",
-            arrayOf(entity.id)
-        )
-    )
+            .flatMap { toEntities(it) { toWatchedSubject(it) } }
 
     fun delete(): Observable<Int> = get()
         .toObservable()
-        .flatMap { exchangeRateRepository.delete(it) }
         .map {
             databaseOperationProvider.writableDatabase.delete(
                 TABLE_NAME,
@@ -60,16 +38,19 @@ class AuthorityRepository(
             )
         }
 
-    private fun getAsIdsList(cursor: Cursor) = listOf(cursor.getString(0))
-
     private fun getContentValues(entity: ExchangeRate) =
         ContentValues().apply {
-            put("exchange_rates_id", entity.id)
+            put("id", entity.id)
+            put("data", objectMapper.writeValueAsString(entity))
         }
+
+    private fun toWatchedSubject(cursor: Cursor): Flowable<ExchangeRate> = Flowable.just(
+        objectMapper.readValue(cursor.getString(1), ExchangeRate::class.java)
+    )
 
     private fun findAuthorityExchangeRates() =
         databaseOperationProvider.readableDatabase.rawQuery(
-            "Select exchange_rates_id from authority",
+            "Select id, data from authority",
             null
         )
 

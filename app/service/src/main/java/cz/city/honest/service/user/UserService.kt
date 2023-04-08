@@ -21,9 +21,9 @@ class UserService(
 
     fun getUserDataAsMaybe(): Maybe<User> = internalUserGateway.getUserDataAsMaybe()
 
-    fun getUser(providerUserId: String, providerDataType: Class<out LoginData>) =
+    fun getUser(providerUserId: String) =
         internalUserGateway
-            .getUser(providerUserId, providerDataType)
+            .getUser(providerUserId)
 
     fun update(user: User) = internalUserGateway.update(user)
         .map { user }

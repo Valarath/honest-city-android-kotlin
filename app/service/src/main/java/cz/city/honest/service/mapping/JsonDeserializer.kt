@@ -1,4 +1,4 @@
-package cz.city.honest.external
+package cz.city.honest.service.mapping
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext

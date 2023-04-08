@@ -7,9 +7,6 @@ import io.reactivex.rxjava3.core.Observable
 abstract class Repository<ENTITY>(protected val databaseOperationProvider: DatabaseOperationProvider) {
 
     abstract fun insert(entity: ENTITY): Observable<Long>
-    abstract fun update(entity: ENTITY): Observable<Int>
-    abstract fun get(id: List<String>): Flowable<ENTITY>
-    abstract fun delete(entity: ENTITY): Observable<Int>
 
     protected fun toEntities(
         cursor: Cursor, toEntity: (cursor: Cursor) -> Flowable<ENTITY>
@@ -28,24 +25,19 @@ abstract class Repository<ENTITY>(protected val databaseOperationProvider: Datab
     protected fun isCursorNotEmpty(it: Cursor) =
         it.count > 0
 
-    protected fun mapToQueryParamSymbols(objects: Collection<*>) = objects.joinToString { "?" }
+    protected fun mapToQueryParamSymbols(objects: Collection<*>) =
+        objects.joinToString { "?" }
 
-    protected fun mapToQueryParamSymbols(objects: List<*>, prefix: String) = prefixByWhere(prefix,
-        objects.joinToString { "?" })
-
-    private fun prefixByWhere(prefix: String, value: String) =
-        if (!value.isNullOrBlank())
-            "$prefix($value)"
-        else
-            value
-
-    protected fun mapToQueryParamVariable(objects: Collection<*>) = objects.joinToString()
+    protected fun mapToQueryParamVariable(objects: Collection<*>) =
+        objects.joinToString()
 
     protected fun getMapParameterArray(objects: List<*>): Array<out String>? =
         if (objects.isNullOrEmpty())
             null
         else
             arrayOf(mapToQueryParamVariable(objects))
+
+    protected fun getClassForName(className: String):Class<ENTITY> = Class.forName(className) as Class<ENTITY>
 }
 
 fun Boolean.toInt() = if (this) 1 else 0

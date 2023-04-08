@@ -1,16 +1,7 @@
 package cz.city.honest.external
 
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
-import cz.city.honest.dto.LoginData
-import cz.city.honest.dto.Suggestion
-import cz.city.honest.dto.Vote
-import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.external.authority.AuthorityServerSource
 import cz.city.honest.external.authority.AuthorityServerSourceService
 import cz.city.honest.external.autorization.AuthorizationServerSource
@@ -29,6 +20,7 @@ import cz.city.honest.external.vote.VoteServerSource
 import cz.city.honest.external.vote.VoteServerSourceService
 import cz.city.honest.property.ConnectionProperties
 import cz.city.honest.service.gateway.external.*
+import cz.city.honest.service.mapping.ObjectMapperProvider
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey
@@ -61,40 +53,6 @@ class ExternalSourceModule() {
             OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .build()
-
-        private fun getObjectMapper() = getBaseObjectMapper()
-            .also { it.registerModule(getModule(it)) }
-
-        private fun getModule(objectMapper: ObjectMapper) = SimpleModule()
-            .apply { setDeserializers(this, objectMapper) }
-
-        private fun setDeserializers(module: SimpleModule, objectMapper: ObjectMapper) =
-            module.apply {
-                this.addDeserializer(
-                    LoginData::class.java,
-                    LoginDataSerializer(
-                        objectMapper
-                    )
-                )
-                this.addDeserializer(
-                    WatchedSubject::class.java,
-                    WatchedSubjectSerializer(
-                        objectMapper
-                    )
-                )
-                this.addDeserializer(
-                    Suggestion::class.java,
-                    SuggestionSerializer(
-                        objectMapper
-                    )
-                )
-//                this.addDeserializer(
-//                    Vote::class.java,
-//                    VoteSerializer(
-//                        objectMapper
-//                    )
-//                )
-            }
 
         @Provides
         @Singleton
@@ -180,11 +138,7 @@ class ExternalSourceModule() {
         fun getTokenValidationServerSourceService(tokenValidationServerSource: TokenValidationServerSource): ExternalTokenValidationGateway =
             TokenValidationServerSourceService(tokenValidationServerSource)
 
-        fun getBaseObjectMapper() = ObjectMapper()
-            .also { it.registerModule(KotlinModule()) }
-            .also { it.registerModule(JavaTimeModule()) }
-            .also { it.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) }
-            .also { it.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false) }
+        private fun getObjectMapper() = ObjectMapperProvider.getObjectMapper()
     }
 }
 

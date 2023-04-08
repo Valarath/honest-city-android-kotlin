@@ -11,6 +11,7 @@ data class User(
 interface LoginData{
     fun getClassName():String = javaClass.simpleName
     fun userId():String
+    fun getId():String
 }
 data class FacebookLoginData(
     val accessToken: String = "",
@@ -18,6 +19,7 @@ data class FacebookLoginData(
     val userId:String
 ) : LoginData {
     override fun userId(): String = userId
+    override fun getId(): String = facebookUserId
 }
 
 enum class LoginProvider{

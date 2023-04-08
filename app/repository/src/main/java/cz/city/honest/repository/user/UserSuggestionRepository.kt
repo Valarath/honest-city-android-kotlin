@@ -9,23 +9,45 @@ import cz.city.honest.dto.UserSuggestionMetadata
 import cz.city.honest.dto.UserSuggestionStateMarking
 import cz.city.honest.repository.DatabaseOperationProvider
 import cz.city.honest.repository.Repository
-import cz.city.honest.repository.suggestion.SuggestionRepository
 import cz.city.honest.repository.toBoolean
 import cz.city.honest.repository.toInt
-import cz.city.honest.repository.RepositoryProvider
+import cz.city.honest.repository.suggestion.SuggestionRepository
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 
 class UserSuggestionRepository(
     databaseOperationProvider: DatabaseOperationProvider,
     private val userRepository: UserRepository,
-    private val suggestionRepositories: Map<String, SuggestionRepository<out Suggestion>>
+    private val suggestionRepository: SuggestionRepository
 ) : Repository<UserSuggestion>(databaseOperationProvider) {
 
     override fun insert(userSuggestion: UserSuggestion): Observable<Long> =
-        RepositoryProvider.provide(suggestionRepositories, userSuggestion.suggestion::class.java)
+        suggestionRepository
             .insert(userSuggestion.suggestion)
             .flatMap { insertUserSuggestion(userSuggestion) }
+
+    fun update(userSuggestion: UserSuggestion): Observable<Int> =
+        Observable.just(
+            databaseOperationProvider.writableDatabase.update(
+                TABLE_NAME,
+                getContentValues(userSuggestion),
+                "suggestion_id = ? AND user_id = ? ",
+                arrayOf(userSuggestion.suggestion.id, userSuggestion.user.id)
+            )
+        ).flatMap { suggestionRepository.update(userSuggestion.suggestion) }
+
+    fun get(userIds: List<String>): Flowable<UserSuggestion> = findUserSuggestions(userIds)
+        .flatMap { toEntities(it) { toUserSuggestion(it) } }
+
+    fun delete(userSuggestion: UserSuggestion): Observable<Int> =
+        suggestionRepository.delete(userSuggestion.suggestion)
+            .map {
+                databaseOperationProvider.writableDatabase.delete(
+                    TABLE_NAME,
+                    "user_id = ? AND suggestion_id = ?",
+                    arrayOf(userSuggestion.user.id, userSuggestion.suggestion.id)
+                )
+            }
 
     private fun insertUserSuggestion(userSuggestion: UserSuggestion) = Observable.just(
         databaseOperationProvider.writableDatabase.insertWithOnConflict(
@@ -35,22 +57,6 @@ class UserSuggestionRepository(
             SQLiteDatabase.CONFLICT_REPLACE
         )
     )
-
-    override fun update(userSuggestion: UserSuggestion): Observable<Int> =
-        Observable.just(
-            databaseOperationProvider.writableDatabase.update(
-                TABLE_NAME,
-                getContentValues(userSuggestion),
-                "suggestion_id = ? AND user_id = ? ",
-                arrayOf(userSuggestion.suggestion.id, userSuggestion.user.id)
-            )
-        ).flatMap {
-            RepositoryProvider.provide(suggestionRepositories, userSuggestion.suggestion::class.java)
-                .update(userSuggestion.suggestion)
-        }
-
-    override fun get(userIds: List<String>): Flowable<UserSuggestion> = findUserSuggestions(userIds)
-        .flatMap { toEntities(it) { toUserSuggestion(it) } }
 
     private fun findUserSuggestions(userIds: List<String>): Flowable<Cursor> =
         Flowable.just(
@@ -64,8 +70,7 @@ class UserSuggestionRepository(
             )
         )
 
-    private fun toUserSuggestion(cursor: Cursor) =
-        suggestionRepositories[cursor.getString(3)]!!.get(listOf(cursor.getString(0)))
+    private fun toUserSuggestion(cursor: Cursor) = suggestionRepository.get(listOf(cursor.getString(0)))
             .flatMap { toUserSuggestion(cursor, it) }
 
     private fun toUserSuggestion(cursor: Cursor, suggestion: Suggestion) =
@@ -78,17 +83,6 @@ class UserSuggestionRepository(
                         cursor.getInt(2).toBoolean(),
                         UserSuggestionStateMarking.valueOf(cursor.getString(4))
                     )
-                )
-            }
-
-    override fun delete(userSuggestion: UserSuggestion): Observable<Int> =
-        RepositoryProvider.provide(suggestionRepositories, userSuggestion.suggestion::class.java)
-            .delete(userSuggestion.suggestion)
-            .map {
-                databaseOperationProvider.writableDatabase.delete(
-                    TABLE_NAME,
-                    "user_id = ? AND suggestion_id = ?",
-                    arrayOf(userSuggestion.user.id, userSuggestion.suggestion.id)
                 )
             }
 

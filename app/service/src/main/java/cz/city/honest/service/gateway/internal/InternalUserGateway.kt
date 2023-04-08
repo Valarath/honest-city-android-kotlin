@@ -9,7 +9,7 @@ interface InternalUserGateway {
 
     fun getUserDataAsMaybe(): Maybe<User>
 
-    fun getUser(providerUserId: String, providerDataType: Class<out LoginData>): Maybe<User>
+    fun getUser(providerUserId: String): Maybe<User>
 
     fun update(user: User): Observable<Unit>
 
