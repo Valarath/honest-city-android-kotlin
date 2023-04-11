@@ -13,8 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import cz.city.honest.dto.*
 import cz.city.honest.view.R
 import cz.city.honest.view.camera.rate.RateCameraActivity
-import cz.city.honest.viewmodel.ShowSubjectSuggestionsViewModel
 import cz.city.honest.view.detail.ui.main.SubjectPagerAdapter
+import cz.city.honest.viewmodel.ShowSubjectSuggestionsViewModel
 import cz.city.honest.viewmodel.VotedSuggestion
 import cz.city.honest.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
 import dagger.android.support.DaggerAppCompatActivity

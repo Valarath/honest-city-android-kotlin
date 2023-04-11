@@ -20,8 +20,7 @@
         <shape android:shape="square"></shape>
     </style-->
 
-    <style name="AppTheme.SubjectDetail" parent="AppTheme">
-        <item name="android:actionBarSize">140dp</item>
+    <style name="AppTheme.SubjectDetail">
         <item name="actionBarSize">140dp</item>
     </style>
 

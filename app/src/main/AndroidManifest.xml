@@ -68,8 +68,7 @@
         <activity
             android:name="cz.city.honest.view.camera.subject.SubjectActivity"
             android:label="@string/title_camera_activity"
-            android:parentActivityName="cz.city.honest.view.MapActivity"
-            android:theme="@style/AppTheme.SubjectDetail">
+            android:parentActivityName="cz.city.honest.view.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cz.city.honest.view.MapActivity" />
@@ -77,7 +76,8 @@
         <activity
             android:name="cz.city.honest.view.detail.SubjectDetailActivity"
             android:label="@string/title_activity_subject_detail"
-            android:parentActivityName="cz.city.honest.view.MapActivity">
+            android:parentActivityName="cz.city.honest.view.MapActivity"
+            android:theme="@style/AppTheme.SubjectDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cz.city.honest.view.MapActivity" />
