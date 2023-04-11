@@ -31,6 +31,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    var inflante = true
 
     private val MENU_ACTIONS: Map<Int, (menuItem: MenuItem) -> Boolean> = mapOf(
         R.id.suggest_non_existing_subject to ::suggestNonExistingSubject,
@@ -67,7 +68,10 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
-            menuInflater.inflate(R.menu.subject_menu, menu)
+            if(inflante){
+                menuInflater.inflate(R.menu.subject_menu, menu)
+                inflante = false
+            }
             showSubjectSuggestionsViewModel.subjectSuggestions.observe(
                 this,
                 androidx.lifecycle.Observer {
