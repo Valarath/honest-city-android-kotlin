@@ -24,7 +24,7 @@
                     android:textColor="@color/headerText"
                     android:layout_height="50dp"
                     android:layout_width="0dp"
-                    android:layout_weight="0.32"
+                    android:layout_weight="0.27"
                     android:gravity="center"
                     android:text="@string/suggestion_type_title" />
 
@@ -43,6 +43,14 @@
                     android:layout_weight="0.15"
                     android:gravity="center"
                     android:text="@string/suggestion_votes_title" />
+
+                <TextView
+                    android:textColor="@color/headerText"
+                    android:layout_height="50dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.26"
+                    android:gravity="center"
+                    android:text="@string/suggestion_created_title" />
 
                 <TextView
                     android:layout_height="50dp"

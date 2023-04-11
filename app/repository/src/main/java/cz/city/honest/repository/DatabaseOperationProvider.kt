@@ -44,7 +44,7 @@ class DatabaseOperationProvider constructor(
     }
 
     private fun createSuggestionTable(database: SQLiteDatabase) {
-        database.execSQL("Create table IF NOT EXISTS suggestion(id varchar primary key on conflict replace, class text, data text, subject_id varchar, foreign key(subject_id) references watched_subject(subject_id))")
+        database.execSQL("Create table IF NOT EXISTS suggestion(id varchar primary key on conflict replace, class text, data text, created_at integer, subject_id varchar, foreign key(subject_id) references watched_subject(subject_id))")
     }
 
     private fun createUserSuggestionTable(database: SQLiteDatabase){
@@ -60,6 +60,7 @@ class DatabaseOperationProvider constructor(
 
     private fun createSettingsTables(database: SQLiteDatabase){
         createCurrencySettingsTable(database)
+        createSubjectSettingsTable(database)
     }
 
     private fun createLoginDataTables(database: SQLiteDatabase){
@@ -73,6 +74,10 @@ class DatabaseOperationProvider constructor(
 
     private fun createCurrencySettingsTable(database: SQLiteDatabase){
         database.execSQL("Create table if not exists currency_settings(id varchar primary key on conflict replace, currency varchar not null, main_country_currency integer not null)")
+    }
+
+    private fun createSubjectSettingsTable(database: SQLiteDatabase){
+        database.execSQL("Create table if not exists subject_settings(data text)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

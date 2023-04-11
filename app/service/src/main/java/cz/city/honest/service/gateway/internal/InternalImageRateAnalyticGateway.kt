@@ -4,7 +4,7 @@ import cz.city.honest.dto.AnalyzeImageData
 import cz.city.honest.dto.ExchangeRate
 import io.reactivex.rxjava3.core.Observable
 
-interface InternalImageAnalyticGateway {
+interface InternalImageRateAnalyticGateway {
 
     fun analyze(imageData: AnalyzeImageData,textCallback:(lines:List<String>)->Unit): Observable<Unit>
 

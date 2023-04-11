@@ -35,6 +35,6 @@ data class GetSubjectsResponse(
 )
 
 object SubjectEndpointsUrl {
-    private const val SUBJECT_PREFIX = EndpointsUrl.PUBLIC + "/subject"
+    const val SUBJECT_PREFIX = EndpointsUrl.PUBLIC + "/subject"
     const val SUBJECT_IN_AREA = "$SUBJECT_PREFIX/subject-in-area"
 }

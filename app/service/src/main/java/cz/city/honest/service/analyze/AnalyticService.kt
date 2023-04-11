@@ -1,11 +1,21 @@
 package cz.city.honest.service.analyze
 
 import cz.city.honest.dto.AnalyzeImageData
-import cz.city.honest.service.gateway.internal.InternalImageAnalyticGateway
+import cz.city.honest.service.gateway.internal.InternalImageNameAnalyticGateway
+import cz.city.honest.service.gateway.internal.InternalImageRateAnalyticGateway
 
-class AnalyticService(private val internalImageAnalyticGateway: InternalImageAnalyticGateway) {
+class AnalyticService(
+    private val internalImageRateAnalyticGateway: InternalImageRateAnalyticGateway,
+    private val internalImageNameAnalyticGateway: InternalImageNameAnalyticGateway
+) {
 
-    fun analyze(imageData: AnalyzeImageData,textCallback:(lines:List<String>)->Unit) = internalImageAnalyticGateway.analyze(imageData, textCallback)
+    fun analyzeRate(imageData: AnalyzeImageData, textCallback: (lines: List<String>) -> Unit) =
+        internalImageRateAnalyticGateway.analyze(imageData, textCallback)
 
-    fun getResult() = internalImageAnalyticGateway.getResult()
+    fun getRateResult() = internalImageRateAnalyticGateway.getResult()
+
+    fun analyzeName(imageData: AnalyzeImageData, textCallback: (lines: List<String>) -> Unit) =
+        internalImageNameAnalyticGateway.analyze(imageData, textCallback)
+
+    fun getNameResult() = internalImageNameAnalyticGateway.getResult()
 }

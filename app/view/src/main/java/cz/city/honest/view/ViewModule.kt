@@ -1,9 +1,11 @@
 package cz.city.honest.view
 
-import cz.city.honest.view.camera.CameraActivity
-import cz.city.honest.view.camera.CameraFragment
+import cz.city.honest.view.camera.rate.RateCameraActivity
+import cz.city.honest.view.camera.rate.RateCameraFragment
 import cz.city.honest.view.camera.result.CameraResultActivity
 import cz.city.honest.view.camera.result.CameraResultFragment
+import cz.city.honest.view.camera.subject.SubjectActivity
+import cz.city.honest.view.camera.subject.SubjectNameCameraFragment
 import cz.city.honest.view.detail.SubjectDetailActivity
 import cz.city.honest.view.detail.ui.main.ShowSubjectCostFragment
 import cz.city.honest.view.detail.ui.main.ShowSubjectSuggestionsFragment
@@ -28,7 +30,10 @@ abstract class ViewModule {
     internal abstract fun subjectDetailActivity(): SubjectDetailActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
-    internal abstract fun cameraActivity(): CameraActivity
+    internal abstract fun rateCameraActivity(): RateCameraActivity
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun subjectActivity(): SubjectActivity
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun filterActivity(): FilterActivity
@@ -46,7 +51,10 @@ abstract class ViewModule {
     internal abstract fun cameraResultActivity(): CameraResultActivity
 
     @ContributesAndroidInjector
-    internal abstract fun cameraFragment(): CameraFragment
+    internal abstract fun rateCameraFragment(): RateCameraFragment
+
+    @ContributesAndroidInjector
+    internal abstract fun subjectNameCameraFragment(): SubjectNameCameraFragment
 
     @ContributesAndroidInjector
     internal abstract fun filterFragment(): FilterFragment

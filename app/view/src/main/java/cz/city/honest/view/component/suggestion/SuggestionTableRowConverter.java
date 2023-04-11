@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TableRow;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,9 +54,10 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
     ) {
         TableRow tableRow = new TableRow(context);
         setTableRowStyle(suggestion, tableRow);
-        tableRow.addView(TableRowCreator.Companion.getCell(getTranslation(context,suggestion), 32f, context));
+        tableRow.addView(TableRowCreator.Companion.getCell(getTranslation(context,suggestion), 27f, context));
         tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getState().name(), 32f, context));
         tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getVotes(), 15f, context));
+        tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getCreatedAt(), 26f, context));
         tableRow.addView(TableRowCreator.Companion.getCell( 15f, context));
         return tableRow;
     }

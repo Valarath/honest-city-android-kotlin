@@ -17,7 +17,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import cz.city.honest.dto.User
 import cz.city.honest.dto.WatchedSubject
-import cz.city.honest.view.camera.CameraActivity
+import cz.city.honest.view.camera.rate.RateCameraActivity
+import cz.city.honest.view.camera.subject.SubjectActivity
 import cz.city.honest.view.filter.FilterActivity
 import cz.city.honest.view.login.LoginActivity
 import cz.city.honest.view.map.MapClickListener
@@ -60,12 +61,17 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
      */
     override fun onMapReady(googleMap: GoogleMap) {
         setMapProperty(googleMap)
-        setLoginButton()
-        setFilterButton()
-        setAnalyzeSubjectButtonBehaviour()
+        setButtons()
         mapViewModel.watchedSubjects.observe(this, getWatchedSubjectObserver())
         mapViewModel.newExchangePointSuggestions.observe(this, getWatchedSubjectObserver())
         mapViewModel.loggedUser.observe(this, getLoggedUserObserver())
+    }
+
+    private fun setButtons(){
+        setLoginButton()
+        setFilterButton()
+        setAnalyzeSubjectButtonBehaviour()
+        setAddSubjectButtonBehaviour()
     }
 
     private fun setMapProperty(googleMap: GoogleMap) {
@@ -79,6 +85,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
         return Observer {
             setLoginButton(visibility = View.GONE)
             setUserDetailButton(it)
+            showAddSubjectButtonVisibility()
         }
     }
 
@@ -113,12 +120,25 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
         this.startActivity(Intent(this, UserDetailActivity::class.java))
 
     private fun setAnalyzeSubjectButtonBehaviour() =
+        findViewById<Button>(R.id.analyze)
+            .also {
+                it.setOnClickListener {
+                    this.startActivity(Intent(this, RateCameraActivity::class.java))
+                }
+            }
+
+    private fun showAddSubjectButtonVisibility() =
+        findViewById<Button>(R.id.add_subject)
+            .also { it.visibility = View.VISIBLE }
+
+    private fun setAddSubjectButtonBehaviour() =
         findViewById<Button>(R.id.add_subject)
             .also {
                 it.setOnClickListener {
-                    this.startActivity(Intent(this, CameraActivity::class.java))
+                    this.startActivity(Intent(this, SubjectActivity::class.java))
                 }
             }
+            .also { it.visibility = View.GONE }
 
     private fun showOnMap(watchedSubject: WatchedSubject): Unit {
         MapPresenterProvider.provide(watchedSubject.javaClass).present(watchedSubject, map, this)

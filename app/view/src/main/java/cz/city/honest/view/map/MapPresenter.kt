@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Base64
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -62,27 +63,21 @@ class ExchangePointMapPresenter : MapPresenter<ExchangePoint>() {
         subject: ExchangePoint
     ): BitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
         getIcon(
-            toByteArray(context),
+            toByteArray(subject),
             subject.honestyStatus
         )
     )
 
-
-    private fun toByteArray(context: MapActivity): ByteArray {
-        val drawable: Drawable = context.resources.getDrawable(R.drawable.exchange, null)
-        val bitmap = (drawable as BitmapDrawable).bitmap
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-        return stream.toByteArray()
-    }
+    private fun toByteArray(subject: ExchangePoint): ByteArray = Base64.decode(subject.image,Base64.DEFAULT)
 
     private fun getIcon(image: ByteArray, honestyStatus: HonestyStatus): Bitmap {
         val icon = BitmapFactory.decodeByteArray(image, 0, image.size)
+        val scaledIcon = Bitmap.createScaledBitmap(icon, 70, 70, true)
         val iconWithBorder =
-            Bitmap.createBitmap(icon.width + 2 * 2, icon.height + 2 * 2, icon.config)
+            Bitmap.createBitmap(scaledIcon.width + 2 * 2, scaledIcon.height + 2 * 2, scaledIcon.config)
         val canvas = Canvas(iconWithBorder)
         canvas.drawColor(HONESTY_STATUS_COLOR_MAP[honestyStatus]!!)
-        canvas.drawBitmap(icon, 2.0f, 2.0f, null)
+        canvas.drawBitmap(scaledIcon, 2.0f, 2.0f, null)
         return iconWithBorder
     }
 

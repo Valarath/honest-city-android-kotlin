@@ -39,8 +39,8 @@
     <string name="suggestion_type_title">Type</string>
     <string name="suggestion_state_title">State</string>
     <string name="suggestion_votes_title">Votes</string>
+    <string name="suggestion_created_title">Created</string>
 
-    <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_camera_result">Is rate good?</string>
     <string name="title_activity_login">Login</string>
     <string name="suggest_new_rate_text">Suggest</string>

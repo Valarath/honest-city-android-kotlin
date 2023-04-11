@@ -12,7 +12,7 @@ class NewExchangePointSuggestionExchangePointConverter {
                 watchedTo = LocalDate.now(),
                 exchangePointRate = createEmptyExchangeRate(),
                 suggestions = mutableListOf(newExchangePointSuggestion),
-                image = "aaa".toByteArray(),
+                image = newExchangePointSuggestion.image,
                 honestyStatus = HonestyStatus.UNKNOWN,
                 position = newExchangePointSuggestion.position
             )

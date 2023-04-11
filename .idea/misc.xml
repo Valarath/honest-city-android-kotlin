@@ -23,11 +23,16 @@
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/src/main/res/layout/fragment_subject_detail.xml" value="0.3546875" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/src/main/res/layout/settings_activity.xml" value="0.3546875" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/src/main/res/xml/root_preferences.xml" value="0.178125" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/drawable/ic_baseline_add_24.xml" value="0.2075" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/drawable/ic_baseline_attach_money_24.xml" value="0.2075" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/drawable/ic_baseline_filter_24.xml" value="0.2075" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/drawable/ic_baseline_security_24.xml" value="0.2965" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_camera.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_camera_result.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_login.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_maps.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_subject_detail.xml" value="0.178125" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_subject_name_camera.xml" value="0.3536458333333333" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/activity_user_detail.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/exchange_rate_table.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/filter_activity.xml" value="0.178125" />
@@ -36,6 +41,8 @@
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_filter.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_show_subject_suggestions.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_subject_detail.xml" value="0.178125" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_subject_detail_action_bar.xml" value="0.3536458333333333" />
+        <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_subject_name_camera.xml" value="0.2901709401709402" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/layout/fragment_user_detail.xml" value="0.33" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/menu/subject_menu.xml" value="0.178125" />
         <entry key="..\:/Users/micha/StudioProjects/honest-city-android-kotlin/app/view/src/main/res/menu/user_menu.xml" value="0.5" />

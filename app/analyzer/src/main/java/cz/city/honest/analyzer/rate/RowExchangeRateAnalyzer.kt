@@ -1,4 +1,4 @@
-package cz.city.honest.analyzer
+package cz.city.honest.analyzer.rate
 
 import cz.city.honest.dto.*
 import cz.city.honest.service.settings.CurrencySettingsService

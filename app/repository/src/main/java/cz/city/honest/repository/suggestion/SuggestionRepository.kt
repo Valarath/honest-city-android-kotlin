@@ -77,6 +77,7 @@ class SuggestionRepository(
         put("subject_id", suggestion.subjectId)
         put("class", suggestion.javaClass.name)
         put("data", objectMapper.writeValueAsString(suggestion))
+        put("created_at",suggestion.createdAt.toEpochMilli())
     }
 
     private fun toSuggestion(cursor: Cursor): Flowable<Suggestion> = Flowable.just(
@@ -98,7 +99,7 @@ class SuggestionRepository(
     private fun findSuggestions(subjectId: String): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, subject_id, class, data from suggestion where subject_id = ?",
+                "Select id, subject_id, class, data from suggestion where subject_id = ? ORDER BY created_at DESC",
                 getMapParameterArray(listOf(subjectId))
             )
         )
@@ -106,7 +107,7 @@ class SuggestionRepository(
     private fun findUnvotedSuggestions(subjectId: String): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, subject_id, class, data from suggestion left join user_vote on suggestion.id = user_vote.suggestion_id where subject_id = ? AND user_vote.suggestion_id IS NULL",
+                "Select id, subject_id, class, data from suggestion left join user_vote on suggestion.id = user_vote.suggestion_id where subject_id = ? AND user_vote.suggestion_id IS NULL ORDER BY created_at DESC",
                 getMapParameterArray(listOf(subjectId))
             )
         )
@@ -114,7 +115,7 @@ class SuggestionRepository(
     private fun <SUGGESTION_TYPE : Suggestion> findSuggestionsByType(suggestionType: Class<SUGGESTION_TYPE>): Flowable<Cursor> =
         Flowable.just(
             databaseOperationProvider.readableDatabase.rawQuery(
-                "Select id, subject_id, class, data from suggestion left join user_vote on suggestion.id = user_vote.suggestion_id where class = ?",
+                "Select id, subject_id, class, data from suggestion left join user_vote on suggestion.id = user_vote.suggestion_id where class = ? ORDER BY created_at DESC",
                 getMapParameterArray(listOf(suggestionType.name))
             )
         )

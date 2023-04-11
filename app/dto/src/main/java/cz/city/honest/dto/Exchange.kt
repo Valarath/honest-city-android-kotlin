@@ -21,8 +21,8 @@ data class ExchangePoint(
     override val position: Position,
     override val suggestions: MutableList<Suggestion>,
     var exchangePointRate: ExchangeRate?,
-    val image: ByteArray = "aaa".toByteArray()
-) : ImmobileWatchedSubject(id, watchedTo, honestyStatus, position, suggestions) {
+    override val image: String
+) : ImmobileWatchedSubject(id, watchedTo, honestyStatus, position, suggestions, image) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -47,7 +47,7 @@ data class ExchangePoint(
         result = 31 * result + position.hashCode()
         result = 31 * result + suggestions.hashCode()
         result = 31 * result + exchangePointRate.hashCode()
-        result = 31 * result + image.contentHashCode()
+        result = 31 * result + image.hashCode()
         return result
     }
 }

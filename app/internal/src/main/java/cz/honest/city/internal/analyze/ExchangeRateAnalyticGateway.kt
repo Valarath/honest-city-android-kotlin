@@ -2,13 +2,13 @@ package cz.honest.city.internal.analyze
 
 import com.google.mlkit.vision.common.InputImage
 import cz.city.honest.dto.AnalyzeImageData
-import cz.city.honest.service.gateway.internal.InternalImageAnalyticGateway
+import cz.city.honest.service.gateway.internal.InternalImageRateAnalyticGateway
 import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
 import cz.honest.city.internal.provider.rate.ImageUtils
 import io.reactivex.rxjava3.core.Observable
 
 class ExchangeRateAnalyticGateway(private val imageExchangeRateProvider: ImageExchangeRateProvider) :
-    InternalImageAnalyticGateway {
+    InternalImageRateAnalyticGateway {
 
     override fun analyze(
         imageData: AnalyzeImageData,
@@ -18,5 +18,5 @@ class ExchangeRateAnalyticGateway(private val imageExchangeRateProvider: ImageEx
             .map { InputImage.fromBitmap(ImageUtils.getInputImage(imageData), 0) }
             .map { imageExchangeRateProvider.provide(it, textCallback) }
 
-    override fun getResult() = imageExchangeRateProvider.getResult()
+    override fun getResult() = imageExchangeRateProvider.getImageResult()
 }

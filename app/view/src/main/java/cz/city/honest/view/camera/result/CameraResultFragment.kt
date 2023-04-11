@@ -38,7 +38,7 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         val root: View = inflater.inflate(R.layout.fragment_camera_result, container, false)
         val exchangeRate = root.findViewById<ExchangeRateTable>(R.id.exchange_rate)
         cameraResultViewModel.authorityRate.observe(viewLifecycleOwner, Observer {
-            exchangeRate.showExchangePointRates(getExchangeRateTableData(it,root))
+            exchangeRate.showExchangePointRates(getExchangeRateTableData(it, root))
         })
         initSuggestNewRateButton(root)
         return root
@@ -48,23 +48,27 @@ class CameraResultFragment : DaggerAppCompatDialogFragment() {
         root: View
     ) = root.findViewById<Button>(R.id.suggest_new_rate)
         .also { setSuggestButtonVisibility(it) }
-        .apply {this.setOnClickListener { suggestNewResult(this) } }
+        .apply { this.setOnClickListener { suggestNewResult(this) } }
 
     private fun suggestNewResult(button: Button) {
-        cameraResultViewModel.suggest(getWatchedSubjectId(), getExchangeRateResult())
+        cameraResultViewModel.suggestNewRate(getWatchedSubjectId(), getExchangeRateResult())
         button.visibility = View.GONE
     }
 
     @SuppressLint("FragmentLiveDataObserve")
     private fun setSuggestButtonVisibility(button: Button) {
-        cameraResultViewModel.loggedUser.observe(this, Observer {
-            button.visibility = View.VISIBLE
-        })
+        if (getWatchedSubjectId() != null)
+            cameraResultViewModel.loggedUser.observe(this, Observer {
+                button.visibility = View.VISIBLE
+            })
+        else
+            button.visibility = View.GONE
     }
-    
-    private fun getWatchedSubjectId() = activity!!.intent.extras!![CameraResultActivity.WATCHED_SUBJECT]
-        .run { if (this != null) this as WatchedSubject else null }
-        .run { this?.id }
+
+    private fun getWatchedSubjectId() =
+        activity!!.intent.extras!![CameraResultActivity.WATCHED_SUBJECT]
+            .run { if (this != null) this as WatchedSubject else null }
+            .run { this?.id }
 
     private fun getExchangeRateTableData(
         authorityRate: ExchangeRate,

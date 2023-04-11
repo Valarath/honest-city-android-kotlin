@@ -7,8 +7,8 @@ import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.filter.FilterService
 import cz.city.honest.service.gateway.external.*
 import cz.city.honest.service.gateway.internal.*
-import cz.city.honest.service.mapping.ObjectMapperProvider
 import cz.city.honest.service.settings.CurrencySettingsService
+import cz.city.honest.service.settings.SubjectSettingsService
 import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.subject.SubjectService
 import cz.city.honest.service.suggestion.SuggestionService
@@ -70,6 +70,17 @@ class ServiceModule {
 
         @Provides
         @Singleton
+        fun getExchangeNameService(
+            internalSubjectSettingsGateway: InternalSubjectSettingsGateway,
+            externalSubjectSettingsGateway: ExternalSubjectSettingsGateway
+        ): SubjectSettingsService =
+            SubjectSettingsService(
+                internalSubjectSettingsGateway,
+                externalSubjectSettingsGateway
+            )
+
+        @Provides
+        @Singleton
         fun getUserSuggestionService(
             externalSuggestionGateway: ExternalSuggestionGateway,
             internalUserSuggestionGateway: InternalUserSuggestionGateway,
@@ -118,9 +129,10 @@ class ServiceModule {
         @Provides
         @Singleton
         fun getAnalyticService(
-            internalImageAnalyticGateway: InternalImageAnalyticGateway
+            internalImageRateAnalyticGateway: InternalImageRateAnalyticGateway,
+            internalImageNameAnalyticGateway: InternalImageNameAnalyticGateway
         ): AnalyticService =
-            AnalyticService(internalImageAnalyticGateway)
+            AnalyticService(internalImageRateAnalyticGateway, internalImageNameAnalyticGateway)
 
         @Provides
         @Singleton
@@ -136,9 +148,10 @@ class ServiceModule {
         fun getPublicUpdatableServices(
             authorityService: AuthorityService,
             subjectService: SubjectService,
-            settingsService: CurrencySettingsService
+            settingsService: CurrencySettingsService,
+            subjectSettingsService: SubjectSettingsService
         ): List<PublicUpdatable> =
-            listOf(authorityService, subjectService, settingsService)
+            listOf(authorityService, subjectService, settingsService, subjectSettingsService)
 
         @Provides
         @Singleton

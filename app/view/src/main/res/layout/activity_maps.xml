@@ -15,7 +15,9 @@
         android:background="@drawable/circular_button"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="100dp"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:drawableTop="@drawable/ic_baseline_filter_24"
+        android:paddingTop="12dp"/>
 
     <Button
         android:id="@+id/user_detail"
@@ -43,10 +45,24 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="bottom|center"
+        android:layout_marginRight="90dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
         android:visibility="visible"
-        android:text="@string/add_subject_button"
+        android:drawableTop="@drawable/ic_baseline_add_24"
         android:textSize="180sp" />
+
+    <Button
+        android:id="@+id/analyze"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circular_button"
+        android:visibility="visible"
+        android:drawableTop="@drawable/ic_baseline_security_24"
+        android:textSize="180sp"
+        android:paddingTop="11dp"
+        android:paddingLeft="0dp"/>
 
 </fragment>

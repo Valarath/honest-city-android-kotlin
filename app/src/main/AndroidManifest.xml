@@ -58,9 +58,18 @@
                 android:value="cz.city.honest.view.MapActivity" />
         </activity>
         <activity
-            android:name="cz.city.honest.view.camera.CameraActivity"
+            android:name="cz.city.honest.view.camera.rate.RateCameraActivity"
             android:label="@string/title_camera_activity"
             android:parentActivityName="cz.city.honest.view.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cz.city.honest.view.MapActivity" />
+        </activity>
+        <activity
+            android:name="cz.city.honest.view.camera.subject.SubjectActivity"
+            android:label="@string/title_camera_activity"
+            android:parentActivityName="cz.city.honest.view.MapActivity"
+            android:theme="@style/AppTheme.SubjectDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cz.city.honest.view.MapActivity" />
@@ -90,9 +99,8 @@
 
         <activity
             android:name="cz.city.honest.view.MapActivity"
-            android:label="@string/title_activity_maps"
-            android:exported="true">
-        </activity>
+            android:exported="true"
+            android:label="@string/title_activity_maps"></activity>
 
         <activity
             android:name="cz.city.honest.application.main.MainActivity"
@@ -103,9 +111,12 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -142,7 +153,8 @@
             android:exported="false"
             android:syncable="true" /-->
 
-        <service android:name="cz.honest.city.internal.authentication.AccountAuthenticationService"
+        <service
+            android:name="cz.honest.city.internal.authentication.AccountAuthenticationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />

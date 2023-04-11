@@ -10,7 +10,7 @@ import android.widget.Button
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import cz.city.honest.view.R
-import cz.city.honest.view.camera.CameraActivity
+import cz.city.honest.view.camera.rate.RateCameraActivity
 import cz.city.honest.view.component.rate.ExchangeRateTable
 import cz.city.honest.view.component.rate.ExchangeRateTableData
 import cz.city.honest.view.detail.SubjectDetailActivity
@@ -102,8 +102,8 @@ class ShowSubjectCostFragment : DaggerAppCompatDialogFragment() {
         })
 
     private fun suggestExchangeRateChange() =
-        Intent(activity, CameraActivity::class.java)
-            .apply { this.putExtra(CameraActivity.WATCHED_SUBJECT, getExchangePoint()) }
+        Intent(activity, RateCameraActivity::class.java)
+            .apply { this.putExtra(RateCameraActivity.WATCHED_SUBJECT, getExchangePoint()) }
             .let { this.startActivity(it) }
 
     private fun getSuggestRateButton(root: View) =

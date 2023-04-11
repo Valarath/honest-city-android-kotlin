@@ -1,6 +1,5 @@
 package cz.city.honest.external
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
 import cz.city.honest.external.authority.AuthorityServerSource
 import cz.city.honest.external.authority.AuthorityServerSourceService
@@ -8,6 +7,8 @@ import cz.city.honest.external.autorization.AuthorizationServerSource
 import cz.city.honest.external.autorization.AuthorizationServerSourceService
 import cz.city.honest.external.settings.CurrencyServerSource
 import cz.city.honest.external.settings.CurrencyServerSourceService
+import cz.city.honest.external.settings.SubjectSettingsServerSource
+import cz.city.honest.external.settings.ExternalSubjectSettingsServerSourceService
 import cz.city.honest.external.subject.SubjectServerSource
 import cz.city.honest.external.subject.SubjectServerSourceService
 import cz.city.honest.external.suggestion.SuggestionServerSource
@@ -72,6 +73,11 @@ class ExternalSourceModule() {
 
         @Provides
         @Singleton
+        fun getExchangeNameGateway(retrofit: Retrofit): SubjectSettingsServerSource =
+            getServerSource(retrofit, SubjectSettingsServerSource::class.java)
+
+        @Provides
+        @Singleton
         fun getUserGateway(retrofit: Retrofit): UserServerSource =
             getServerSource(retrofit, UserServerSource::class.java)
 
@@ -102,6 +108,11 @@ class ExternalSourceModule() {
         @Singleton
         fun getAuthorityServerSourceService(authorityServerSource: AuthorityServerSource): ExternalAuthorityGateway =
             AuthorityServerSourceService(authorityServerSource)
+
+        @Provides
+        @Singleton
+        fun getExchangeNameServerSourceService(subjectSettingsServerSource: SubjectSettingsServerSource): ExternalSubjectSettingsGateway =
+            ExternalSubjectSettingsServerSourceService(subjectSettingsServerSource)
 
         @Provides
         @Singleton

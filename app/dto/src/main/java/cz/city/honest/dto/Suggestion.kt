@@ -1,10 +1,13 @@
 package cz.city.honest.dto
 
+import java.time.Instant
+
 abstract class Suggestion(
     open val id: String,
     open val state: State,
     open val subjectId: String?,
-    open var votes: Int
+    open var votes: Int,
+    open val createdAt: Instant
 ) : HonestCitySerializable {
     fun increaseVotes() = votes++
     abstract fun toVote(userId: String, processed: Boolean): Vote
@@ -19,8 +22,10 @@ data class NewExchangePointSuggestion(
     override val state: State,
     override val subjectId: String?,
     override var votes: Int,
-    val position: Position
-) : Suggestion(id, state, subjectId, votes) {
+    override val createdAt: Instant,
+    val position: Position,
+    val image: String
+) : Suggestion(id, state, subjectId, votes, createdAt) {
     override fun toVote(userId: String, processed: Boolean): Vote =
         Vote(this, userId, processed)
 }
@@ -30,8 +35,9 @@ class ExchangeRateSuggestion(
     override val state: State,
     override val subjectId: String,
     override var votes: Int,
+    override val createdAt: Instant,
     val suggestedExchangeRate: ExchangeRate
-) : Suggestion(id, state, subjectId, votes) {
+) : Suggestion(id, state, subjectId, votes, createdAt) {
     override fun toVote(userId: String, processed: Boolean): Vote =
         Vote(this, userId, processed)
 }
@@ -40,8 +46,9 @@ class ClosedExchangePointSuggestion(
     override val id: String,
     override val state: State,
     override val subjectId: String,
-    override var votes: Int
-) : Suggestion(id, state, subjectId, votes) {
+    override var votes: Int,
+    override val createdAt: Instant
+) : Suggestion(id, state, subjectId, votes, createdAt) {
     override fun toVote(userId: String, processed: Boolean): Vote =
         Vote(this, userId, processed)
 }

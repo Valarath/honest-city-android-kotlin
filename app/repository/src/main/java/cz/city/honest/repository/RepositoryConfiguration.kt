@@ -7,6 +7,8 @@ import cz.city.honest.repository.authority.AuthorityService
 import cz.city.honest.repository.autorization.LoginDataRepository
 import cz.city.honest.repository.settings.CurrencySettingsRepository
 import cz.city.honest.repository.settings.CurrencySettingsService
+import cz.city.honest.repository.settings.SubjectSettingsService
+import cz.city.honest.repository.settings.SubjectSettingsRepository
 import cz.city.honest.repository.subject.SubjectRepository
 import cz.city.honest.repository.subject.SubjectService
 import cz.city.honest.repository.suggestion.SuggestionRepository
@@ -97,8 +99,20 @@ class RepositoryModule() {
 
         @Provides
         @Singleton
+        fun getExchangeNameSettingsRepository(
+            operationProvider: DatabaseOperationProvider
+        ): SubjectSettingsRepository =
+            SubjectSettingsRepository(operationProvider, getObjectMapper())
+
+        @Provides
+        @Singleton
         fun getAuthorityService(authorityRepository: AuthorityRepository): InternalAuthorityGateway =
             AuthorityService(authorityRepository)
+
+        @Provides
+        @Singleton
+        fun getExchangeNameService(subjectSettingsRepository: SubjectSettingsRepository): InternalSubjectSettingsGateway =
+            SubjectSettingsService(subjectSettingsRepository)
 
         @Provides
         @Singleton

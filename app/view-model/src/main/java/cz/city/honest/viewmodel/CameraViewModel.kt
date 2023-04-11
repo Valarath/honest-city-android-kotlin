@@ -10,11 +10,17 @@ import javax.inject.Inject
 class CameraViewModel @Inject constructor(private val analyticService: AnalyticService) :
     ScheduledObservableViewModel() {
 
-    val result = LiveDataReactiveStreams.fromPublisher<ExchangeRate>(getAnalyticResult())
+    val exchangeRateResult = LiveDataReactiveStreams.fromPublisher<ExchangeRate>(getExchangeRateAnalyticResult())
+    val nameResult = LiveDataReactiveStreams.fromPublisher<String>(getNameAnalyticResult())
 
-    fun analyze(imageData: AnalyzeImageData, textCallback: (lines: List<String>) -> Unit) =
-        analyticService.analyze(imageData, textCallback)
+    fun analyzeRate(imageData: AnalyzeImageData, textCallback: (lines: List<String>) -> Unit) =
+        analyticService.analyzeRate(imageData, textCallback)
 
-    private fun getAnalyticResult() = scheduleFlowable().flatMap {analyticService.getResult().toFlowable(BackpressureStrategy.LATEST)  }
+    private fun getExchangeRateAnalyticResult() = scheduleFlowable().flatMap {analyticService.getRateResult().toFlowable(BackpressureStrategy.LATEST)  }
+
+    fun analyzeName(imageData: AnalyzeImageData, textCallback: (lines: List<String>) -> Unit) =
+        analyticService.analyzeName(imageData, textCallback)
+
+    private fun getNameAnalyticResult() = scheduleFlowable().flatMap {analyticService.getNameResult().toFlowable(BackpressureStrategy.LATEST)  }
 
 }

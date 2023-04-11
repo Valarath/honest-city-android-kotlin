@@ -5,4 +5,4 @@
     android:id="@+id/camera"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".camera.CameraActivity"/>
+    tools:context=".camera.rate.RateCameraActivity"/>
