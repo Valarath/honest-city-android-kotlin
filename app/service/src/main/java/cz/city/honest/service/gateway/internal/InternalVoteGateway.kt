@@ -20,4 +20,5 @@ interface InternalVoteGateway {
 
     fun getUserSubjectVotes(subjectId: String, userId: String): Observable<Vote>
 
+    fun findBySuggestionId(suggestionId: String): Flowable<Vote>
 }

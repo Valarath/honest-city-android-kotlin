@@ -6,7 +6,9 @@ import androidx.lifecycle.Transformations
 import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.User
 import cz.city.honest.dto.UserSuggestionStateMarking
+import cz.city.honest.dto.Vote
 import cz.city.honest.service.user.UserService
+import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
@@ -17,13 +19,18 @@ class ShowSubjectSuggestionsViewModel @Inject constructor(
 ) : ScheduledObservableViewModel() {
 
     val subjectId: MutableLiveData<String> = MutableLiveData()
+    val newSubjectSuggestionId: MutableLiveData<String> = MutableLiveData()
     val loggedUser = LiveDataReactiveStreams.fromPublisher<User>(getUser())
-
     val subjectSuggestions = Transformations.switchMap(subjectId) {
         LiveDataReactiveStreams.fromPublisher<List<VotedSuggestion>>(
             getScheduledSuggestionsForSubject(it)
         )
     }
+    val votesForSuggestion = Transformations.switchMap(newSubjectSuggestionId) {
+        LiveDataReactiveStreams.fromPublisher<Vote>(getVotesForSuggestion(it))
+    }
+
+    private fun getVotesForSuggestion(suggestionId:String) = voteService.findBySuggestionId(suggestionId)
 
     private fun getUser() =
         scheduleFlowable().flatMap { userService.getUserDataAsMaybe().toFlowable() }

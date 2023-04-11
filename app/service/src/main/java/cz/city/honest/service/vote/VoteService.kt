@@ -20,6 +20,8 @@ class VoteService(
             .flatMap { updateVotes(it, accessToken) }
     //.onErrorComplete()
 
+    fun findBySuggestionId(suggestionId: String) = internalVoteGateway.findBySuggestionId(suggestionId)
+
     private fun updateVotes(user: User, accessToken: String) =
         internalVoteGateway.updateVotes(user)
             .filter { !it.processed }

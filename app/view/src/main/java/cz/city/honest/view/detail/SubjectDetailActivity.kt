@@ -1,6 +1,5 @@
 package cz.city.honest.view.detail
 
-import android.app.ActionBar
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -11,16 +10,13 @@ import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import cz.city.honest.dto.*
 import cz.city.honest.view.R
 import cz.city.honest.view.camera.rate.RateCameraActivity
 import cz.city.honest.viewmodel.ShowSubjectSuggestionsViewModel
 import cz.city.honest.view.detail.ui.main.SubjectPagerAdapter
 import cz.city.honest.viewmodel.VotedSuggestion
 import cz.city.honest.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
-import cz.city.honest.dto.ClosedExchangePointSuggestion
-import cz.city.honest.dto.State
-import cz.city.honest.dto.UserSuggestionStateMarking
-import cz.city.honest.dto.WatchedSubject
 import dagger.android.support.DaggerAppCompatActivity
 import java.time.Instant
 import java.util.*
@@ -55,8 +51,13 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
                 viewModelFactory
             ).get(ShowSubjectSuggestionsViewModel::class.java)
         showSubjectSuggestionsViewModel.subjectId.postValue(getWatchedSubjectId())
+        setNewSuggestionId()
         setActionBar()
     }
+
+    private fun setNewSuggestionId() = getWatchedSubject().suggestions
+        .filterIsInstance<NewExchangePointSuggestion>()
+        .forEach { showSubjectSuggestionsViewModel.newSubjectSuggestionId.postValue(it.id) }
 
     private fun setActionBar() = supportActionBar
         ?.also { setBackgroundImage(it) }
@@ -68,7 +69,7 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
-            if(inflante){
+            if (inflante) {
                 menuInflater.inflate(R.menu.subject_menu, menu)
                 inflante = false
             }
@@ -78,36 +79,33 @@ class SubjectDetailActivity : DaggerAppCompatActivity() {
                     setReportClosedSubjectButton(menu, it)
                 })
             setSuggestDifferentRateButton(menu)
-            setVoteFor(menu)
+            setVoteFor(menu,it)
         })
         return true
     }
 
     private fun setReportClosedSubjectButton(menu: Menu, votedSuggestions: List<VotedSuggestion>) {
-        showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
-            if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested(votedSuggestions))
-                menu.findItem(R.id.suggest_non_existing_subject)
-                    .apply { disableMenuItem(this) }
-        })
+        if (isNewSubjectSuggestion() || isCloseSubjectSuggestionSuggested(votedSuggestions))
+            menu.findItem(R.id.suggest_non_existing_subject)
+                .apply { disableMenuItem(this) }
     }
 
-    private fun setVoteFor(menu: Menu) {
-        showSubjectSuggestionsViewModel.loggedUser.observe(this, androidx.lifecycle.Observer {
-            if (!isNewSubjectSuggestion())
+    private fun setVoteFor(menu: Menu, user:User) {
+        if (!isNewSubjectSuggestion())
+            menu.findItem(R.id.vote_for_new_subject_suggestion)
+                .apply { disableMenuItem(this) }
+        showSubjectSuggestionsViewModel.votesForSuggestion.observe(this) {
+            if (it.userId == user.id)
                 menu.findItem(R.id.vote_for_new_subject_suggestion)
                     .apply { disableMenuItem(this) }
-        })
+        }
     }
 
     private fun setSuggestDifferentRateButton(menu: Menu) =
         menu.findItem(R.id.suggest_different_rate)
             .also { menuItem ->
-                showSubjectSuggestionsViewModel.loggedUser.observe(
-                    this,
-                    androidx.lifecycle.Observer {
-                        if (isNewSubjectSuggestion())
-                            disableMenuItem(menuItem)
-                    })
+                if (isNewSubjectSuggestion())
+                    disableMenuItem(menuItem)
             }
             .apply {
                 if (isNewSubjectSuggestion())

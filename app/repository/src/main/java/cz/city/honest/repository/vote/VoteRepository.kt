@@ -64,6 +64,9 @@ class VoteRepository(
         )
     )
 
+    fun getBySuggestionId(suggestionId:String) = findVotesBySuggestionId(suggestionId)
+        .flatMap { toEntities(it) { get(it) } }
+
     private fun get(cursor: Cursor) = getVoteUserSuggestions(cursor.getString(1))
         .map {
             Vote(
@@ -82,6 +85,14 @@ class VoteRepository(
                     )
                 })",
                 arrayOf(mapToQueryParamVariable(userIds))
+            )
+        )
+
+    private fun findVotesBySuggestionId(suggestionId: String): Flowable<Cursor> =
+        Flowable.just(
+            databaseOperationProvider.readableDatabase.rawQuery(
+                "Select user_id, suggestion_id, processed from user_vote where suggestion_id = ?",
+                arrayOf(suggestionId)
             )
         )
 

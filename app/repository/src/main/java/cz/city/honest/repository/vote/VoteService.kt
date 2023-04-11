@@ -34,6 +34,8 @@ class VoteService(
             .delete(suggestion.id, user.id)
             .map { }
 
+    override fun findBySuggestionId(suggestionId:String) = voteRepository.getBySuggestionId(suggestionId)
+
     override fun getUserSubjectVotes(subjectId: String, userId: String): Observable<Vote> =
         voteRepository
             .getBySubjectId(subjectId, userId)
