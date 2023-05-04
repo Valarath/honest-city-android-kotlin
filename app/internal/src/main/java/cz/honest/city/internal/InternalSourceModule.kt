@@ -8,14 +8,12 @@ import cz.city.honest.service.gateway.internal.InternalAuthorizationGateway
 import cz.city.honest.service.gateway.internal.InternalFilterGateway
 import cz.city.honest.service.gateway.internal.InternalImageNameAnalyticGateway
 import cz.city.honest.service.gateway.internal.InternalImageRateAnalyticGateway
-import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.user.UserProvider
 import cz.city.honest.service.user.UserService
-import cz.honest.city.internal.analyze.SubjectNameAnalyticGateway
 import cz.honest.city.internal.analyze.ExchangeRateAnalyticGateway
+import cz.honest.city.internal.analyze.SubjectNameAnalyticGateway
 import cz.honest.city.internal.authentication.FacebookLoginHandler
 import cz.honest.city.internal.filter.FilterSharedPreferenceRepository
-import cz.honest.city.internal.provider.AndroidPositionProvider
 import cz.honest.city.internal.provider.AndroidUserProvider
 import cz.honest.city.internal.provider.ImageSubjectNameProvider
 import cz.honest.city.internal.provider.rate.ImageExchangeRateProvider
@@ -29,10 +27,6 @@ import javax.inject.Singleton
 class InternalSourceModule {
 
     companion object {
-        @Provides
-        @Singleton
-        fun getPositionProvider(context: Context): PositionProvider =
-            AndroidPositionProvider(context)
 
         @Provides
         @Singleton

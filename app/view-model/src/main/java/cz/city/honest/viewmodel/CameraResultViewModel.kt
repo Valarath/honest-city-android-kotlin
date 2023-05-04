@@ -3,7 +3,7 @@ package cz.city.honest.viewmodel
 import androidx.lifecycle.LiveDataReactiveStreams
 import cz.city.honest.dto.*
 import cz.city.honest.service.authority.AuthorityService
-import cz.city.honest.service.subject.PositionProvider
+import cz.city.honest.service.position.PositionService
 import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.user.UserService
 import cz.city.honest.viewmodel.converter.NewExchangePointSuggestionExchangePointConverter
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class CameraResultViewModel @Inject constructor(
     private val authorityService: AuthorityService,
     private val suggestionService: SuggestionService,
-    private var positionProvider: PositionProvider,
+    private val positionService: PositionService,
     private val userService: UserService
 ) : ScheduledObservableViewModel() {
 
@@ -35,8 +35,7 @@ class CameraResultViewModel @Inject constructor(
             .subscribe()
 
     fun suggestNewSubject(image: String) =
-        positionProvider.provide()
-            .firstOrError()
+        positionService.getLastKnownUserPosition()
             .map { getNewExchangePointSuggestion(it,image) }
             .flatMapObservable { suggestNewSubject(it) }
             .map { NewExchangePointSuggestionExchangePointConverter.convert(it) }

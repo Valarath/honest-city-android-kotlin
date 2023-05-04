@@ -25,6 +25,7 @@ class DatabaseOperationProvider constructor(
         createSuggestionTable(database)
         createUserTables(database)
         createSettingsTables(database)
+        createPositionTable(database)
     }
 
     private fun createSubjectTables(database: SQLiteDatabase) {
@@ -69,7 +70,6 @@ class DatabaseOperationProvider constructor(
 
     private fun createLoginDataTable(database: SQLiteDatabase){
         database.execSQL("Create table IF NOT EXISTS login_data(id varchar primary key ON CONFLICT REPLACE, class text, data text, user_id varchar not null, foreign key(user_id) references user(user_id))")
-
     }
 
     private fun createCurrencySettingsTable(database: SQLiteDatabase){
@@ -78,6 +78,10 @@ class DatabaseOperationProvider constructor(
 
     private fun createSubjectSettingsTable(database: SQLiteDatabase){
         database.execSQL("Create table if not exists subject_settings(data text)")
+    }
+
+    private fun createPositionTable(database: SQLiteDatabase){
+        database.execSQL("Create table if not exists position(latitude REAL, longitude REAL)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

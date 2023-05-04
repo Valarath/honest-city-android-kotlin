@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import cz.city.honest.repository.authority.AuthorityRepository
 import cz.city.honest.repository.authority.AuthorityService
 import cz.city.honest.repository.autorization.LoginDataRepository
+import cz.city.honest.repository.position.PositionRepository
+import cz.city.honest.repository.position.PositionService
 import cz.city.honest.repository.settings.CurrencySettingsRepository
 import cz.city.honest.repository.settings.CurrencySettingsService
 import cz.city.honest.repository.settings.SubjectSettingsService
@@ -58,6 +60,12 @@ class RepositoryModule() {
         fun getLoginDataRepository(
             databaseOperationProvider: DatabaseOperationProvider
         ): LoginDataRepository = LoginDataRepository(databaseOperationProvider, getObjectMapper())
+
+        @Provides
+        @Singleton
+        fun getPositionRepository(
+            databaseOperationProvider: DatabaseOperationProvider
+        ): PositionRepository = PositionRepository(databaseOperationProvider)
 
         @Provides
         @Singleton
@@ -133,6 +141,11 @@ class RepositoryModule() {
         @Singleton
         fun getUserService(userRepository: UserRepository): InternalUserGateway =
             UserService(userRepository)
+
+        @Provides
+        @Singleton
+        fun getPositionService(positionRepository: PositionRepository): InternalPositionGateway =
+            PositionService(positionRepository)
 
         @Provides
         @Singleton

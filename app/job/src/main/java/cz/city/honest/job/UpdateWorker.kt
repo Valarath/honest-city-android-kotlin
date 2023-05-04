@@ -37,6 +37,7 @@ class UpdateWorkerManagerService(
 
     fun scheduleWorker() = PeriodicWorkRequest
         .Builder(UpdateWorker::class.java, 15, TimeUnit.MINUTES)
+        .setInitialDelay(60,TimeUnit.SECONDS)
         .setConstraints(getConstraints())
         .build()
         .let { WorkManager.getInstance(context).enqueue(it) }
@@ -63,6 +64,6 @@ class UpdateWorker(
                 println(it)
                 Result.failure()
             }
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
 }

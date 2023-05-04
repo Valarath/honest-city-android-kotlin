@@ -7,9 +7,9 @@ import cz.city.honest.service.authorization.AuthorizationService
 import cz.city.honest.service.filter.FilterService
 import cz.city.honest.service.gateway.external.*
 import cz.city.honest.service.gateway.internal.*
+import cz.city.honest.service.position.PositionService
 import cz.city.honest.service.settings.CurrencySettingsService
 import cz.city.honest.service.settings.SubjectSettingsService
-import cz.city.honest.service.subject.PositionProvider
 import cz.city.honest.service.subject.SubjectService
 import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.update.PrivateUpdatable
@@ -39,13 +39,13 @@ class ServiceModule {
             internalSubjectGateway: InternalSubjectGateway,
             externalSubjectGateway: ExternalSubjectGateway,
             suggestionService: SuggestionService,
-            positionProvider: PositionProvider
+            positionService: PositionService
         ): SubjectService =
             SubjectService(
                 internalSubjectGateway,
                 externalSubjectGateway,
                 suggestionService,
-                positionProvider
+                positionService
             )
 
         @Provides
@@ -67,6 +67,13 @@ class ServiceModule {
             filterPersistenceHandler: InternalFilterGateway
         ): FilterService =
             FilterService(filterPersistenceHandler)
+
+        @Provides
+        @Singleton
+        fun getPositionService(
+            internalPositionGateway: InternalPositionGateway
+        ): PositionService =
+            PositionService(internalPositionGateway)
 
         @Provides
         @Singleton

@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import cz.city.honest.dto.Position
 import cz.city.honest.dto.User
 import cz.city.honest.dto.WatchedSubject
 import cz.city.honest.view.camera.rate.RateCameraActivity
@@ -146,6 +147,7 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
 
     override fun onLocationChanged(location: Location) {
         map.moveCamera(CameraUpdateFactory.newLatLng(location.toLatLng()))
+        mapViewModel.saveCurrentPosition(location.toPosition())
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -155,3 +157,4 @@ class MapActivity : DaggerAppCompatActivity(), LocationListener, OnMapReadyCallb
 }
 
 fun Location.toLatLng(): LatLng = LatLng(this.latitude, this.longitude)
+fun Location.toPosition():Position = Position(this.longitude,this.latitude)
