@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY delimiter "-">
+    ]>
+<resources>
+    <string-array name="suggestions_translations">
+        <item>CloseExchangePointSuggestion&delimiter;Zrušený</item>
+        <item>NewExchangePointSuggestion&delimiter;Nový subjekt</item>
+        <item>ExchangeRateSuggestion&delimiter;Změna kurzu</item>
+    </string-array>
+
+    <string-array name="states_translations">
+        <item>ACCEPTED&delimiter;Accepted</item>
+        <item>DECLINED&delimiter;Declined</item>
+        <item>IN_PROGRESS&delimiter;In progress</item>
+    </string-array>
+
+    <string name="delimiter">&delimiter;</string>
+
+</resources>

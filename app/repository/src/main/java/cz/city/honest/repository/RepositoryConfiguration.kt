@@ -1,7 +1,6 @@
 package cz.city.honest.repository
 
 import android.content.Context
-import com.fasterxml.jackson.databind.ObjectMapper
 import cz.city.honest.repository.authority.AuthorityRepository
 import cz.city.honest.repository.authority.AuthorityService
 import cz.city.honest.repository.autorization.LoginDataRepository
@@ -23,6 +22,7 @@ import cz.city.honest.repository.vote.VoteRepository
 import cz.city.honest.repository.vote.VoteService
 import cz.city.honest.service.gateway.internal.*
 import cz.city.honest.service.mapping.ObjectMapperProvider
+import cz.city.honest.service.provider.PropertyProvider
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -36,11 +36,15 @@ class RepositoryModule() {
         fun getDatabaseOperationProvider(databaseConfiguration: DatabaseConfiguration): DatabaseOperationProvider =
             DatabaseOperationProvider(databaseConfiguration)
 
-        //TODO to properties
         @Provides
         @Singleton
-        fun getDatabaseConfiguration(context: Context): DatabaseConfiguration =
-            DatabaseConfiguration(context, "honest_city", 1)
+        fun getDatabaseConfiguration(context: Context, databaseProperties: DatabaseProperties): DatabaseConfiguration =
+            DatabaseConfiguration(context, databaseProperties.name, databaseProperties.version)
+
+        @Provides
+        @Singleton
+        fun getDatabaseProperties(propertyProvider: PropertyProvider): DatabaseProperties =
+            propertyProvider.providePropertyOfType(DatabaseProperties::class.java)
 
         @Provides
         @Singleton
@@ -159,6 +163,10 @@ class RepositoryModule() {
 
         private fun getObjectMapper() = ObjectMapperProvider.getObjectMapper()
     }
+}
+
+data class DatabaseProperties(val name: String, val version: Int){
+    constructor():this("",0)
 }
 
 data class DatabaseConfiguration(

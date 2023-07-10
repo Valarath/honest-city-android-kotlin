@@ -54,9 +54,3 @@ class UserService(
         UserSuggestionMetadata(processed = true, markAs = UserSuggestionStateMarking.NEW)
 
 }
-
-interface UserProvider {
-
-    fun provide(): Observable<User>
-
-}

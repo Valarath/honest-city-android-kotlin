@@ -2,13 +2,13 @@ package cz.city.honest.dto
 
 import java.time.Instant
 
-abstract class Suggestion(
+sealed class Suggestion(
     open val id: String,
     open val state: State,
     open val subjectId: String?,
     open var votes: Int,
     open val createdAt: Instant
-) : HonestCitySerializable {
+) : HonestCitySerializable  {
     fun increaseVotes() = votes++
     abstract fun toVote(userId: String, processed: Boolean): Vote
 }

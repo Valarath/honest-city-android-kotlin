@@ -9,6 +9,12 @@
         <item>ExchangeRateSuggestion&delimiter;Change rate</item>
     </string-array>
 
+    <string-array name="states_translations">
+        <item>ACCEPTED&delimiter;Přijat</item>
+        <item>DECLINED&delimiter;Zamítnut</item>
+        <item>IN_PROGRESS&delimiter;Hlasování</item>
+    </string-array>
+
     <string name="delimiter">&delimiter;</string>
 
 </resources>

@@ -2,8 +2,9 @@ package cz.city.honest.service
 
 abstract class BaseService {
 
-    fun <T> getService(services: Map<Class<out T>, T>, expectedType: Class<T>): T =
-        services[expectedType] ?: throw ServiceNotFoundException()
+    fun <T> getService(services: Map<String, T>, expectedType: Class<in T>): T =
+        services[expectedType.simpleName] ?: throw ServiceNotFoundException()
+
 }
 
 class ServiceNotFoundException : RuntimeException()

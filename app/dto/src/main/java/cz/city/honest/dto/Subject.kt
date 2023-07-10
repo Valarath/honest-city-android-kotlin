@@ -4,13 +4,12 @@ import java.time.LocalDate
 
 enum class HonestyStatus(private val nextLevelOfHonesty: HonestyStatus?) : HonestCitySerializable {
     HONEST(null),
-    HONEST_WITH_RESERVE(HONEST),
-    BE_CAUTION(HONEST_WITH_RESERVE),
+    BE_CAUTION(HONEST),
     DISHONEST(BE_CAUTION),
     UNKNOWN(null);
 }
 
-open class WatchedSubject(
+sealed class WatchedSubject(
     open val id: String,
     open val watchedTo: LocalDate?,
     open val honestyStatus: HonestyStatus,
@@ -20,7 +19,7 @@ open class WatchedSubject(
 
 data class Position(val longitude: Double, val latitude: Double) : HonestCitySerializable
 
-open class ImmobileWatchedSubject(
+sealed class ImmobileWatchedSubject(
     override val id: String,
     override val watchedTo: LocalDate?,
     override val honestyStatus: HonestyStatus,

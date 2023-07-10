@@ -3,6 +3,7 @@ package cz.city.honest.service.user
 import cz.city.honest.dto.*
 import cz.city.honest.service.gateway.external.ExternalSuggestionGateway
 import cz.city.honest.service.gateway.internal.InternalUserSuggestionGateway
+import cz.city.honest.service.provider.UserProvider
 import cz.city.honest.service.update.PrivateUpdatable
 import cz.city.honest.service.vote.VoteService
 import io.reactivex.rxjava3.core.Flowable

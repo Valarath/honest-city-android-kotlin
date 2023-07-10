@@ -6,7 +6,7 @@ import cz.city.honest.dto.Vote
 import cz.city.honest.service.gateway.external.ExternalVoteGateway
 import cz.city.honest.service.gateway.internal.InternalVoteGateway
 import cz.city.honest.service.update.PrivateUpdatable
-import cz.city.honest.service.user.UserProvider
+import cz.city.honest.service.provider.UserProvider
 import io.reactivex.rxjava3.core.Observable
 
 class VoteService(

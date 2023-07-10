@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 
-
-open class JsonDeserializer<DTO : Any>(val objectMapper: ObjectMapper, private val classByName: Map<String, Class<out DTO>> ) :
+open class JsonDeserializer<DTO : Any>(private val objectMapper: ObjectMapper, private val classByName: Map<String, Class<out DTO>> ) :
     JsonDeserializer<DTO>() {
 
 
@@ -17,7 +16,7 @@ open class JsonDeserializer<DTO : Any>(val objectMapper: ObjectMapper, private v
         return objectMapper.readValue(jsonNode.toString(), returnTypeClass)
     }
 
-    protected fun getClassByName(className: String) = classByName[className]!!
+    private fun getClassByName(className: String) = classByName[className]!!
 
     companion object {
         const val CLASS_NAME = "className"

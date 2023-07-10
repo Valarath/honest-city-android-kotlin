@@ -55,7 +55,7 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
         TableRow tableRow = new TableRow(context);
         setTableRowStyle(suggestion, tableRow);
         tableRow.addView(TableRowCreator.Companion.getCell(getTranslation(context,suggestion), 27f, context));
-        tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getState().name(), 32f, context));
+        tableRow.addView(TableRowCreator.Companion.getCell(getTranslation(context,suggestion.getState()), 32f, context));
         tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getVotes(), 15f, context));
         tableRow.addView(TableRowCreator.Companion.getCell(suggestion.getCreatedAt(), 26f, context));
         tableRow.addView(TableRowCreator.Companion.getCell( 15f, context));
@@ -77,6 +77,14 @@ public abstract class SuggestionTableRowConverter<SUGGESTION extends Suggestion>
     private String getTranslation(Context context, SUGGESTION suggestion){
         return Arrays.stream(context.getResources().getStringArray(R.array.suggestions_translations))
                 .filter(it -> it.startsWith(suggestion.getClassName()))
+                .map(it -> it.split(context.getResources().getString(R.string.delimiter))[1])
+                .findFirst()
+                .orElse("");
+    }
+
+    private String getTranslation(Context context, State state){
+        return Arrays.stream(context.getResources().getStringArray(R.array.suggestions_translations))
+                .filter(it -> it.startsWith(state.name()))
                 .map(it -> it.split(context.getResources().getString(R.string.delimiter))[1])
                 .findFirst()
                 .orElse("");

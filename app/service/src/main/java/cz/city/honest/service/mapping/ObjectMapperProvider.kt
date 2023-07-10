@@ -24,19 +24,19 @@ class ObjectMapperProvider {
             module.apply {
                 this.addDeserializer(
                     LoginData::class.java,
-                    LoginDataSerializer(
+                    LoginDataDeserializer(
                         objectMapper
                     )
                 )
                 this.addDeserializer(
                     WatchedSubject::class.java,
-                    WatchedSubjectSerializer(
+                    WatchedSubjectDeserializer(
                         objectMapper
                     )
                 )
                 this.addDeserializer(
                     Suggestion::class.java,
-                    SuggestionSerializer(
+                    SuggestionDeserializer(
                         objectMapper
                     )
                 )

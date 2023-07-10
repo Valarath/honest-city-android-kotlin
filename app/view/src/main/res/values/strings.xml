@@ -21,8 +21,8 @@
     <string name="authority_rate_header">Authority</string>
     <string name="exchange_point_to_authority_rates_difference">Lost at %</string>
     <string name="title_activity_user_detail">UserDetail</string>
-    <string name="vote_for_suggestion_button">Vote</string>
-    <string name="delete_user_suggestion">X</string>
+    <string name="vote_for_suggestion_button">+</string>
+    <string name="delete_user_suggestion">-</string>
     <string name="analyze_actual_rate">Analyze rate</string>
 
     <!-- SUBJECT MENU -->
@@ -34,6 +34,15 @@
 
     <!-- USER MENU -->
     <string name="user_detail_logout">Logout</string>
+    <!-- -->
+
+    <!-- Filter -->
+    <string name="filter_show_subject_settings">Show subject settings</string>
+    <string name="filter_button_ok">OK</string>
+    <string name="filter_honest_subject">Show: Honest subjects</string>
+    <string name="filter_be_caution">Show: Be caution Subjects</string>
+    <string name="filter_dishonest_subject">Show: Dishonest subjects</string>
+    <string name="filter_unknown_honesty">Show: Subjects with unknown honesty</string>
     <!-- -->
 
     <string name="suggestion_type_title">Type</string>

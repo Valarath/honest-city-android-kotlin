@@ -28,7 +28,6 @@ android {
 
 dependencies {
     implementation project(':app:service')
-    implementation project(':app:internal')
 
     implementation "androidx.work:work-runtime:$workerVersion"
     implementation "androidx.work:work-runtime-ktx:$workerVersion"

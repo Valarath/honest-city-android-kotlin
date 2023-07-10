@@ -1,6 +1,5 @@
 dependencies {
     implementation project(':app:dto')
-    implementation project(':app:property')
     implementation project(':app:service')
 
     api "com.squareup.retrofit2:retrofit:$retrofitVersion"

@@ -8,7 +8,8 @@ import cz.city.honest.service.gateway.internal.InternalAuthorizationGateway
 import cz.city.honest.service.gateway.internal.InternalFilterGateway
 import cz.city.honest.service.gateway.internal.InternalImageNameAnalyticGateway
 import cz.city.honest.service.gateway.internal.InternalImageRateAnalyticGateway
-import cz.city.honest.service.user.UserProvider
+import cz.city.honest.service.provider.PropertyProvider
+import cz.city.honest.service.provider.UserProvider
 import cz.city.honest.service.user.UserService
 import cz.honest.city.internal.analyze.ExchangeRateAnalyticGateway
 import cz.honest.city.internal.analyze.SubjectNameAnalyticGateway
@@ -27,11 +28,15 @@ import javax.inject.Singleton
 class InternalSourceModule {
 
     companion object {
+        @Provides
+        @Singleton
+        fun getSharedPreferencesProperties(propertyProvider: PropertyProvider): SharedPreferencesProperties =
+            propertyProvider.providePropertyOfType(SharedPreferencesProperties::class.java)
 
         @Provides
         @Singleton
-        fun getFilterPersistenceHandler(context: Context): InternalFilterGateway =
-            FilterSharedPreferenceRepository(context)
+        fun getFilterPersistenceHandler(context: Context, sharedPreferencesProperties: SharedPreferencesProperties): InternalFilterGateway =
+            FilterSharedPreferenceRepository(context, sharedPreferencesProperties)
 
         @Provides
         @Singleton
@@ -72,4 +77,8 @@ class InternalSourceModule {
         ): InternalAuthorizationGateway<out LoginData> =
             FacebookLoginHandler(userService, context)
     }
+}
+
+data class SharedPreferencesProperties(val repositoryName:String){
+    constructor():this("")
 }

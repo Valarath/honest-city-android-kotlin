@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.*
 import androidx.work.rxjava3.RxWorker
 import cz.city.honest.service.update.UpdateService
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -26,7 +25,8 @@ class UpdateWorkerFactory(
 
 class UpdateWorkerManagerService(
     private val context: Context,
-    private val updateWorkerFactory: UpdateWorkerFactory
+    private val updateWorkerFactory: UpdateWorkerFactory,
+    private val updateProperties: UpdateJobProperties
 ) {
 
     fun initializeWorkerManager() = WorkManager.initialize(
@@ -36,8 +36,8 @@ class UpdateWorkerManagerService(
     )
 
     fun scheduleWorker() = PeriodicWorkRequest
-        .Builder(UpdateWorker::class.java, 15, TimeUnit.MINUTES)
-        .setInitialDelay(60,TimeUnit.SECONDS)
+        .Builder(UpdateWorker::class.java, updateProperties.repeatInterval, TimeUnit.MINUTES)
+        .setInitialDelay(updateProperties.initialDelay,TimeUnit.SECONDS)
         .setConstraints(getConstraints())
         .build()
         .let { WorkManager.getInstance(context).enqueue(it) }
@@ -60,10 +60,7 @@ class UpdateWorker(
             .lastElement()
             .toSingle()
             .map { Result.success() }
-            .onErrorReturn {
-                println(it)
-                Result.failure()
-            }
+            .onErrorReturn { Result.failure() }
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
 }

@@ -1,9 +1,9 @@
 package cz.city.honest.service.authorization
 
 import cz.city.honest.dto.LoginData
+import cz.city.honest.dto.Suggestion
 import cz.city.honest.dto.User
 import cz.city.honest.service.BaseService
-import cz.city.honest.service.InternalAuthorizationGatewayProvider
 import cz.city.honest.service.gateway.external.ExternalAuthorizationGateway
 import cz.city.honest.service.gateway.external.ExternalTokenValidationGateway
 import cz.city.honest.service.gateway.internal.InternalAuthorizationGateway
@@ -58,8 +58,8 @@ class AuthorizationService(
             }
 
     private fun getInternalAuthorizationGateway(user: User) =
-        InternalAuthorizationGatewayProvider.provide(
+        getService(
             internalAuthorizationGateways,
-            user.loginData
+            user.loginData.javaClass
         )
 }

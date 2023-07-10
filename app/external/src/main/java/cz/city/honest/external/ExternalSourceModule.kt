@@ -19,9 +19,9 @@ import cz.city.honest.external.validation.TokenValidationServerSource
 import cz.city.honest.external.validation.TokenValidationServerSourceService
 import cz.city.honest.external.vote.VoteServerSource
 import cz.city.honest.external.vote.VoteServerSourceService
-import cz.city.honest.property.ConnectionProperties
 import cz.city.honest.service.gateway.external.*
 import cz.city.honest.service.mapping.ObjectMapperProvider
+import cz.city.honest.service.provider.PropertyProvider
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ClassKey
@@ -57,9 +57,13 @@ class ExternalSourceModule() {
 
         @Provides
         @Singleton
+        fun getConnectionProperties(propertyProvider: PropertyProvider): ConnectionProperties =
+            propertyProvider.providePropertyOfType(ConnectionProperties::class.java)
+
+        @Provides
+        @Singleton
         fun getAuthorityGateway(retrofit: Retrofit): AuthorityServerSource =
             getServerSource(retrofit, AuthorityServerSource::class.java)
-
 
         @Provides
         @Singleton
@@ -151,6 +155,10 @@ class ExternalSourceModule() {
 
         private fun getObjectMapper() = ObjectMapperProvider.getObjectMapper()
     }
+}
+
+data class ConnectionProperties(var baseUrl:String){
+    constructor():this("")
 }
 
 abstract class BaseGatewayModule {

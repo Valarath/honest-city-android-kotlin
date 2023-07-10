@@ -15,7 +15,7 @@ import cz.city.honest.service.suggestion.SuggestionService
 import cz.city.honest.service.update.PrivateUpdatable
 import cz.city.honest.service.update.PublicUpdatable
 import cz.city.honest.service.update.UpdateService
-import cz.city.honest.service.user.UserProvider
+import cz.city.honest.service.provider.UserProvider
 import cz.city.honest.service.user.UserService
 import cz.city.honest.service.user.UserSuggestionService
 import cz.city.honest.service.vote.VoteService

@@ -8,7 +8,7 @@ data class User(
     val loginData: LoginData
 ) : HonestCitySerializable
 
-interface LoginData{
+sealed interface LoginData{
     fun getClassName():String = javaClass.simpleName
     fun userId():String
     fun getId():String
@@ -20,8 +20,4 @@ data class FacebookLoginData(
 ) : LoginData {
     override fun userId(): String = userId
     override fun getId(): String = facebookUserId
-}
-
-enum class LoginProvider{
-    FACEBOOK
 }

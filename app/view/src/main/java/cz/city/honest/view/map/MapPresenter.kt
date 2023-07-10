@@ -32,7 +32,6 @@ sealed class MapPresenter<Subject : WatchedSubject> {
         val HONESTY_STATUS_COLOR_MAP = mapOf(
             HonestyStatus.DISHONEST to Color.RED,
             HonestyStatus.BE_CAUTION to Color.rgb(255, 165, 0),
-            HonestyStatus.HONEST_WITH_RESERVE to Color.YELLOW,
             HonestyStatus.HONEST to Color.GREEN,
             HonestyStatus.UNKNOWN to Color.WHITE
         )

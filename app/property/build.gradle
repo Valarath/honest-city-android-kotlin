@@ -1,5 +1,6 @@
 dependencies{
     implementation project(':app:dto')
+    implementation project(':app:service')
 
     implementation "org.yaml:snakeyaml:$snakeYamlVersion"
 }

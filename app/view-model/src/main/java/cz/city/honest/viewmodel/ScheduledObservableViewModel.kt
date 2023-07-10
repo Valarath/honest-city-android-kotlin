@@ -1,10 +1,9 @@
 package cz.city.honest.viewmodel
 
 import androidx.databinding.PropertyChangeRegistry
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -19,14 +18,7 @@ open class ScheduledObservableViewModel : ViewModel(), androidx.databinding.Obse
     ) = Flowable.interval(initialDelay, period, TimeUnit.SECONDS)
         .onBackpressureBuffer(backpressureBuffer)
         .subscribeOn(Schedulers.io())
-        .observeOn(Schedulers.newThread())
-
-    protected fun scheduleObservable(
-        initialDelay: Long = 0,
-        period: Long = 10L
-    ) = Observable.interval(initialDelay, period, TimeUnit.SECONDS)
-        .subscribeOn(Schedulers.io())
-        .observeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
 
     override fun addOnPropertyChangedCallback(callback: androidx.databinding.Observable.OnPropertyChangedCallback) {
         callbacks.add(callback)
@@ -43,10 +35,4 @@ open class ScheduledObservableViewModel : ViewModel(), androidx.databinding.Obse
     protected fun notifyPropertyChanged(fieldId: Int) {
         callbacks.notifyCallbacks(this, fieldId, null)
     }
-}
-
-//TODO presun podle vyskytu tam kam patri
-fun <DATA> MutableLiveData<DATA>.postClearValue(value: DATA) = this.apply {
-    postValue(null)
-    postValue(value!!)
 }
