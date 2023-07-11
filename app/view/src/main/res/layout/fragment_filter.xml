@@ -49,39 +49,32 @@
                 android:layout_marginTop="0dp"
                 android:checked="@={filterViewModel.honestyStatusVisibilityLiveData[HonestyStatus.HONEST]}"
                 android:onCheckedChanged="@{(button, isChecked) -> filterViewModel.updateVisibilityState(HonestyStatus.HONEST,isChecked)}"
-                android:text="@string/filter_show_subject_settings" />
-
-            <Switch
-                android:id="@+id/show_honest_with_reserve_switch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.HONEST]}"
                 android:text="@string/filter_honest_subject" />
 
             <Switch
                 android:id="@+id/show_be_caution_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="50dp"
                 android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.BE_CAUTION]}"
                 android:text="@string/filter_be_caution" />
-
-            <Switch
-                android:id="@+id/show_dishonest_switch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="150dp"
-                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.DISHONEST]}"
-                android:text="@string/filter_dishonest_subject" />
 
             <Switch
                 android:id="@+id/show_unknown_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="200dp"
+                android:layout_marginTop="150dp"
                 android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.UNKNOWN]}"
                 android:text="@string/filter_unknown_honesty" />
+
+            <Switch
+                android:id="@+id/show_dishonest_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:checked="@={filterViewModel.filterData.subjectFilter.honestyStatusVisibilityMap[HonestyStatus.DISHONEST]}"
+                android:text="@string/filter_dishonest_subject" />
+
         </FrameLayout>
 
         <LinearLayout
